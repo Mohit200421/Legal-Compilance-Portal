@@ -1,4 +1,4 @@
-import cors from "cors";
+
 require("dotenv").config();
 require("./cron/eventReminder");
 
@@ -69,7 +69,7 @@ const server = http.createServer(app);
 // ✅ Setup Socket.io
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://legal-compilance-portal.vercel.app",
     credentials: true,
   },
 });

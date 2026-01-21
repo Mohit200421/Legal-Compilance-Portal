@@ -26,7 +26,7 @@ const allowedOrigins = [
 // allow all vercel preview deployments also
 const isVercelPreview = (origin) => origin && origin.endsWith(".vercel.app");
 
-// ✅ Request logger (IMPORTANT for debugging register/login)
+// ✅ Request logger (debug)
 app.use((req, res, next) => {
   console.log("➡️", req.method, req.url);
   next();
@@ -49,8 +49,8 @@ app.use(
   })
 );
 
-// ✅ handle preflight
-app.options("*", cors());
+// ✅ handle preflight (FIXED for Node 22 / path-to-regexp)
+app.options(/.*/, cors());
 
 app.use(express.json());
 app.use(cookieParser());
@@ -86,7 +86,7 @@ app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
 
 /* =========================
-   ✅ ERROR LOGGER (IMPORTANT)
+   ✅ ERROR LOGGER
    ========================= */
 app.use((err, req, res, next) => {
   console.error("🔥 ERROR:", err.message);

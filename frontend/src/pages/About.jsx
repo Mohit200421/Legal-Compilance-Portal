@@ -1,4 +1,3 @@
-import "../styles/About.css";
 import aboutImg from "../assets/about.jpg"; // replace with your real image
 
 export default function About() {

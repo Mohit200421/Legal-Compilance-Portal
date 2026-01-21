@@ -1,5 +1,5 @@
 import aboutImg from "../assets/about.jpg"; // replace with your real image
-import "../styles/About.css";
+import "./About.css";
 
 export default function About() {
   return (

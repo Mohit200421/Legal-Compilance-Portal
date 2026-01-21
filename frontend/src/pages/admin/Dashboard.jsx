@@ -19,7 +19,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        "http://localhost:5000/api/admin/dashboard-counts",
+        `${import.meta.env.VITE_API_URL}/api/admin/dashboard-counts`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

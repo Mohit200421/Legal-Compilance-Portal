@@ -9,7 +9,8 @@ export default function UserDocuments() {
   const [query, setQuery] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
 
-  const BACKEND_URL = "http://localhost:5000";
+  const BACKEND_URL = import.meta.env.VITE_API_URL;
+
 
   // ---------------- FETCH USER DOCUMENTS ----------------
   const fetchDocuments = async () => {

@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 require("./cron/eventReminder");
 
@@ -7,7 +6,7 @@ const cors = require("cors");
 const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
-const cookieParser = require("cookie-parser"); // ✅ NEW
+const cookieParser = require("cookie-parser");
 
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
@@ -16,16 +15,37 @@ const userArticleRoutes = require("./routes/userArticleRoutes");
 
 const app = express();
 
-// CORS
+/* =========================
+   ✅ CORS FIX (Vercel + Local)
+   ========================= */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://legal-compilance-portal.vercel.app",
+];
+
+// allow all vercel preview deployments also
+const isVercelPreview = (origin) =>
+  origin && origin.endsWith(".vercel.app");
+
 app.use(
   cors({
-    origin: "https://legal-compilance-portal.vercel.app",
+    origin: function (origin, callback) {
+      // allow Postman / server-to-server requests
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS: " + origin));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
 );
 
 app.use(express.json());
-app.use(cookieParser()); // ✅ NEW (for session cookie)
+app.use(cookieParser());
 
 // Static folder for uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -38,39 +58,47 @@ app.get("/", (req, res) => {
   res.send("Backend running...");
 });
 
+// Routes
 app.use("/api/user", userArticleRoutes);
 
-// Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/admin/lawyers", require("./routes/adminLawyerRoutes"));
 app.use("/api/admin/master", require("./routes/adminMasterRoutes"));
-app.use("/api/admin/lawyers", require("./routes/adminLawyerRoutes"));
 
 app.use("/api/lawyer", require("./routes/lawyerRoutes"));
 app.use("/api/user", require("./routes/userRoutes"));
 app.use("/api/documents", require("./routes/documentRoutes"));
 app.use("/api/ocr", require("./routes/ocrRoutes"));
 
-
-
 app.use("/api/master", require("./routes/masterRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 
-// ✅ Chat Message APIs
+// Chat Message APIs
 app.use("/api/messages", require("./routes/messageRoutes"));
 
 // Error handler
 app.use(errorHandler);
 
-// ✅ Create HTTP server
+// Create HTTP server
 const server = http.createServer(app);
 
-// ✅ Setup Socket.io
+/* =========================
+   ✅ SOCKET.IO CORS FIX
+   ========================= */
 const io = new Server(server, {
   cors: {
-    origin: "https://legal-compilance-portal.vercel.app",
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Socket CORS blocked: " + origin));
+    },
     credentials: true,
+    methods: ["GET", "POST"],
   },
 });
 

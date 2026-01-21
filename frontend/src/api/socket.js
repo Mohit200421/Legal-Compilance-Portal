@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_API_URL, {
+  autoConnect: false,   // ✅ stop auto connect
   withCredentials: true,
-  transports: ["websocket"], // ✅ force websocket
 });
 
 export default socket;

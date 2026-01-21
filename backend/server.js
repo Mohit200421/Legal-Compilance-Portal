@@ -24,8 +24,13 @@ const allowedOrigins = [
 ];
 
 // allow all vercel preview deployments also
-const isVercelPreview = (origin) =>
-  origin && origin.endsWith(".vercel.app");
+const isVercelPreview = (origin) => origin && origin.endsWith(".vercel.app");
+
+// ✅ Request logger (IMPORTANT for debugging register/login)
+app.use((req, res, next) => {
+  console.log("➡️", req.method, req.url);
+  next();
+});
 
 app.use(
   cors({
@@ -43,6 +48,9 @@ app.use(
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
 );
+
+// ✅ handle preflight
+app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
@@ -76,6 +84,14 @@ app.use("/api/categories", require("./routes/categoryRoutes"));
 
 // Chat Message APIs
 app.use("/api/messages", require("./routes/messageRoutes"));
+
+/* =========================
+   ✅ ERROR LOGGER (IMPORTANT)
+   ========================= */
+app.use((err, req, res, next) => {
+  console.error("🔥 ERROR:", err.message);
+  next(err);
+});
 
 // Error handler
 app.use(errorHandler);

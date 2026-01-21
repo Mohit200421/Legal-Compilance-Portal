@@ -22,7 +22,8 @@ export default function Login() {
 
     try {
       // ✅ FIXED route
-      const res = await API.post("/api/auth/login", { email, password });
+      const res = await API.post("/auth/login", { email, password });
+
 
       const { user } = res.data;
 

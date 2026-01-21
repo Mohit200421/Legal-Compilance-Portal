@@ -26,7 +26,8 @@ export default function Register() {
     try {
       setLoading(true);
 
-      const res = await API.post("/api/auth/register", form);
+      const res = await API.post("/auth/register", form);
+
 
 
       alert(res.data?.msg || "Registration successful! OTP sent to email ✅");

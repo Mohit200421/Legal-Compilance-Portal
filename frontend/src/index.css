@@ -1,0 +1,36 @@
+/* ===== Global Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Make full width page */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background: #ffffff;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+    sans-serif;
+}
+
+/* Remove Vite default flex center issue */
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  display: block; /* ✅ IMPORTANT */
+}
+
+/* Anchor reset */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Button basic reset */
+button {
+  font-family: inherit;
+}

@@ -16,12 +16,12 @@ const generateToken = (user) => {
   );
 };
 
-// 🔥 Helper: set cookie
+// ✅ Helper: set cookie (FIXED for Vercel + Render cross-site)
 const setTokenCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // true in production
-    sameSite: "strict",
+    secure: true,        // ✅ required for SameSite=None
+    sameSite: "none",    // ✅ required for cross-domain cookies
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 };
@@ -149,15 +149,14 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
-    // ✅ Generate Token
     const token = generateToken(user);
 
-    // ✅ Set cookie = session tracking
+    // ✅ Set cookie
     setTokenCookie(res, token);
 
     res.json({
       msg: "Login successful",
-      token, // optional (frontend wants it then ok)
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -177,6 +176,8 @@ exports.logout = async (req, res) => {
   try {
     res.cookie("token", "", {
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
       expires: new Date(0),
     });
 

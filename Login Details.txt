@@ -12,3 +12,4 @@ Lawyer Login
 "password" : "Mohit@123"
 
 
+temporary password for lawyer is "lawyer@123"

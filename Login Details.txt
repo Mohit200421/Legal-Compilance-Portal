@@ -1,32 +1,16 @@
 User Login 
+for user yu can registered through your mail.
 
-{
-  "name": "User",
-  "email": "user@gmail.com",
-  "username": "user",
-  "password": "user@123",
-  "role": "user",
-  "specialization": "Criminal Law"
-}
 
 
 Admin Login 
 
-"email":"admin@test.com",
-"password" : "admin123"
+"email":"badgujarmohit980@gmail.com",
+"password" : "Mohit@123"
 
 Lawyer Login 
 
-{
-  "name": "Lawyer",
-  "email": "lawyer@gmail.com",
-  "username": "lawyer",s
-  "password": "lawyer@123",
-  "role": "lawyer",
-  "specialization": "Criminal Law"
-}
+"email":"mohitbadgujar04@gmail.com",
+"password" : "Mohit@123"
 
 
-✅ Admin:Admin@LawSetu#2026 
-✅ Lawyer: Lawyer@LawSetu#2026
-✅ User: User@LawSetu#2026

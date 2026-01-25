@@ -1,8 +1,6 @@
 User Login 
 for user yu can registered through your mail.
 
-
-
 Admin Login 
 
 "email":"badgujarmohit980@gmail.com",

@@ -1,9 +1,0 @@
-.env
-frontend/.env
-backend/.env
-.env.local
-.env.production
-.env.development
-node_modules
-dist
-build

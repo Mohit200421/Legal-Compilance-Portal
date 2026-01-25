@@ -1,15 +1,28 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import API from "../../api/axios";
 import "../../styles/usercss/userlayout.css";
+import { AuthContext } from "../../context/AuthContext";
 
 const UserLayout = () => {
   const navigate = useNavigate();
-  const [unreadCount, setUnreadCount] = useState(0);
+  const { logout } = useContext(AuthContext);
 
-  const handleLogout = () => {
+  const [unreadCount, setUnreadCount] = useState(0);
+  const intervalRef = useRef(null);
+
+  const handleLogout = async () => {
+    // ✅ stop background API calls first
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    // ✅ logout from context (clears cookie + sets user null)
+    await logout();
+
+    // ✅ clear local storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+
+    // ✅ redirect instantly
     navigate("/login", { replace: true });
   };
 
@@ -17,9 +30,7 @@ const UserLayout = () => {
     try {
       const res = await API.get("/user/discussion");
 
-      // count unread messages from lawyer
       let totalUnread = 0;
-
       res.data.forEach((d) => {
         const count =
           d?.messages?.filter(
@@ -31,24 +42,28 @@ const UserLayout = () => {
 
       setUnreadCount(totalUnread);
     } catch (err) {
-      console.log("Unread count fetch failed:", err);
+      // ✅ if unauthorized → force logout + redirect
+      if (err.response?.status === 401) {
+        await logout();
+        navigate("/login", { replace: true });
+      }
     }
   };
 
   useEffect(() => {
     fetchUnreadCount();
 
-    // refresh unread count every 5 seconds
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       fetchUnreadCount();
     }, 5000);
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (
     <div className="user-container">
-      {/* Sidebar */}
       <aside className="user-sidebar">
         <h2 className="logo">User Panel</h2>
 
@@ -58,12 +73,9 @@ const UserLayout = () => {
           </NavLink>
 
           <NavLink to="/user/talk-to-lawyer">Talk To Lawyer</NavLink>
-
           <NavLink to="/user/articles">Articles</NavLink>
-
           <NavLink to="/user/my-requests">My Requests</NavLink>
 
-          {/* ✅ Discussion with unread badge */}
           <NavLink to="/user/discussion">
             Discussion{" "}
             {unreadCount > 0 && (
@@ -85,14 +97,12 @@ const UserLayout = () => {
           <NavLink to="/user/events">Events</NavLink>
           <NavLink to="/user/documents">Documents</NavLink>
 
-          {/* Logout */}
           <button className="user-logout-btn" onClick={handleLogout}>
             Logout
           </button>
         </nav>
       </aside>
 
-      {/* Main Content */}
       <main className="user-content">
         <Outlet />
       </main>

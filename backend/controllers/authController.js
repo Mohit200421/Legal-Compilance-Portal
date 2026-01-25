@@ -9,20 +9,18 @@ const generateOTP = () =>
 
 // 🔥 Helper: create token
 const generateToken = (user) => {
-  return jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
-  );
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
 };
 
-// ✅ Helper: set cookie (FIXED for Vercel + Render cross-site)
+// ✅ Helper: set cookie (LOCALHOST FIX)
 const setTokenCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: true,        // ✅ required for SameSite=None
-    sameSite: "none",    // ✅ required for cross-domain cookies
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    secure: false, // ✅ localhost needs false
+    sameSite: "lax", // ✅ localhost needs lax
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
 
@@ -174,11 +172,10 @@ exports.login = async (req, res) => {
 // ================= LOGOUT (CLEAR COOKIE) ===================
 exports.logout = async (req, res) => {
   try {
-    res.cookie("token", "", {
+    res.clearCookie("token", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      expires: new Date(0),
+      secure: false,
+      sameSite: "lax",
     });
 
     res.json({ msg: "Logged out successfully ✅" });

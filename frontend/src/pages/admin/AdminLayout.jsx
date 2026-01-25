@@ -1,42 +1,49 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import API from "../../api/axios";
 import "../../styles/admincss/adminlayout.css";
+import { AuthContext } from "../../context/AuthContext";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
+
   const [pendingCount, setPendingCount] = useState(0);
+  const intervalRef = useRef(null);
 
   const handleLogout = async () => {
-    try {
-      await API.post("/auth/logout"); // ✅ clear cookie session
-    } catch (err) {
-      console.log("Logout failed:", err);
-    } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      navigate("/login", { replace: true });
-    }
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    await logout();
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login", { replace: true });
   };
 
-  // ✅ Fetch Pending Lawyers Count
   const fetchPendingCount = async () => {
     try {
       const res = await API.get("/admin/pending-lawyers");
       setPendingCount(res.data?.length || 0);
     } catch (err) {
-      console.log("Failed to load pending lawyers count");
+      if (err.response?.status === 401) {
+        await logout();
+        navigate("/login", { replace: true });
+      }
     }
   };
 
   useEffect(() => {
     fetchPendingCount();
 
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       fetchPendingCount();
     }, 15000);
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (
@@ -47,7 +54,6 @@ const AdminLayout = () => {
         <nav className="admin-nav">
           <NavLink to="/admin/dashboard">Dashboard</NavLink>
 
-          {/* ✅ Pending Lawyers with badge */}
           <NavLink to="/admin/pending-lawyers" className="pending-link">
             Pending Lawyers
             {pendingCount > 0 && (
@@ -57,7 +63,6 @@ const AdminLayout = () => {
 
           <NavLink to="/admin/add-lawyer">Add Lawyer</NavLink>
           <NavLink to="/admin/lawyers">Manage Lawyers</NavLink>
-
           <NavLink to="/admin/users">Manage Users</NavLink>
           <NavLink to="/admin/jobs">Manage Jobs</NavLink>
           <NavLink to="/admin/events">Manage Events</NavLink>

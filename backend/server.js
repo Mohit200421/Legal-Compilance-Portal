@@ -16,15 +16,9 @@ const userArticleRoutes = require("./routes/userArticleRoutes");
 const app = express();
 
 /* =========================
-   ✅ CORS FIX (Vercel + Local)
+   ✅ LOCALHOST CORS ONLY
    ========================= */
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://legal-compilance-portal.vercel.app",
-];
-
-// allow all vercel preview deployments also
-const isVercelPreview = (origin) => origin && origin.endsWith(".vercel.app");
+const LOCAL_ORIGIN = "http://localhost:5173";
 
 // ✅ Request logger (debug)
 app.use((req, res, next) => {
@@ -34,23 +28,14 @@ app.use((req, res, next) => {
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow Postman / server-to-server requests
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS: " + origin));
-    },
+    origin: LOCAL_ORIGIN,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
 );
 
-// ✅ handle preflight (FIXED for Node 22 / path-to-regexp)
-app.options(/.*/, cors());
+// ✅ handle preflight
+app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
@@ -100,19 +85,11 @@ app.use(errorHandler);
 const server = http.createServer(app);
 
 /* =========================
-   ✅ SOCKET.IO CORS FIX
+   ✅ SOCKET.IO (LOCALHOST)
    ========================= */
 const io = new Server(server, {
   cors: {
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Socket CORS blocked: " + origin));
-    },
+    origin: LOCAL_ORIGIN,
     credentials: true,
     methods: ["GET", "POST"],
   },

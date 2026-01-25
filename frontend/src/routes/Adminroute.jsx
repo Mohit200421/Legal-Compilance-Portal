@@ -5,21 +5,18 @@ import { AuthContext } from "../context/AuthContext";
 export default function AdminRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
 
-  // ⏳ Wait until auth is resolved
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return null;
 
   // ❌ Not logged in
   if (!user) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  // ❌ Not admin
+  // ❌ Logged in but not admin → send to their dashboard
   if (user.role !== "admin") {
-    return <Navigate to="/admin/login" replace />;
+    if (user.role === "lawyer") return <Navigate to="/lawyer" replace />;
+    return <Navigate to="/user" replace />;
   }
 
-  // ✅ Authorized
   return children;
 }

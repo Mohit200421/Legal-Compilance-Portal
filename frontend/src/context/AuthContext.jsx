@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import API from "../api/axios"; // ✅ axios instance (withCredentials true)
+import API from "../api/axios";
 
 export const AuthContext = createContext();
 
@@ -7,13 +7,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Load user on refresh using SESSION COOKIE
+  // ✅ Load user from cookie session
   const loadUser = async () => {
     try {
-      const res = await API.get("/auth/me"); // cookie auto sent
-      setUser(res.data.user);
+      const res = await API.get("/auth/me");
+      setUser(res.data?.user || null);
     } catch (err) {
       setUser(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     } finally {
       setLoading(false);
     }
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     await loadUser();
   };
 
-  // ✅ logout destroys cookie session
+  // ✅ logout clears cookie + localStorage
   const logout = async () => {
     try {
       await API.post("/auth/logout");
@@ -36,6 +38,8 @@ export const AuthProvider = ({ children }) => {
       console.log("Logout failed:", err);
     } finally {
       setUser(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     }
   };
 

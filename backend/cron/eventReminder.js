@@ -10,7 +10,7 @@ cron.schedule("0 9 * * *", async () => {
   const today = new Date().toISOString().split("T")[0];
 
   const events = await CaseEvent.find();
-  
+
   for (const ev of events) {
     const eventDate = new Date(ev.eventDate).toISOString().split("T")[0];
 
@@ -28,3 +28,5 @@ cron.schedule("0 9 * * *", async () => {
     }
   }
 });
+
+module.exports = {};

@@ -12,7 +12,6 @@ const connectDB = require("./config/db");
 const errorHandler = require("./middleware/errorHandler");
 
 const userArticleRoutes = require("./routes/userArticleRoutes");
-const discussionRoutes = require("./routes/discussionRoutes");
 const publicRoutes = require("./routes/publicRoutes");
 
 
@@ -143,3 +142,5 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+

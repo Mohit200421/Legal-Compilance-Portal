@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
-import { 
-  Scale, 
-  Briefcase, 
-  ArrowRight, 
-  CheckCircle,
-  Shield,
+import {
+  Scale,
+  Briefcase,
+  ArrowRight,
+  ArrowLeft,
   Mail,
   User,
   Lock,
-  UserCircle
+  UserCircle,
 } from "lucide-react";
 
 export default function Register() {
@@ -31,7 +30,7 @@ export default function Register() {
   const handleChange = (e) => {
     const newForm = { ...form, [e.target.name]: e.target.value };
     setForm(newForm);
-    
+
     if (e.target.name === "password") {
       calculatePasswordStrength(e.target.value);
     }
@@ -62,83 +61,48 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Left Panel - Brand Side */}
-      <div className="hidden lg:flex lg:w-2/5 bg-gray-900 flex-col justify-between p-12">
-        <div>
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-600 p-3">
-              <Scale className="h-8 w-8 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-white">LegalDocs</span>
-          </div>
-          
-          <div className="mt-16">
-            <div className="inline-flex items-center bg-blue-600/10 border border-blue-600/20 px-3 py-1 mb-6">
-              <Shield className="h-4 w-4 text-blue-400 mr-2" />
-              <span className="text-xs font-medium text-blue-400">SECURE PLATFORM</span>
-            </div>
-            
-            <h1 className="text-4xl font-bold text-white leading-tight">
-              Join the future of
-              <span className="text-blue-400 block mt-2">legal documentation</span>
-            </h1>
-            
-            <p className="text-gray-400 text-lg mt-6 leading-relaxed">
-              Streamline your legal workflow with our comprehensive document management platform.
-            </p>
-          </div>
-
-          <div className="mt-12 space-y-6">
-            {[
-              "Secure document storage",
-              "Real-time collaboration",
-              "E-signature integration",
-              "24/7 expert support"
-            ].map((feature, index) => (
-              <div key={index} className="flex items-center space-x-3">
-                <CheckCircle className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                <span className="text-gray-300">{feature}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex items-center space-x-4">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-8 h-8 bg-gray-700 border-2 border-gray-900 flex items-center justify-center">
-                  <span className="text-xs text-gray-400">U{i}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-gray-500 text-sm">
-              <span className="text-blue-400 font-semibold">10,000+</span> legal professionals
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      {/* Back Button */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-8">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
+        >
+          <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">Back to Home</span>
+        </button>
       </div>
 
-      {/* Right Panel - Form Side */}
-      <div className="w-full lg:w-3/5 flex items-center justify-center p-8 bg-gray-50">
+      {/* Main Content */}
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          {/* Form Header */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Create account</h2>
-            <p className="text-gray-600 mt-2">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center space-x-2 mb-4">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2.5 rounded-xl shadow-lg">
+                <Scale className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                LegalCompliance
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Create Account
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
               Get started with your free account
             </p>
           </div>
 
+          {/* Register Form - No Card */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name Field */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
                 Full Name
               </label>
               <div className="relative">
-                <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="text"
                   name="name"
@@ -146,18 +110,18 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="John Smith"
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Username Field */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
                 Username
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="text"
                   name="username"
@@ -165,18 +129,18 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="johnsmith"
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="email"
                   name="email"
@@ -184,18 +148,18 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="john@company.com"
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -203,17 +167,17 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="Create a strong password"
-                  className="w-full pl-10 pr-12 py-3 bg-white border border-gray-300 text-gray-900 text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                  className="w-full pl-10 pr-12 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
-              
+
               {/* Password Strength Meter */}
               {form.password && (
                 <div className="mt-3">
@@ -230,12 +194,12 @@ export default function Register() {
                               : level === 3
                               ? "bg-blue-500"
                               : "bg-green-500"
-                            : "bg-gray-200"
+                            : "bg-gray-300 dark:bg-gray-700"
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {passwordStrength === 0 && "Enter a password"}
                     {passwordStrength === 1 && "Weak password"}
                     {passwordStrength === 2 && "Fair password"}
@@ -247,22 +211,31 @@ export default function Register() {
             </div>
 
             {/* Terms */}
-            <div className="flex items-start">
+            <div className="flex items-start pt-2">
               <input
                 type="checkbox"
                 id="terms"
                 required
-                className="h-4 w-4 mt-0.5 border-gray-300 text-blue-600 focus:ring-blue-600"
+                className="h-4 w-4 mt-0.5 border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-600 dark:bg-gray-800"
               />
-              <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
+              <label
+                htmlFor="terms"
+                className="ml-2 text-sm text-gray-600 dark:text-gray-400"
+              >
                 I agree to the{" "}
-                <a href="#" className="text-blue-600 font-medium hover:underline">
+                <Link
+                  to="/terms-and-conditions"
+                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                >
                   Terms of Service
-                </a>{" "}
+                </Link>{" "}
                 and{" "}
-                <a href="#" className="text-blue-600 font-medium hover:underline">
+                <Link
+                  to="/privacy-policy"
+                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                >
                   Privacy Policy
-                </a>
+                </Link>
               </label>
             </div>
 
@@ -270,10 +243,13 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 group"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center space-x-2 group mt-8"
             >
               {loading ? (
-                "Creating account..."
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
+                  <span>Creating account...</span>
+                </div>
               ) : (
                 <>
                   <span>Create account</span>
@@ -283,43 +259,34 @@ export default function Register() {
             </button>
 
             {/* Login Link */}
-            <p className="text-center text-sm text-gray-600">
-              Already have an account?{" "}
-              <Link to="/login" className="text-blue-600 font-medium hover:underline">
-                Sign in
-              </Link>
-            </p>
+            <div className="text-center pt-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                  Sign in
+                </Link>
+              </p>
+            </div>
           </form>
 
-          {/* Lawyer Portal Section - Matching Login Page Style */}
-          <div className="mt-8 border-t border-gray-200 pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gray-100">
-                  <Briefcase className="h-4 w-4 text-gray-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">
-                    Are you a legal professional?
-                  </p>
-                  <p className="text-sm font-medium text-gray-900">
-                    Access Lawyer Portal
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => navigate("/apply-lawyer")}
-                className="px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Apply Now
-              </button>
-            </div>
+          {/* Lawyer Portal Link */}
+          <div className="mt-6 text-center">
+            <Link
+              to="/apply-lawyer"
+              className="inline-flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              <Briefcase className="h-4 w-4" />
+              <span>Are you a lawyer? Apply for lawyer portal</span>
+            </Link>
           </div>
 
           {/* Support Link */}
-          <p className="text-center text-xs text-gray-400 mt-6">
+          <p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">
             Having trouble?{" "}
-            <button className="text-blue-600 hover:underline">
+            <button className="text-blue-600 hover:underline font-medium">
               Contact support
             </button>
           </p>
@@ -328,11 +295,11 @@ export default function Register() {
 
       {/* Mobile Lawyer Button */}
       <button
-        className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-3 text-sm font-medium hover:bg-blue-700 transition shadow-lg lg:hidden flex items-center space-x-2"
+        className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all lg:hidden"
         onClick={() => navigate("/apply-lawyer")}
+        title="Lawyer Portal"
       >
-        <Briefcase className="h-4 w-4" />
-        <span>Lawyer Portal</span>
+        <Briefcase className="h-5 w-5" />
       </button>
     </div>
   );

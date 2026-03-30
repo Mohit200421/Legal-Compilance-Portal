@@ -1,146 +1,118 @@
 require("dotenv").config();
-require("./cron/eventReminder");
-
 const express = require("express");
-const cors = require("cors");
-const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
-
+const path = require("path");
 const connectDB = require("./config/db");
+
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const lawyerRoutes = require("./routes/lawyerRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+// const articleRoutes = require("./routes/articleRoutes"); // Empty controller
+// const caseRoutes = require("./routes/caseRoutes"); // Empty controller
+const categoryRoutes = require("./routes/categoryRoutes");
+// const discussionRoutes = require("./routes/discussionRoutes"); // Empty controller
+const documentRoutes = require("./routes/documentRoutes");
+// const eventRoutes = require("./routes/eventRoutes"); // Empty controller
+const messageRoutes = require("./routes/messageRoutes");
+// const notificationRoutes = require("./routes/notificationRoutes"); // Empty controller
+const ocrRoutes = require("./routes/ocrRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const publicLawyerRoutes = require("./routes/publicLawyerRoutes");
+const publicRoutes = require("./routes/publicRoutes");
+const subscriptionRoutes = require("./routes/subscription.routes");
+const userArticleRoutes = require("./routes/userArticleRoutes");
+const masterRoutes = require("./routes/masterRoutes");
+const adminLawyerRoutes = require("./routes/adminLawyerRoutes");
+// const adminMasterRoutes = require("./routes/adminMasterRoutes"); // May be empty
+
 const errorHandler = require("./middleware/errorHandler");
 
-const userArticleRoutes = require("./routes/userArticleRoutes");
-const publicRoutes = require("./routes/publicRoutes");
-
-
+require("./cron/eventReminder");
+require("./cron/subscriptionExpiry");
 
 const app = express();
-
-/* =========================
-   ✅ LOCALHOST CORS ONLY
-   ========================= */
-const LOCAL_ORIGIN = "http://localhost:5173";
-
-// ✅ Request logger (debug)
-app.use((req, res, next) => {
-  console.log("➡️", req.method, req.url);
-  next();
-});
-
-app.use(
-  cors({
-    origin: LOCAL_ORIGIN,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  })
-);
-
-// ✅ handle preflight
-app.options("*", cors());
-
-app.use(express.json());
-app.use(cookieParser());
-
-// Static folder for uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Connect DB
-connectDB();
-
-// Test route
-app.get("/", (req, res) => {
-  res.send("Backend running...");
-});
-
-// Routes
-app.use("/api/user", userArticleRoutes);
-
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/admin", require("./routes/adminRoutes"));
-app.use("/api/admin/lawyers", require("./routes/adminLawyerRoutes"));
-app.use("/api/admin/master", require("./routes/adminMasterRoutes"));
-
-app.use("/api/lawyer", require("./routes/lawyerRoutes"));
-app.use("/api/user", require("./routes/userRoutes"));
-app.use("/api/documents", require("./routes/documentRoutes"));
-app.use("/api/ocr", require("./routes/ocrRoutes"));
-
-app.use("/api/master", require("./routes/masterRoutes"));
-app.use("/api/categories", require("./routes/categoryRoutes"));
-
-app.use("/api/lawyer", discussionRoutes);
-
-app.use("/api", require("./routes/publicLawyerRoutes"));
-
-
-// Chat Message APIs
-app.use("/api/messages", require("./routes/messageRoutes"));
-
-app.use("/api/payment", require("./routes/paymentRoutes"));
-
-//subscription routes
-app.use("/api/subscriptions", require("./routes/subscription.routes"));
-
-app.use("/api/public", publicRoutes);
-
-/* =========================
-   ✅ ERROR LOGGER
-   ========================= */
-app.use((err, req, res, next) => {
-  console.error("🔥 ERROR:", err.message);
-  next(err);
-});
-
-// Error handler
-app.use(errorHandler);
-
-// Create HTTP server
 const server = http.createServer(app);
 
-/* =========================
-   ✅ SOCKET.IO (LOCALHOST)
-   ========================= */
+const socketHandler = require("./socketHandler");
 const io = new Server(server, {
   cors: {
-    origin: LOCAL_ORIGIN,
-    credentials: true,
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
-io.on("connection", (socket) => {
-  console.log("✅ Socket connected:", socket.id);
+app.set("io", io);
 
-  socket.on("joinRoom", (userId) => {
-    if (!userId) return;
+connectDB();
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/lawyer", lawyerRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/admin-lawyer", adminLawyerRoutes);
+// app.use("/api/admin-master", adminMasterRoutes); // Commented - may be broken
+// app.use("/api/article", articleRoutes); // Commented - controller empty
+// app.use("/api/case", caseRoutes); // Commented - controller empty
+app.use("/api/category", categoryRoutes);
+// app.use("/api/discussion", discussionRoutes); // Commented - controller empty
+app.use("/api/document", documentRoutes);
+// app.use("/api/event", eventRoutes); // Commented - controller empty
+app.use("/api/message", messageRoutes);
+// app.use("/api/notification", notificationRoutes); // Commented - controller empty
+app.use("/api/ocr", ocrRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/public-lawyer", publicLawyerRoutes);
+app.use("/api/public", publicRoutes);
+app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/user-article", userArticleRoutes);
+app.use("/api/master", masterRoutes);
+app.use("/api/call", require("./routes/callRoutes"));
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Server is running" });
+});
+
+app.use(errorHandler);
+
+io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
+
+  socket.on("join", (userId) => {
     socket.join(userId);
-    console.log("👤 Joined room:", userId);
+    console.log("User " + userId + " joined room");
   });
 
   socket.on("sendMessage", (data) => {
-    if (!data?.receiverId) return;
-    io.to(data.receiverId).emit("receiveMessage", data);
+    const recipientId = data.recipientId;
+    const message = data.message;
+    io.to(recipientId).emit("receiveMessage", message);
   });
 
   socket.on("disconnect", () => {
-    console.log("❌ Socket disconnected:", socket.id);
-  });
-});
-
-// Catch-all for unknown routes (should be before error handlers)
-// This helps debug 404 issues
-app.use((req, res) => {
-  console.log("❌ 404 - Route not found:", req.method, req.url);
-  res.status(404).json({
-    msg: "Route not found",
-    path: req.url,
-    method: req.method,
+    console.log("Client disconnected:", socket.id);
   });
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
 
-
+module.exports = app;

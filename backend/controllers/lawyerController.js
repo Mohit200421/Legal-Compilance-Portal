@@ -1,11 +1,12 @@
 const path = require("path");
 
+const User = require("../models/User");
 const Article = require("../models/Article");
 const Document = require("../models/Document");
 const Case = require("../models/Case");
 const CaseEvent = require("../models/CaseEvent");
 const News = require("../models/News");
-const Job = require("../models/Job"); 
+const Job = require("../models/Job");
 const JobApplication = require("../models/JobApplication");
 const Discussion = require("../models/Discussion");
 const { sendEmail } = require("../utils/emailService");
@@ -98,7 +99,6 @@ exports.uploadDocument = async (req, res) => {
   }
 };
 
-
 exports.getDocuments = async (req, res) => {
   try {
     const documents = await Document.find({ uploaderId: req.user.id })
@@ -110,7 +110,6 @@ exports.getDocuments = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 // DELETE DOCUMENT (only own document)
 exports.deleteDocument = async (req, res) => {
@@ -296,7 +295,9 @@ exports.getLawyerDashboardStats = async (req, res) => {
     const lawyerId = req.user.id;
 
     const totalArticles = await Article.countDocuments({ authorId: lawyerId });
-    const totalDocuments = await Document.countDocuments({ uploaderId: lawyerId });
+    const totalDocuments = await Document.countDocuments({
+      uploaderId: lawyerId,
+    });
     const totalCases = await Case.countDocuments({ lawyerId });
 
     // upcoming events (next 7 days)
@@ -305,7 +306,9 @@ exports.getLawyerDashboardStats = async (req, res) => {
     next7Days.setDate(today.getDate() + 7);
 
     // get lawyer cases first
-    const lawyerCases = await Case.find({ lawyerId }).select("_id caseTitle clientName");
+    const lawyerCases = await Case.find({ lawyerId }).select(
+      "_id caseTitle clientName"
+    );
 
     const caseIds = lawyerCases.map((c) => c._id);
 
@@ -343,7 +346,9 @@ exports.deleteCaseEvent = async (req, res) => {
     });
 
     if (!caseData) {
-      return res.status(403).json({ msg: "Not authorized to delete this event" });
+      return res
+        .status(403)
+        .json({ msg: "Not authorized to delete this event" });
     }
 
     await CaseEvent.findByIdAndDelete(eventId);
@@ -353,7 +358,6 @@ exports.deleteCaseEvent = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.updateCaseEvent = async (req, res) => {
   try {
@@ -370,7 +374,9 @@ exports.updateCaseEvent = async (req, res) => {
     });
 
     if (!caseData) {
-      return res.status(403).json({ msg: "Not authorized to update this event" });
+      return res
+        .status(403)
+        .json({ msg: "Not authorized to update this event" });
     }
 
     event.eventTitle = eventTitle || event.eventTitle;
@@ -384,8 +390,6 @@ exports.updateCaseEvent = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
 
 // ✅ GET ALL REQUESTS FOR LOGGED-IN LAWYER
 exports.getLawyerRequests = async (req, res) => {
@@ -442,7 +446,8 @@ exports.getSingleDiscussion = async (req, res) => {
       lawyerId: req.user.id,
     }).populate("userId", "name email");
 
-    if (!discussion) return res.status(404).json({ msg: "Discussion not found" });
+    if (!discussion)
+      return res.status(404).json({ msg: "Discussion not found" });
 
     res.json(discussion);
   } catch (err) {
@@ -461,7 +466,8 @@ exports.replyDiscussion = async (req, res) => {
       lawyerId: req.user.id,
     });
 
-    if (!discussion) return res.status(404).json({ msg: "Discussion not found" });
+    if (!discussion)
+      return res.status(404).json({ msg: "Discussion not found" });
 
     discussion.messages.push({
       senderRole: "lawyer",
@@ -485,7 +491,8 @@ exports.resolveDiscussion = async (req, res) => {
       { new: true }
     );
 
-    if (!discussion) return res.status(404).json({ msg: "Discussion not found" });
+    if (!discussion)
+      return res.status(404).json({ msg: "Discussion not found" });
 
     res.json({ msg: "Discussion resolved", discussion });
   } catch (err) {
@@ -528,7 +535,8 @@ exports.markLawyerDiscussionRead = async (req, res) => {
       lawyerId: req.user.id,
     });
 
-    if (!discussion) return res.status(404).json({ msg: "Discussion not found" });
+    if (!discussion)
+      return res.status(404).json({ msg: "Discussion not found" });
 
     let updated = false;
 
@@ -548,6 +556,143 @@ exports.markLawyerDiscussionRead = async (req, res) => {
     if (updated) await discussion.save();
 
     res.json({ msg: "Discussion marked as read" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Public lawyer profile
+exports.getLawyerProfile = async (req, res) => {
+  try {
+    const lawyer = await Lawyer.findById(req.params.id)
+      .populate("category", "name")
+      .populate("city", "name")
+      .populate("state", "name");
+
+    if (!lawyer) {
+      return res.status(404).json({ msg: "Lawyer not found" });
+    }
+
+    res.json(lawyer);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// ---------------- LAWYER PROFILE (Logged-in) -----------------
+
+// GET LAWYER PROFILE (own profile)
+exports.getMyProfile = async (req, res) => {
+  try {
+    const lawyer = await User.findById(req.user.id).select("-passwordHash");
+
+    if (!lawyer) {
+      return res.status(404).json({ msg: "Profile not found" });
+    }
+
+    if (lawyer.role !== "lawyer") {
+      return res.status(403).json({ msg: "Access denied. Not a lawyer." });
+    }
+
+    // Transform data to match frontend component expectations
+    const profileData = {
+      _id: lawyer._id,
+      name: lawyer.name,
+      email: lawyer.email,
+      phone: lawyer.phone,
+      about: lawyer.about || "",
+      bio: lawyer.about || "", // Map about to bio for frontend
+      experience: lawyer.experience || 0,
+      specialization: lawyer.specialization || "",
+      barCouncilId: lawyer.barId || "",
+      barId: lawyer.barId || "",
+      profileImage: lawyer.profileImage || "",
+      address: lawyer.address || "",
+      // Location object expected by frontend
+      location: {
+        city: lawyer.cityId?.name || "",
+        state: lawyer.stateId?.name || "",
+        address: lawyer.address || "",
+      },
+      // Practice Areas and Services from database
+      practiceAreas: lawyer.practiceAreas || [],
+      services: lawyer.services || [],
+      // Rating object expected by frontend
+      rating: {
+        average: 4.5,
+        count: 0,
+      },
+      // Other fields
+      title: "Advocate",
+      casesHandled: 0,
+      successRate: 95,
+      verified: lawyer.lawyerApprovalStatus === "approved",
+      website: "",
+      // Include createdAt
+      createdAt: lawyer.createdAt,
+    };
+
+    res.json({ data: profileData });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// UPDATE LAWYER PROFILE
+exports.updateMyProfile = async (req, res) => {
+  try {
+    const {
+      phone,
+      address,
+      specialization,
+      experience,
+      about,
+      cityId,
+      stateId,
+      profileImage,
+      // Additional fields from frontend
+      bio,
+      practiceAreas,
+      location,
+      services,
+      state,
+      city,
+    } = req.body;
+
+    // Find lawyer and update only allowed fields
+    const lawyer = await User.findById(req.user.id);
+
+    if (!lawyer) {
+      return res.status(404).json({ msg: "Profile not found" });
+    }
+
+    if (lawyer.role !== "lawyer") {
+      return res.status(403).json({ msg: "Access denied. Not a lawyer." });
+    }
+
+    // Update allowed fields only
+    if (phone) lawyer.phone = phone;
+    if (address) lawyer.address = address;
+    if (specialization) lawyer.specialization = specialization;
+    if (experience) lawyer.experience = experience;
+
+    // Handle bio -> about mapping
+    if (about) lawyer.about = about;
+    if (bio) lawyer.about = bio; // Also accept bio as alias
+
+    if (cityId) lawyer.cityId = cityId;
+    if (stateId) lawyer.stateId = stateId;
+    if (profileImage) lawyer.profileImage = profileImage;
+
+    // Handle practice areas and services arrays
+    if (practiceAreas) lawyer.practiceAreas = practiceAreas;
+    if (services) lawyer.services = services;
+
+    // Note: email and role cannot be changed
+
+    await lawyer.save();
+
+    res.json({ msg: "Profile updated successfully", data: lawyer });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

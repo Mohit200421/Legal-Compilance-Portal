@@ -2,24 +2,21 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
-import { 
-  Scale, 
-  Eye, 
-  EyeOff, 
-  Sun, 
-  Moon, 
-  Mail, 
+import {
+  Scale,
+  Eye,
+  EyeOff,
+  Mail,
   Lock,
   Briefcase,
   ArrowRight,
-  Shield,
-  AlertCircle
+  AlertCircle,
+  X,
+  ArrowLeft,
 } from "lucide-react";
 
 export default function Login() {
   const { login } = useContext(AuthContext);
-  const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -56,155 +53,73 @@ export default function Login() {
   };
 
   return (
-    <div className={`min-h-screen flex ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      
-      {/* Left Panel - Brand Side */}
-      <div className={`hidden lg:flex lg:w-2/5 flex-col justify-between p-12 ${
-        darkMode ? 'bg-gray-950' : 'bg-gray-900'
-      }`}>
-        <div>
-          {/* Theme Toggle in Left Panel */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2.5">
-                <Scale className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-white">LegalCompliance</span>
-            </div>
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 bg-gray-800 hover:bg-gray-700 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {darkMode ? (
-                <Sun className="h-5 w-5 text-yellow-500" />
-              ) : (
-                <Moon className="h-5 w-5 text-gray-300" />
-              )}
-            </button>
-          </div>
-          
-          <div className="mt-16">
-            <div className="inline-flex items-center bg-blue-600/10 border border-blue-600/20 px-3 py-1 mb-6">
-              <Shield className="h-4 w-4 text-blue-400 mr-2" />
-              <span className="text-xs font-medium text-blue-400">SECURE PLATFORM</span>
-            </div>
-            
-            <h1 className="text-3xl font-bold text-white leading-tight">
-              Welcome Back to
-              <span className="text-blue-400 block mt-1">Legal Compliance</span>
-            </h1>
-            
-            <p className="text-gray-400 text-sm mt-4 leading-relaxed">
-              Access your dashboard, manage documents, and streamline your legal workflow with our enterprise-grade platform.
-            </p>
-
-            <div className="mt-8 space-y-4">
-              {[
-                "256-bit encryption",
-                "Role-based access control",
-                "Audit trail & compliance",
-                "24/7 secure access"
-              ].map((feature, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <div className="w-1.5 h-1.5 bg-blue-400"></div>
-                  <span className="text-sm text-gray-300">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex items-center justify-between">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-8 h-8 bg-gray-800 border-2 border-gray-900 flex items-center justify-center">
-                  <span className="text-xs text-gray-400">U{i}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-gray-500">
-              <span className="text-blue-400 font-semibold">2,500+</span> active users
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      {/* Back Button */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-8">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
+        >
+          <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">Back to Home</span>
+        </button>
       </div>
 
-      {/* Right Panel - Form Side */}
-      <div className={`w-full lg:w-3/5 flex items-center justify-center p-6 ${
-        darkMode ? 'bg-gray-900' : 'bg-gray-50'
-      }`}>
+      {/* Main Content */}
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          {/* Mobile Header */}
-          <div className="lg:hidden mb-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-600 p-2">
-                  <Scale className="h-5 w-5 text-white" />
-                </div>
-                <span className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  LegalCompliance
-                </span>
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center space-x-2 mb-4">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2.5 rounded-xl shadow-lg">
+                <Scale className="h-6 w-6 text-white" />
               </div>
-              <button
-                onClick={toggleDarkMode}
-                className={`p-2 border ${
-                  darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
-                }`}
-              >
-                {darkMode ? (
-                  <Sun className="h-4 w-4 text-yellow-500" />
-                ) : (
-                  <Moon className="h-4 w-4 text-gray-700" />
-                )}
-              </button>
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                LegalCompliance
+              </span>
             </div>
-          </div>
-
-          {/* Form Header */}
-          <div className="mb-8">
-            <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              Sign in to your account
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Welcome Back
             </h2>
-            <p className={`text-sm mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Enter your credentials to access your dashboard
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+              Sign in to access your account
             </p>
           </div>
 
           {/* Error Alert */}
           {err && (
-            <div className="border-l-4 border-red-500 bg-red-50 dark:bg-red-500/10 p-4 mb-6">
-              <div className="flex items-center">
-                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" />
-                <p className="text-sm text-red-700 dark:text-red-400">{err}</p>
+            <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-6">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700 dark:text-red-400 flex-1">
+                  {err}
+                </p>
+                <button
+                  onClick={() => setErr("")}
+                  className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
             </div>
           )}
 
+          {/* Login Form - No Card */}
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Email Field */}
             <div>
-              <label className={`block text-xs font-medium uppercase tracking-wider mb-2 ${
-                darkMode ? 'text-gray-400' : 'text-gray-700'
-              }`}>
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${
-                  darkMode ? 'text-gray-500' : 'text-gray-400'
-                }`} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="email"
                   placeholder="name@company.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-3 border focus:outline-none focus:ring-1 ${
-                    darkMode 
-                      ? 'bg-gray-800 border-gray-700 text-white focus:border-blue-500 focus:ring-blue-500' 
-                      : 'bg-white border-gray-300 text-gray-900 focus:border-blue-600 focus:ring-blue-600'
-                  }`}
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -212,42 +127,30 @@ export default function Login() {
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className={`block text-xs font-medium uppercase tracking-wider ${
-                  darkMode ? 'text-gray-400' : 'text-gray-700'
-                }`}>
+                <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400">
                   Password
                 </label>
                 <Link
                   to="/forgot-password"
-                  className={`text-xs font-medium ${
-                    darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
-                  }`}
+                  className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   Forgot password?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${
-                  darkMode ? 'text-gray-500' : 'text-gray-400'
-                }`} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className={`w-full pl-10 pr-12 py-3 border focus:outline-none focus:ring-1 ${
-                    darkMode 
-                      ? 'bg-gray-800 border-gray-700 text-white focus:border-blue-500 focus:ring-blue-500' 
-                      : 'bg-white border-gray-300 text-gray-900 focus:border-blue-600 focus:ring-blue-600'
-                  }`}
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 ${
-                    darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
-                  }`}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -258,31 +161,20 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Remember Me Checkbox */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600"
-              />
-              <label htmlFor="remember" className={`ml-2 text-sm ${
-                darkMode ? 'text-gray-300' : 'text-gray-700'
-              }`}>
-                Remember me for 30 days
-              </label>
-            </div>
-
             {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 group"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center space-x-2 group mt-8"
             >
               {loading ? (
-                "Signing in..."
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
+                  <span>Signing in...</span>
+                </div>
               ) : (
                 <>
-                  <span>Sign in</span>
+                  <span>Sign In</span>
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -290,13 +182,11 @@ export default function Login() {
 
             {/* Register Link */}
             <div className="text-center pt-4">
-              <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Don't have an account?{" "}
                 <Link
                   to="/register"
-                  className={`font-medium ${
-                    darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
-                  }`}
+                  className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   Create account
                 </Link>
@@ -305,60 +195,45 @@ export default function Login() {
           </form>
 
           {/* Lawyer Portal Link */}
-          <div className={`mt-8 border-t pt-6 ${
-            darkMode ? 'border-gray-800' : 'border-gray-200'
-          }`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 ${
-                  darkMode ? 'bg-gray-800' : 'bg-gray-100'
-                }`}>
-                  <Briefcase className={`h-4 w-4 ${
-                    darkMode ? 'text-gray-300' : 'text-gray-600'
-                  }`} />
-                </div>
-                <div>
-                  <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Are you a legal professional?
-                  </p>
-                  <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Access Lawyer Portal
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => navigate("/apply-lawyer")}
-                className={`px-4 py-2 text-sm font-medium border ${
-                  darkMode 
-                    ? 'border-gray-700 text-gray-300 hover:bg-gray-800' 
-                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                } transition-colors`}
-              >
-                Apply Now
-              </button>
-            </div>
+          <div className="mt-6 text-center">
+            <Link
+              to="/apply-lawyer"
+              className="inline-flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              <Briefcase className="h-4 w-4" />
+              <span>Are you a lawyer? Apply for lawyer portal</span>
+            </Link>
           </div>
 
           {/* Support Link */}
-          <p className={`text-center text-xs mt-6 ${
-            darkMode ? 'text-gray-500' : 'text-gray-400'
-          }`}>
-            Having trouble signing in?{" "}
-            <button className="text-blue-600 hover:underline">
+          <p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">
+            Having trouble?{" "}
+            <button className="text-blue-600 hover:underline font-medium">
               Contact support
             </button>
           </p>
+
+          {/* Terms Links */}
+          <div className="text-center mt-4">
+            <p className="text-xs text-gray-500 dark:text-gray-500">
+              By signing in, you agree to our{" "}
+              <Link
+                to="/terms-and-conditions"
+                className="text-blue-600 hover:underline"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                to="/privacy-policy"
+                className="text-blue-600 hover:underline"
+              >
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-
-      {/* Mobile Lawyer Button */}
-      <button
-        className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-3 text-sm font-medium hover:bg-blue-700 transition shadow-lg lg:hidden flex items-center space-x-2"
-        onClick={() => navigate("/apply-lawyer")}
-      >
-        <Briefcase className="h-4 w-4" />
-        <span>Lawyer Portal</span>
-      </button>
     </div>
   );
 }

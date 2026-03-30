@@ -29,7 +29,8 @@ const {
   updateCaseEvent,
   getDiscussion,
   markLawyerDiscussionRead,
-
+  getMyProfile,
+  updateMyProfile,
 } = require("../controllers/lawyerController");
 
 const multer = require("multer");
@@ -87,7 +88,12 @@ router.put("/requests/:id/status", auth, role("lawyer"), updateRequestStatus);
 router.get("/discussion", auth, role("lawyer"), getDiscussion);
 router.get("/discussion/:id", auth, role("lawyer"), getSingleDiscussion);
 router.post("/discussion/:id/reply", auth, role("lawyer"), replyDiscussion);
-router.patch("/discussion/:id/read", auth, role("lawyer"), markLawyerDiscussionRead);
+router.patch(
+  "/discussion/:id/read",
+  auth,
+  role("lawyer"),
+  markLawyerDiscussionRead
+);
 
 router.patch(
   "/discussion/:id/resolve",
@@ -95,5 +101,12 @@ router.patch(
   role("lawyer"),
   resolveDiscussion
 );
+
+// ---------------- LAWYER PROFILE -----------------
+// GET MY PROFILE
+router.get("/profile", auth, role("lawyer"), getMyProfile);
+
+// UPDATE MY PROFILE
+router.put("/profile", auth, role("lawyer"), updateMyProfile);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import API from "../../api/axios";
 import socket from "../../api/socket";
@@ -27,6 +27,8 @@ export default function ConversationList({
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const [participantImageLoading, setParticipantImageLoading] = useState({});
+  const imgRefs = useRef({});
 
   useEffect(() => {
     if (open) {

@@ -23,6 +23,12 @@ const UserSchema = new mongoose.Schema({
   barId: { type: String, default: "" },
   experience: { type: Number, default: 0 },
   about: { type: String, default: "" },
+  address: { type: String, default: "" },
+  profileImage: { type: String, default: "" },
+
+  // ✅ Practice Areas and Services
+  practiceAreas: [{ type: String }],
+  services: [{ type: String }],
 
   // ✅ Lawyer Approval System
   // user = none, lawyer = pending/approved/rejected

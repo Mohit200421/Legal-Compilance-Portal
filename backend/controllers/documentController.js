@@ -21,6 +21,13 @@ exports.downloadDocument = async (req, res) => {
 
   if (!doc) return res.status(404).json({ msg: "Document not found" });
 
+  // ✅ Security check: Only the assigned user can download the document
+  if (doc.assignedUserId && doc.assignedUserId.toString() !== req.user.id) {
+    return res
+      .status(403)
+      .json({ msg: "Not authorized to download this document" });
+  }
+
   res.download(doc.path);
 };
 
@@ -38,7 +45,6 @@ exports.attachDocumentToCase = async (req, res) => {
     await caseData.save();
 
     res.json({ msg: "Document attached to case", case: caseData });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

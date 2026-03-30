@@ -1,5 +1,26 @@
 import { useState } from "react";
-import { Phone, Video, X, MessageCircle, Send, CheckCircle, Clock, AlertCircle, Star, MapPin, Briefcase, IndianRupee } from "lucide-react";
+import {
+  X,
+  MessageCircle,
+  Send,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Star,
+  MapPin,
+  Briefcase,
+  IndianRupee,
+  Award,
+  Shield,
+  Gavel,
+  Mail,
+  Calendar,
+  ChevronRight,
+  ThumbsUp,
+  User,
+} from "lucide-react";
+import CallButton from "./CallButton";
+import API from "../api/axios";
 
 export default function LawyerCard({
   lawyer,
@@ -52,7 +73,8 @@ export default function LawyerCard({
         text: "Accepted",
         bg: "bg-green-100",
         textColor: "text-green-700",
-        border: "border-green-200"
+        border: "border-green-200",
+        lightBg: "bg-green-50",
       };
     }
     if (isPending) {
@@ -61,7 +83,8 @@ export default function LawyerCard({
         text: "Pending",
         bg: "bg-yellow-100",
         textColor: "text-yellow-700",
-        border: "border-yellow-200"
+        border: "border-yellow-200",
+        lightBg: "bg-yellow-50",
       };
     }
     if (isRejected) {
@@ -70,7 +93,8 @@ export default function LawyerCard({
         text: "Rejected",
         bg: "bg-red-100",
         textColor: "text-red-700",
-        border: "border-red-200"
+        border: "border-red-200",
+        lightBg: "bg-red-50",
       };
     }
     return null;
@@ -80,43 +104,67 @@ export default function LawyerCard({
 
   return (
     <>
-      <div className="bg-white border border-gray-200 hover:shadow-lg transition-shadow">
+      <div className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all overflow-hidden group">
         {/* Header with Avatar */}
         <div className="p-5 border-b border-gray-100">
           <div className="flex items-start space-x-4">
-            {/* Avatar */}
-            <div className="w-16 h-16 bg-gray-200 flex items-center justify-center flex-shrink-0 border border-gray-300">
-              <span className="text-2xl font-bold text-gray-600">
-                {lawyer?.name?.charAt(0)?.toUpperCase() || "L"}
-              </span>
+            {/* Avatar with Gradient */}
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                <span className="text-2xl font-bold text-white">
+                  {lawyer?.name?.charAt(0)?.toUpperCase() || "L"}
+                </span>
+              </div>
+              {lawyer?.verified && (
+                <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1 border-2 border-white">
+                  <CheckCircle className="h-3 w-3 text-white" />
+                </div>
+              )}
             </div>
 
             {/* Basic Info */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-gray-900 truncate">
-                  {lawyer?.name || "Lawyer"}
-                </h3>
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                    {lawyer?.name || "Lawyer"}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {lawyer?.specialization || "Legal Professional"}
+                  </p>
+                </div>
                 {statusBadge && (
-                  <span className={`inline-flex items-center px-2 py-1 text-xs font-medium border ${statusBadge.border} ${statusBadge.bg} ${statusBadge.textColor}`}>
+                  <span
+                    className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${statusBadge.bg} ${statusBadge.textColor}`}
+                  >
                     <statusBadge.icon className="h-3 w-3 mr-1" />
                     {statusBadge.text}
                   </span>
                 )}
               </div>
-              
-              <div className="flex items-center mt-1">
-                <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                <span className="text-sm font-medium text-gray-700 ml-1">
-                  {lawyer?.rating || "4.5"}
-                </span>
+
+              {/* Rating */}
+              <div className="flex items-center mt-2">
+                <div className="flex items-center">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-3 w-3 ${
+                        star <= Math.round(lawyer?.rating || 4.5)
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
                 <span className="text-xs text-gray-500 ml-2">
                   ({lawyer?.reviews || 0} reviews)
                 </span>
               </div>
 
-              <div className="flex items-center mt-1 text-sm text-gray-500">
-                <MapPin className="h-3 w-3 mr-1" />
+              {/* Location */}
+              <div className="flex items-center mt-1.5 text-xs text-gray-500">
+                <MapPin className="h-3 w-3 mr-1 text-gray-400" />
                 <span className="truncate">
                   {lawyer?.cityName || "City"}, {lawyer?.stateName || "State"}
                 </span>
@@ -126,37 +174,40 @@ export default function LawyerCard({
         </div>
 
         {/* Details Section */}
-        <div className="p-5 border-b border-gray-100">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="border border-gray-100 p-2">
-              <p className="text-xs text-gray-500 mb-1">Experience</p>
+        <div className="p-5 space-y-3">
+          {/* Experience & Fee Grid */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 mb-1">Experience</p>
               <div className="flex items-center">
-                <Briefcase className="h-3 w-3 text-gray-400 mr-1" />
-                <span className="text-sm font-medium text-gray-900">
+                <Briefcase className="h-3.5 w-3.5 text-blue-600 mr-1.5" />
+                <span className="text-sm font-bold text-gray-900">
                   {lawyer?.experience || "0"} years
                 </span>
               </div>
             </div>
-            <div className="border border-gray-100 p-2">
-              <p className="text-xs text-gray-500 mb-1">Consultation Fee</p>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-[10px] text-gray-500 mb-1">Consultation Fee</p>
               <div className="flex items-center">
-                <IndianRupee className="h-3 w-3 text-gray-400 mr-1" />
-                <span className="text-sm font-medium text-gray-900">
+                <IndianRupee className="h-3.5 w-3.5 text-green-600 mr-1.5" />
+                <span className="text-sm font-bold text-gray-900">
                   ₹{lawyer?.price || "500"}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="mt-3">
-            <p className="text-xs text-gray-500 mb-1">Specialization</p>
-            <p className="text-sm text-gray-900 font-medium">
+          {/* Specialization */}
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-[10px] text-gray-500 mb-1">Specialization</p>
+            <p className="text-sm font-medium text-gray-900">
               {lawyer?.specialization || "General Practice"}
             </p>
           </div>
 
-          <div className="mt-3">
-            <p className="text-xs text-gray-500 mb-1">Email</p>
+          {/* Email */}
+          <div className="bg-gray-50 rounded-lg p-3">
+            <p className="text-[10px] text-gray-500 mb-1">Email</p>
             <p className="text-sm text-gray-600 truncate">
               {lawyer?.email || "Not available"}
             </p>
@@ -164,50 +215,46 @@ export default function LawyerCard({
         </div>
 
         {/* Action Buttons */}
-        <div className="p-5 bg-gray-50">
+        <div className="p-5 bg-gray-50 border-t border-gray-100">
           <div className="grid grid-cols-3 gap-2">
-            <button className="flex items-center justify-center space-x-1 px-3 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors text-sm">
-              <Phone className="h-3 w-3" />
-              <span>Call</span>
-            </button>
-
-            <button className="flex items-center justify-center space-x-1 px-3 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors text-sm">
-              <Video className="h-3 w-3" />
-              <span>Video</span>
-            </button>
+            <CallButton lawyer={lawyer} />
 
             {isAccepted && (
               <button
                 onClick={() => {
                   if (onChat) onChat(lawyer);
-                  else alert("Chat is not connected here. Open My Requests page.");
+                  else
+                    alert("Chat is not connected here. Open My Requests page.");
                 }}
-                className="flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm"
+                className="flex flex-col items-center justify-center p-2 bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 transition-all group col-span-1"
+                title="Chat"
               >
-                <MessageCircle className="h-3 w-3" />
-                <span>Chat</span>
+                <MessageCircle className="h-4 w-4 text-white" />
+                <span className="text-[10px] text-white mt-1">Chat</span>
               </button>
             )}
 
             {isPending ? (
               <button
                 disabled
-                className="flex items-center justify-center space-x-1 px-3 py-2 bg-gray-300 text-gray-600 cursor-not-allowed text-sm col-span-2"
+                className="flex items-center justify-center space-x-2 px-3 py-2 bg-gray-300 text-gray-600 cursor-not-allowed rounded-lg text-sm col-span-2"
               >
-                <Clock className="h-3 w-3" />
-                <span>Request Pending</span>
+                <Clock className="h-4 w-4" />
+                <span>Pending</span>
               </button>
             ) : (
               <button
                 onClick={() => setOpen(true)}
-                className={`flex items-center justify-center space-x-1 px-3 py-2 text-white transition-colors text-sm col-span-2 ${
-                  isRejected 
-                    ? 'bg-red-600 hover:bg-red-700' 
-                    : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                className={`flex items-center justify-center space-x-2 px-3 py-2 text-white rounded-lg transition-all col-span-2 ${
+                  isRejected
+                    ? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
+                    : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                } shadow-md`}
               >
-                <Send className="h-3 w-3" />
-                <span>{isRejected ? 'Send Again' : 'Send Request'}</span>
+                <Send className="h-4 w-4" />
+                <span className="text-sm">
+                  {isRejected ? "Send Again" : "Send Request"}
+                </span>
               </button>
             )}
           </div>
@@ -216,34 +263,39 @@ export default function LawyerCard({
 
       {/* Request Modal */}
       {open && (
-        <div 
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={() => setOpen(false)}
         >
-          <div 
-            className="bg-white w-full max-w-md border border-gray-200 shadow-xl"
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-5 border-b border-gray-200">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Send Request</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  To: <span className="font-medium text-gray-900">{lawyer?.name || "Lawyer"}</span>
-                </p>
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-white">Send Request</h2>
+                  <p className="text-sm text-blue-100 mt-1">
+                    To:{" "}
+                    <span className="font-medium text-white">
+                      {lawyer?.name || "Lawyer"}
+                    </span>
+                  </p>
+                </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <X className="h-5 w-5 text-white" />
+                </button>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="p-1 hover:bg-gray-100 transition-colors"
-              >
-                <X className="h-5 w-5 text-gray-500" />
-              </button>
             </div>
 
             {/* Modal Body */}
             <div className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   Subject
                 </label>
                 <input
@@ -251,12 +303,12 @@ export default function LawyerCard({
                   placeholder="e.g., Consultation for Property Dispute"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                  className="w-full px-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   Message
                 </label>
                 <textarea
@@ -264,15 +316,19 @@ export default function LawyerCard({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
                 />
               </div>
 
               {/* Info Box */}
-              <div className="bg-blue-50 border-l-4 border-blue-600 p-3">
-                <p className="text-xs text-blue-700">
-                  The lawyer will respond to your request within 24-48 hours. You'll be notified once they accept.
-                </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start">
+                  <AlertCircle className="h-4 w-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs text-blue-700">
+                    The lawyer will respond to your request within 24-48 hours.
+                    You'll be notified once they accept.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -280,18 +336,18 @@ export default function LawyerCard({
             <div className="flex items-center justify-end space-x-3 p-5 border-t border-gray-200 bg-gray-50">
               <button
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors text-sm font-medium"
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSendRequest}
                 disabled={sending}
-                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg text-sm font-medium hover:from-blue-700 hover:to-blue-800 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {sending ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
                     <span>Sending...</span>
                   </>
                 ) : (

@@ -74,13 +74,21 @@ exports.downloadDocument = async (req, res) => {
 
   if (!doc) return res.status(404).json({ msg: "Document not found" });
 
+  // ✅ Security check: Only the assigned user can download the document
+  if (doc.assignedUserId && doc.assignedUserId.toString() !== req.user.id) {
+    return res
+      .status(403)
+      .json({ msg: "Not authorized to download this document" });
+  }
+
   res.download(doc.path);
 };
 
 // ---------------------- USER DOCUMENTS ----------------------
 exports.getUserDocuments = async (req, res) => {
   try {
-    const docs = await Document.find()
+    // ✅ Filter documents by assignedUserId - only show documents assigned to this user
+    const docs = await Document.find({ assignedUserId: req.user.id })
       .sort({ createdAt: -1 })
       .populate("uploaderId", "name email role");
 
@@ -210,8 +218,6 @@ exports.getMyRequestsMap = async (req, res) => {
   }
 };
 
-
-
 // ✅ GET ALL DISCUSSIONS FOR USER
 exports.getUserDiscussions = async (req, res) => {
   try {
@@ -233,7 +239,8 @@ exports.getSingleUserDiscussion = async (req, res) => {
       userId: req.user.id,
     }).populate("lawyerId", "name email");
 
-    if (!discussion) return res.status(404).json({ msg: "Discussion not found" });
+    if (!discussion)
+      return res.status(404).json({ msg: "Discussion not found" });
 
     res.json(discussion);
   } catch (err) {
@@ -253,7 +260,8 @@ exports.userReplyDiscussion = async (req, res) => {
       userId: req.user.id,
     });
 
-    if (!discussion) return res.status(404).json({ msg: "Discussion not found" });
+    if (!discussion)
+      return res.status(404).json({ msg: "Discussion not found" });
 
     if (discussion.status === "resolved") {
       return res.status(400).json({ msg: "Discussion is resolved" });
@@ -281,7 +289,8 @@ exports.markUserDiscussionRead = async (req, res) => {
       userId: req.user.id,
     });
 
-    if (!discussion) return res.status(404).json({ msg: "Discussion not found" });
+    if (!discussion)
+      return res.status(404).json({ msg: "Discussion not found" });
 
     let updated = false;
 

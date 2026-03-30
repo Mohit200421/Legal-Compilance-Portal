@@ -411,7 +411,14 @@ export default function ChatModal({ open, onClose, receiverId, receiverName }) {
             <div className="flex items-center space-x-3">
               {/* Avatar with online indicator */}
               <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                {participantImageLoading && (
+                  <div className="w-10 h-10 rounded-full bg-gray-300 animate-pulse"></div>
+                )}
+                <div
+                  className={`w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg ${
+                    participantImageLoading ? "hidden" : ""
+                  }`}
+                >
                   <span className="text-sm font-bold text-white">
                     {receiverName?.charAt(0) || "U"}
                   </span>
@@ -419,7 +426,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName }) {
                 <div
                   className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-gray-800 ${
                     isOnline ? "bg-green-500" : "bg-gray-400"
-                  }`}
+                  } ${participantImageLoading ? "hidden" : ""}`}
                 ></div>
               </div>
 

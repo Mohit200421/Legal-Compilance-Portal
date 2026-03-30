@@ -18,7 +18,14 @@ import {
   Shield,
   AlertCircle,
   CheckCircle,
-  Loader2
+  Loader2,
+  Scale,
+  TrendingUp,
+  Users,
+  Plus,
+  Image as ImageIcon,
+  FileCheck,
+  Info
 } from "lucide-react";
 
 export default function AddLawyer() {
@@ -171,19 +178,19 @@ export default function AddLawyer() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
       {/* Page Header */}
-      <div className="bg-white border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
+      <div className="mb-6 md:mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center border border-blue-600 px-3 py-1 mb-3">
+            <div className="inline-flex items-center bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg mb-3">
               <User className="h-4 w-4 text-blue-600 mr-2" />
-              <span className="text-xs font-medium text-blue-600">ADD LAWYER</span>
+              <span className="text-xs font-semibold text-blue-600 tracking-wider">ADD LAWYER</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
               Add New Lawyer
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs md:text-sm text-gray-500 mt-1">
               Create a new lawyer account and profile
             </p>
           </div>
@@ -191,45 +198,46 @@ export default function AddLawyer() {
       </div>
 
       {/* Main Form */}
-      <div className="bg-white border border-gray-200">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
         <form onSubmit={handleSubmit}>
           {/* Form Header */}
-          <div className="border-b border-gray-200 p-5">
-            <h2 className="text-lg font-bold text-gray-900">Basic Information</h2>
-            <p className="text-xs text-gray-500 mt-1">All fields marked with * are required</p>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-5">
+            <h2 className="text-lg font-bold text-white">Basic Information</h2>
+            <p className="text-xs text-blue-100 mt-1">All fields marked with * are required</p>
           </div>
 
           {/* Form Body */}
-          <div className="p-5 space-y-6">
+          <div className="p-5 md:p-6 space-y-6">
             {/* Profile Image Upload */}
-            <div className="border border-gray-200 p-5">
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-3">
+            <div className="bg-gray-50 rounded-xl border border-gray-200 p-5">
+              <label className="block text-xs font-medium text-gray-700 mb-3 flex items-center">
+                <Camera className="h-4 w-4 text-blue-600 mr-2" />
                 Profile Image
               </label>
-              <div className="flex items-start space-x-4">
-                <div className="w-20 h-20 bg-gray-100 border border-gray-300 flex items-center justify-center">
+              <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl border-2 border-dashed border-blue-300 flex items-center justify-center">
                   {profilePreview ? (
-                    <img src={profilePreview} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={profilePreview} alt="Preview" className="w-full h-full object-cover rounded-lg" />
                   ) : (
-                    <Camera className="h-8 w-8 text-gray-400" />
+                    <ImageIcon className="h-8 w-8 text-blue-400" />
                   )}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                   <div className="relative">
                     <input
                       id="profile-upload"
                       type="file"
                       accept="image/*"
                       onChange={handleProfileImageChange}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
                     />
                     <div className="flex items-center space-x-2">
-                      <div className="flex-1 px-4 py-2 border border-gray-300 bg-gray-50 text-sm text-gray-500">
+                      <div className="flex-1 px-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm text-gray-500 truncate">
                         {profileImg ? profileImg.name : "Choose a profile image..."}
                       </div>
                       <button
                         type="button"
-                        className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        className="px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         Browse
                       </button>
@@ -253,7 +261,7 @@ export default function AddLawyer() {
             {/* Personal Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -263,13 +271,13 @@ export default function AddLawyer() {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="Enter full name"
-                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   Email Address <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -280,13 +288,13 @@ export default function AddLawyer() {
                     value={form.email}
                     onChange={handleChange}
                     placeholder="lawyer@example.com"
-                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   Phone Number <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -297,13 +305,13 @@ export default function AddLawyer() {
                     onChange={handleChange}
                     placeholder="10-digit mobile number"
                     maxLength="10"
-                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   Experience (Years) <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -315,7 +323,7 @@ export default function AddLawyer() {
                     onChange={handleChange}
                     placeholder="Years of practice"
                     min="0"
-                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                    className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all"
                   />
                 </div>
               </div>
@@ -324,7 +332,7 @@ export default function AddLawyer() {
             {/* Location Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   State <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -333,7 +341,7 @@ export default function AddLawyer() {
                     name="state"
                     value={form.state}
                     onChange={handleChange}
-                    className="w-full pl-9 pr-8 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none appearance-none"
+                    className="w-full pl-9 pr-8 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all appearance-none"
                   >
                     <option value="">Select State</option>
                     {states.map((s) => (
@@ -347,7 +355,7 @@ export default function AddLawyer() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-2">
                   City <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -357,7 +365,7 @@ export default function AddLawyer() {
                     value={form.city}
                     onChange={handleChange}
                     disabled={!form.state}
-                    className="w-full pl-9 pr-8 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none appearance-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full pl-9 pr-8 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all appearance-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <option value="">
                       {form.state ? "Select City" : "Select State First"}
@@ -375,7 +383,7 @@ export default function AddLawyer() {
 
             {/* Category */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Specialization Category <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -384,7 +392,7 @@ export default function AddLawyer() {
                   name="category"
                   value={form.category}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-8 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none appearance-none"
+                  className="w-full pl-9 pr-8 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all appearance-none"
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
@@ -399,7 +407,7 @@ export default function AddLawyer() {
 
             {/* Description */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Description / Bio
               </label>
               <textarea
@@ -408,34 +416,35 @@ export default function AddLawyer() {
                 onChange={handleChange}
                 placeholder="Write a brief description about the lawyer's expertise, experience, and background..."
                 rows={4}
-                className="w-full px-4 py-2.5 border border-gray-300 bg-white text-sm focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none resize-none"
+                className="w-full px-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
               />
             </div>
 
             {/* Document Upload */}
-            <div className="border border-gray-200 p-5">
-              <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-3">
+            <div className="bg-gray-50 rounded-xl border border-gray-200 p-5">
+              <label className="block text-xs font-medium text-gray-700 mb-3 flex items-center">
+                <FileCheck className="h-4 w-4 text-blue-600 mr-2" />
                 Supporting Document
               </label>
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gray-100 border border-gray-300 flex items-center justify-center">
-                  <FileText className="h-6 w-6 text-gray-400" />
+              <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg border-2 border-dashed border-blue-300 flex items-center justify-center">
+                  <FileText className="h-6 w-6 text-blue-400" />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                   <div className="relative">
                     <input
                       id="document-upload"
                       type="file"
                       onChange={(e) => setDocumentFile(e.target.files[0])}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
                     />
                     <div className="flex items-center space-x-2">
-                      <div className="flex-1 px-4 py-2 border border-gray-300 bg-gray-50 text-sm text-gray-500">
+                      <div className="flex-1 px-4 py-2.5 border border-gray-300 bg-white rounded-lg text-sm text-gray-500 truncate">
                         {documentFile ? documentFile.name : "Upload document (PDF, DOC, etc.)"}
                       </div>
                       <button
                         type="button"
-                        className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        className="px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         Browse
                       </button>
@@ -458,23 +467,23 @@ export default function AddLawyer() {
           </div>
 
           {/* Form Footer */}
-          <div className="border-t border-gray-200 p-5 bg-gray-50 flex items-center justify-between">
-            <div className="flex items-center text-sm text-gray-600">
-              <AlertCircle className="h-4 w-4 mr-2 text-blue-600" />
+          <div className="border-t border-gray-200 p-5 bg-gray-50 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center text-xs text-gray-600">
+              <Info className="h-4 w-4 mr-2 text-blue-600" />
               <span>All information will be verified before activation</span>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 w-full md:w-auto">
               <button
                 type="button"
                 onClick={() => navigate("/admin/lawyers")}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium hover:bg-gray-100"
+                className="flex-1 md:flex-none px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-100 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2.5 bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="flex-1 md:flex-none px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center space-x-2"
               >
                 {loading ? (
                   <>
@@ -483,7 +492,7 @@ export default function AddLawyer() {
                   </>
                 ) : (
                   <>
-                    <User className="h-4 w-4" />
+                    <Plus className="h-4 w-4" />
                     <span>Add Lawyer</span>
                   </>
                 )}

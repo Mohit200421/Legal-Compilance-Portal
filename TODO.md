@@ -1,12 +1,29 @@
-# Remove Theme Feature - TODO
+# Login Deploy Fix Progress
 
-## Steps:
+## ✅ Completed
 
-- [x] 1. Delete theme-specific files: frontend/src/components/ThemeToggle.jsx, frontend/src/context/ThemeContext.jsx
-- [x] 2. Update frontend/tailwind.config.js: Remove/change darkMode to false
-- [x] 3. Update frontend/src/main.jsx: Remove duplicate ThemeProvider wrapper
-- [x] 4. Update frontend/src/App.jsx: Remove ThemeProvider wrapper ✓
-- [x] 5. Update frontend/src/components/Navbar.jsx: Remove useTheme import/hook, all toggle buttons/handlers, replace dark: classes with light defaults ✓
-- [x] 6. Check layouts/pages for remaining dark: classes and replace if heavy usage (Navbar cleaned, others likely light now, search showed no matches)
-- [ ] 7. Test: cd frontend && npm run dev, verify no theme toggle, light theme only, no errors
-- [ ] 8. Clear any temp files if needed, complete task
+- [x] Update backend/server.js: CORS origin to CLIENT_URL || https://legal-compilance-portal.vercel.app
+
+## ⏳ Remaining
+
+- [ ] Edit backend/controllers/authController.js: Dynamic secure cookie for production
+- [ ] Create backend/.env.example: Env var templates
+- [ ] Create frontend/.env.example: VITE_API_URL template
+- [ ] Update frontend/src/api/axios.js: Add error logging for debugging
+- [ ] Update README.md: Add deployment checklist
+- [ ] Test login locally with production-like env
+- [ ] Deploy backend with env vars (CLIENT_URL, JWT_SECRET, etc.)
+- [ ] Frontend deploy with VITE_API_URL=backend-url
+
+## Deploy Checklist
+
+```
+Backend Env Vars:
+CLIENT_URL=https://legal-compilance-portal.vercel.app
+JWT_SECRET=your-64-char-secret
+MONGODB_URI=...
+NODE_ENV=production
+
+Frontend Env Vars:
+VITE_API_URL=https://your-backend-url.onrender.com
+```

@@ -157,12 +157,12 @@ export default function ApplyLawyer() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Back Button */}
       <div className="absolute top-6 left-6 md:top-8 md:left-8">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group"
         >
           <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-medium">Back</span>
@@ -178,15 +178,15 @@ export default function ApplyLawyer() {
               <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2.5 rounded-xl shadow-lg">
                 <Scale className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 LegalCompliance
               </span>
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-gray-900">
               Join Our Network of Legal Experts
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 max-w-lg mx-auto">
+            <p className="text-sm text-gray-600 mt-2 max-w-lg mx-auto">
               Fill in your details below. Admin will verify and approve your
               access within 24-48 hours.
             </p>
@@ -194,10 +194,10 @@ export default function ApplyLawyer() {
 
           {/* Error Summary */}
           {Object.keys(errors).length > 0 && (
-            <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-6">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
               <div className="flex items-start">
-                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700 dark:text-red-400">
+                <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700">
                   Please fill in all required fields correctly.
                 </p>
               </div>
@@ -210,15 +210,15 @@ export default function ApplyLawyer() {
             <div className="grid grid-cols-2 gap-4">
               {inputFields.map((field) => (
                 <div key={field.name} className={field.colSpan}>
-                  <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
+                  <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
                     {field.label}
                   </label>
                   <div className="relative">
                     <field.icon
                       className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 ${
                         errors[field.name]
-                          ? "text-red-500 dark:text-red-400"
-                          : "text-gray-400 dark:text-gray-500"
+                          ? "text-red-500"
+                          : "text-gray-400"
                       }`}
                     />
                     <input
@@ -229,13 +229,13 @@ export default function ApplyLawyer() {
                       onChange={handleChange}
                       className={`w-full pl-9 pr-4 py-2.5 bg-transparent border-b-2 ${
                         errors[field.name]
-                          ? "border-red-500 dark:border-red-400"
-                          : "border-gray-300 dark:border-gray-700"
-                      } text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors`}
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } text-gray-900 focus:border-blue-600 focus:outline-none transition-colors`}
                     />
                   </div>
                   {errors[field.name] && (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                    <p className="text-xs text-red-600 mt-1">
                       {errors[field.name]}
                     </p>
                   )}
@@ -245,38 +245,38 @@ export default function ApplyLawyer() {
 
             {/* Message Textarea */}
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
                 Additional Message (Optional)
               </label>
               <div className="relative">
-                <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <textarea
                   name="message"
                   placeholder="Tell us why you'd like to join our platform, your areas of expertise, or any additional information..."
                   value={form.message}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full pl-9 pr-4 py-2.5 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors resize-none"
+                  className="w-full pl-9 pr-4 py-2.5 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors resize-none"
                 />
               </div>
             </div>
 
             {/* Document Upload Section (Placeholder) */}
-            <div className="border border-gray-200 dark:border-gray-800 rounded-xl p-4">
+            <div className="border border-gray-200 rounded-xl p-4">
               <div className="flex items-center mb-3">
                 <Upload className="h-4 w-4 text-blue-600 mr-2" />
-                <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                <h3 className="text-sm font-medium text-gray-900">
                   Supporting Documents
                 </h3>
                 <span className="ml-2 text-xs text-gray-500">(Optional)</span>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+              <p className="text-xs text-gray-500 mb-3">
                 You can upload your Bar Council certificate, resume, or other
                 relevant documents after registration.
               </p>
               <button
                 type="button"
-                className="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                 onClick={() =>
                   alert("Document upload will be available after registration")
                 }
@@ -291,24 +291,24 @@ export default function ApplyLawyer() {
                 type="checkbox"
                 id="terms"
                 required
-                className="h-4 w-4 mt-0.5 border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-blue-600 dark:bg-transparent"
+                className="h-4 w-4 mt-0.5 border-gray-300 text-blue-600 focus:ring-blue-600"
               />
               <label
                 htmlFor="terms"
-                className="ml-2 text-xs text-gray-600 dark:text-gray-400"
+                className="ml-2 text-xs text-gray-600"
               >
                 I confirm that the information provided is true and accurate. I
                 agree to the{" "}
                 <Link
                   to="/terms-and-conditions"
-                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                  className="text-blue-600 font-medium hover:underline"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link
                   to="/privacy-policy"
-                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                  className="text-blue-600 font-medium hover:underline"
                 >
                   Privacy Policy
                 </Link>
@@ -316,10 +316,10 @@ export default function ApplyLawyer() {
             </div>
 
             {/* Info Note */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4">
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
               <div className="flex items-start">
-                <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5 mr-2" />
-                <p className="text-xs text-blue-700 dark:text-blue-300">
+                <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5 mr-2" />
+                <p className="text-xs text-blue-700">
                   Your application will be reviewed by our admin team. You'll
                   receive an email confirmation once your account is verified
                   and activated.
@@ -346,11 +346,11 @@ export default function ApplyLawyer() {
 
           {/* Login Link */}
           <div className="text-center mt-6">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500">
               Already have a lawyer account?{" "}
               <Link
                 to="/login"
-                className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                className="text-blue-600 font-medium hover:underline"
               >
                 Sign in
               </Link>
@@ -358,10 +358,10 @@ export default function ApplyLawyer() {
           </div>
 
           {/* Support Info */}
-          <div className="border-t border-gray-200 dark:border-gray-800 mt-6 pt-4 text-center">
+          <div className="border-t border-gray-200 mt-6 pt-4 text-center">
             <p className="text-xs text-gray-400">
               Need help with your application?{" "}
-              <button className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+              <button className="text-blue-600 hover:underline font-medium">
                 Contact support
               </button>
             </p>

@@ -61,12 +61,12 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Back Button */}
       <div className="absolute top-6 left-6 md:top-8 md:left-8">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group"
         >
           <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-medium">Back to Home</span>
@@ -82,14 +82,14 @@ export default function Register() {
               <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2.5 rounded-xl shadow-lg">
                 <Scale className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                LegalCompliance
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                LawSetu
               </span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-gray-900">
               Create Account
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-sm text-gray-600 mt-2">
               Get started with your free account
             </p>
           </div>
@@ -98,11 +98,11 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name Field */}
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
                 Full Name
               </label>
               <div className="relative">
-                <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
                   name="name"
@@ -110,18 +110,18 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="John Smith"
-                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Username Field */}
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
                 Username
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
                   name="username"
@@ -129,18 +129,18 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="johnsmith"
-                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="email"
                   name="email"
@@ -148,18 +148,18 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="john@company.com"
-                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -167,12 +167,12 @@ export default function Register() {
                   onChange={handleChange}
                   required
                   placeholder="Create a strong password"
-                  className="w-full pl-10 pr-12 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-12 py-3 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-blue-600 hover:text-blue-700"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
@@ -194,12 +194,12 @@ export default function Register() {
                               : level === 3
                               ? "bg-blue-500"
                               : "bg-green-500"
-                            : "bg-gray-300 dark:bg-gray-700"
+                            : "bg-gray-300"
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-gray-500">
                     {passwordStrength === 0 && "Enter a password"}
                     {passwordStrength === 1 && "Weak password"}
                     {passwordStrength === 2 && "Fair password"}
@@ -216,23 +216,23 @@ export default function Register() {
                 type="checkbox"
                 id="terms"
                 required
-                className="h-4 w-4 mt-0.5 border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-600 dark:bg-gray-800"
+                className="h-4 w-4 mt-0.5 border-gray-300 text-blue-600 focus:ring-blue-600"
               />
               <label
                 htmlFor="terms"
-                className="ml-2 text-sm text-gray-600 dark:text-gray-400"
+                className="ml-2 text-sm text-gray-600"
               >
                 I agree to the{" "}
                 <Link
                   to="/terms-and-conditions"
-                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                  className="text-blue-600 font-medium hover:underline"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link
                   to="/privacy-policy"
-                  className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                  className="text-blue-600 font-medium hover:underline"
                 >
                   Privacy Policy
                 </Link>
@@ -260,11 +260,11 @@ export default function Register() {
 
             {/* Login Link */}
             <div className="text-center pt-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600">
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="font-medium text-blue-600 hover:text-blue-700"
                 >
                   Sign in
                 </Link>
@@ -276,7 +276,7 @@ export default function Register() {
           <div className="mt-6 text-center">
             <Link
               to="/apply-lawyer"
-              className="inline-flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+              className="inline-flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
             >
               <Briefcase className="h-4 w-4" />
               <span>Are you a lawyer? Apply for lawyer portal</span>
@@ -284,7 +284,7 @@ export default function Register() {
           </div>
 
           {/* Support Link */}
-          <p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">
+          <p className="text-center text-xs text-gray-500 mt-6">
             Having trouble?{" "}
             <button className="text-blue-600 hover:underline font-medium">
               Contact support

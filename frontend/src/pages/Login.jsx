@@ -53,12 +53,12 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Back Button */}
       <div className="absolute top-6 left-6 md:top-8 md:left-8">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors group"
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group"
         >
           <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-medium">Back to Home</span>
@@ -74,29 +74,29 @@ export default function Login() {
               <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2.5 rounded-xl shadow-lg">
                 <Scale className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                LegalCompliance
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                LawSetu
               </span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-gray-900">
               Welcome Back
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-sm text-gray-600 mt-2">
               Sign in to access your account
             </p>
           </div>
 
           {/* Error Alert */}
           {err && (
-            <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-6">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
               <div className="flex items-start">
-                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700 dark:text-red-400 flex-1">
+                <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700 flex-1">
                   {err}
                 </p>
                 <button
                   onClick={() => setErr("")}
-                  className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  className="text-red-500 hover:text-red-700"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -108,18 +108,18 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400 mb-2">
+              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="email"
                   placeholder="name@company.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -127,30 +127,30 @@ export default function Login() {
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 dark:text-gray-400">
+                <label className="block text-xs font-medium uppercase tracking-wider text-gray-700">
                   Password
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="text-xs font-medium text-blue-600 hover:text-blue-700"
                 >
                   Forgot password?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-blue-600 dark:focus:border-blue-400 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -182,11 +182,11 @@ export default function Login() {
 
             {/* Register Link */}
             <div className="text-center pt-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600">
                 Don't have an account?{" "}
                 <Link
                   to="/register"
-                  className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="font-medium text-blue-600 hover:text-blue-700"
                 >
                   Create account
                 </Link>
@@ -198,7 +198,7 @@ export default function Login() {
           <div className="mt-6 text-center">
             <Link
               to="/apply-lawyer"
-              className="inline-flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+              className="inline-flex items-center justify-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
             >
               <Briefcase className="h-4 w-4" />
               <span>Are you a lawyer? Apply for lawyer portal</span>
@@ -206,7 +206,7 @@ export default function Login() {
           </div>
 
           {/* Support Link */}
-          <p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">
+          <p className="text-center text-xs text-gray-500 mt-6">
             Having trouble?{" "}
             <button className="text-blue-600 hover:underline font-medium">
               Contact support
@@ -215,7 +215,7 @@ export default function Login() {
 
           {/* Terms Links */}
           <div className="text-center mt-4">
-            <p className="text-xs text-gray-500 dark:text-gray-500">
+            <p className="text-xs text-gray-500">
               By signing in, you agree to our{" "}
               <Link
                 to="/terms-and-conditions"

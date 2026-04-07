@@ -1,13 +1,13 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
-import { 
-  Menu, 
-  X, 
-  Scale, 
-  Sun, 
-  Moon, 
+
+import {
+  Menu,
+  X,
+  Scale,
+  Sun,
+  Moon,
   User,
   Home,
   Info,
@@ -25,12 +25,12 @@ import {
   Calendar,
   MessageSquare,
   Users,
-  Gavel
+  Gavel,
 } from "lucide-react";
 
 function Navbar() {
   const { user, logout, loading } = useContext(AuthContext);
-  const { darkMode, toggleDarkMode } = useTheme();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,8 +42,8 @@ function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Close mobile menu when route changes
@@ -59,21 +59,29 @@ function Navbar() {
 
   const getDashboardLink = () => {
     if (!user) return "/";
-    switch(user.role) {
-      case "admin": return "/admin";
-      case "lawyer": return "/lawyer";
-      case "user": return "/user";
-      default: return "/";
+    switch (user.role) {
+      case "admin":
+        return "/admin";
+      case "lawyer":
+        return "/lawyer";
+      case "user":
+        return "/user";
+      default:
+        return "/";
     }
   };
 
   const getRoleIcon = () => {
     if (!user) return null;
-    switch(user.role) {
-      case "admin": return <Shield className="h-4 w-4 text-purple-600" />;
-      case "lawyer": return <Gavel className="h-4 w-4 text-blue-600" />;
-      case "user": return <User className="h-4 w-4 text-green-600" />;
-      default: return null;
+    switch (user.role) {
+      case "admin":
+        return <Shield className="h-4 w-4 text-purple-600" />;
+      case "lawyer":
+        return <Gavel className="h-4 w-4 text-blue-600" />;
+      case "user":
+        return <User className="h-4 w-4 text-green-600" />;
+      default:
+        return null;
     }
   };
 
@@ -81,31 +89,29 @@ function Navbar() {
     { to: "/", label: "Home", icon: Home },
     { to: "/about", label: "About", icon: Info },
     { to: "/services", label: "Services", icon: Briefcase },
-    { to: "/contact", label: "Contact", icon: HelpCircle }
+    { to: "/contact", label: "Contact", icon: HelpCircle },
   ];
 
   if (loading) return null;
 
   return (
-    <nav 
+    <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg' 
-          : 'bg-white dark:bg-gray-900'
+        isScrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-white"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
           {/* Logo */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center space-x-2 group"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg">
               <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
             </div>
-            <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+            <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
               LegalCompliance
             </span>
           </Link>
@@ -122,8 +128,8 @@ function Navbar() {
                   to={link.to}
                   className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-all ${
                     isActive
-                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -132,24 +138,11 @@ function Navbar() {
               );
             })}
 
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ml-2"
-              aria-label="Toggle theme"
-            >
-              {darkMode ? (
-                <Sun className="h-4 w-4 text-yellow-500" />
-              ) : (
-                <Moon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
-              )}
-            </button>
-
             {!user ? (
               <div className="flex items-center space-x-2 ml-2">
                 <Link
                   to="/login"
-                  className="flex items-center space-x-1 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
+                  className="flex items-center space-x-1 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition"
                 >
                   <LogIn className="h-4 w-4" />
                   <span className="text-sm font-medium">Login</span>
@@ -177,20 +170,26 @@ function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="flex items-center space-x-2 px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                       <span className="text-sm font-bold text-white">
-                        {user.name?.charAt(0) || user.username?.charAt(0) || 'U'}
+                        {user.name?.charAt(0) ||
+                          user.username?.charAt(0) ||
+                          "U"}
                       </span>
                     </div>
                     <div className="hidden lg:block text-left">
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Welcome</p>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">
-                        {user.name || user.username}
+                      <p className="text-xs text-gray-500">\n Welcome\n </p>
+                      <p className="text-sm font-medium text-gray-900 truncate max-w-[120px]">
+                        \n {user.name || user.username}\n{" "}
                       </p>
                     </div>
-                    <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                      className={`h-4 w-4 text-gray-500 transition-transform ${
+                        showUserMenu ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
 
                   {/* User Dropdown Menu */}
@@ -200,17 +199,19 @@ function Navbar() {
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                             <span className="text-lg font-bold text-white">
-                              {user.name?.charAt(0) || user.username?.charAt(0) || 'U'}
+                              {user.name?.charAt(0) ||
+                                user.username?.charAt(0) ||
+                                "U"}
                             </span>
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">
-                              {user.name || user.username}
+                            <p className="text-sm font-bold text-gray-900">
+                              \n {user.name || user.username}\n{" "}
                             </p>
                             <div className="flex items-center space-x-1 mt-0.5">
                               {getRoleIcon()}
-                              <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                                {user.role}
+                              <span className="text-xs text-gray-500 capitalize">
+                                \n {user.role}\n{" "}
                               </span>
                             </div>
                           </div>
@@ -271,7 +272,9 @@ function Navbar() {
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
                       <span className="text-xl font-bold text-white">
-                        {user.name?.charAt(0) || user.username?.charAt(0) || 'U'}
+                        {user.name?.charAt(0) ||
+                          user.username?.charAt(0) ||
+                          "U"}
                       </span>
                     </div>
                     <div>
@@ -299,8 +302,8 @@ function Navbar() {
                     to={link.to}
                     className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
                       isActive
-                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -309,27 +312,6 @@ function Navbar() {
                   </Link>
                 );
               })}
-
-              {/* Theme Toggle - Mobile */}
-              <button
-                onClick={() => {
-                  toggleDarkMode();
-                  // Keep menu open
-                }}
-                className="flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition"
-              >
-                <div className="flex items-center space-x-3">
-                  {darkMode ? (
-                    <Sun className="h-5 w-5 text-yellow-500" />
-                  ) : (
-                    <Moon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
-                  )}
-                  <span className="text-sm font-medium">Theme</span>
-                </div>
-                <span className="text-xs text-gray-500">
-                  {darkMode ? 'Light' : 'Dark'}
-                </span>
-              </button>
 
               {/* Auth Links - Mobile */}
               {!user ? (

@@ -5,7 +5,7 @@
 ## Step 2: Code edits ✅
 
 - backend/server.js (removed trailing / from CORS origins)
-- frontend/src/api/axios.js (fixed double slash in baseURL)
+- frontend/src/api/axios.js (fixed double slash - trim trailing / + "/api")
 
 ## Step 3: Deploy [PENDING]
 

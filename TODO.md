@@ -1,29 +1,32 @@
-# Login Deploy Fix Progress
+# CORS Fix TODO
 
-## ✅ Completed
+## Step 1: Analysis & Planning ✅
 
-- [x] Update backend/server.js: CORS origin to CLIENT_URL || https://legal-compilance-portal.vercel.app
+## Step 2: Code edits ✅
 
-## ⏳ Remaining
+- backend/server.js (removed trailing / from CORS origins)
+- frontend/src/api/axios.js (fixed double slash in baseURL)
 
-- [ ] Edit backend/controllers/authController.js: Dynamic secure cookie for production
-- [ ] Create backend/.env.example: Env var templates
-- [ ] Create frontend/.env.example: VITE_API_URL template
-- [ ] Update frontend/src/api/axios.js: Add error logging for debugging
-- [ ] Update README.md: Add deployment checklist
-- [ ] Test login locally with production-like env
-- [ ] Deploy backend with env vars (CLIENT_URL, JWT_SECRET, etc.)
-- [ ] Frontend deploy with VITE_API_URL=backend-url
+## Step 3: Deploy [PENDING]
 
-## Deploy Checklist
+- Push backend to Render
+- Push frontend to Vercel
+
+## Step 4: Environment Variables [PENDING]
+
+**Render Environment Variables:**
 
 ```
-Backend Env Vars:
 CLIENT_URL=https://legal-compilance-portal.vercel.app
-JWT_SECRET=your-64-char-secret
-MONGODB_URI=...
-NODE_ENV=production
-
-Frontend Env Vars:
-VITE_API_URL=https://your-backend-url.onrender.com
 ```
+
+**Vercel Environment Variables:**
+
+```
+VITE_API_URL=https://legal-compilance-portal.onrender.com
+```
+
+## Step 5: Test [PENDING]
+
+- Login from https://legal-compilance-portal.vercel.app
+- Check no CORS/socket errors in console

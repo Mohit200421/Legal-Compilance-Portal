@@ -40,7 +40,8 @@ const server = http.createServer(app);
 const socketHandler = require("./socketHandler");
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "https://legal-compilance-portal.vercel.app/",
+    origin:
+      process.env.CLIENT_URL || "https://legal-compilance-portal.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -52,7 +53,8 @@ connectDB();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://legal-compilance-portal.vercel.app/",
+    origin:
+      process.env.CLIENT_URL || "https://legal-compilance-portal.vercel.app",
     credentials: true,
   })
 );

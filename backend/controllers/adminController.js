@@ -6,6 +6,7 @@ const Lawyer = require("../models/Lawyer");
 const Job = require("../models/Job");
 const News = require("../models/News");
 const { sendEmail } = require("../utils/emailService");
+const bcrypt = require("bcrypt");
 
 /* ================= USERS =================== */
 

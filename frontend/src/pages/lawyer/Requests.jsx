@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import API from "../../api/axios";
 import toast from "react-hot-toast";
-import ChatModal from "../../components/chat/ChatModal";
+
+import { useNavigate } from "react-router-dom";
 import {
   MessageSquare,
   CheckCircle,
@@ -42,6 +43,7 @@ import {
 } from "lucide-react";
 
 export default function Requests() {
+  const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,9 +54,7 @@ export default function Requests() {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
 
-  // Chat modal state
-  const [openChat, setOpenChat] = useState(false);
-  const [chatUser, setChatUser] = useState(null);
+  
 
   const fetchRequests = async () => {
     try {
@@ -121,15 +121,15 @@ export default function Requests() {
 
   const handleOpenChat = (user) => {
     if (!user?._id) return toast.error("User not found");
-    setChatUser(user);
-    setOpenChat(true);
+  
+    navigate(`/chat/${user._id}`, {
+      state: {
+        receiverName: user.name,
+      },
+    });
   };
 
-  const handleCloseChat = () => {
-    setOpenChat(false);
-    setChatUser(null);
-    fetchRequests(); // Refresh to update unread counts
-  };
+  
 
   const viewRequestDetails = (request) => {
     setSelectedRequest(request);
@@ -654,13 +654,7 @@ export default function Requests() {
         </div>
       )}
 
-      {/* Chat Modal */}
-      <ChatModal
-        open={openChat}
-        onClose={handleCloseChat}
-        receiverId={chatUser?._id}
-        receiverName={chatUser?.name}
-      />
+      
 
       {/* Quick Tips */}
       <div className="mt-6 bg-purple-50 border-l-4 border-purple-600 rounded-xl p-4">

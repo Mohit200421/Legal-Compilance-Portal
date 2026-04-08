@@ -5,20 +5,18 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const nodemailer = require("nodemailer");
+
 const connectDB = require("./config/db");
 
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const lawyerRoutes = require("./routes/lawyerRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-// const articleRoutes = require("./routes/articleRoutes"); // Empty controller
-// const caseRoutes = require("./routes/caseRoutes"); // Empty controller
 const categoryRoutes = require("./routes/categoryRoutes");
-// const discussionRoutes = require("./routes/discussionRoutes"); // Empty controller
 const documentRoutes = require("./routes/documentRoutes");
-// const eventRoutes = require("./routes/eventRoutes"); // Empty controller
 const messageRoutes = require("./routes/messageRoutes");
-// const notificationRoutes = require("./routes/notificationRoutes"); // Empty controller
 const ocrRoutes = require("./routes/ocrRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const publicLawyerRoutes = require("./routes/publicLawyerRoutes");
@@ -27,21 +25,21 @@ const subscriptionRoutes = require("./routes/subscription.routes");
 const userArticleRoutes = require("./routes/userArticleRoutes");
 const masterRoutes = require("./routes/masterRoutes");
 const adminLawyerRoutes = require("./routes/adminLawyerRoutes");
-// const adminMasterRoutes = require("./routes/adminMasterRoutes"); // May be empty
+const callRoutes = require("./routes/callRoutes");
 
 const errorHandler = require("./middleware/errorHandler");
 
+// Cron jobs
 require("./cron/eventReminder");
 require("./cron/subscriptionExpiry");
 
 const app = express();
 const server = http.createServer(app);
 
-const socketHandler = require("./socketHandler");
+// ================= SOCKET.IO =================
 const io = new Server(server, {
   cors: {
-    origin:
-      process.env.CLIENT_URL || "https://legal-compilance-portal.vercel.app",
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -49,35 +47,33 @@ const io = new Server(server, {
 
 app.set("io", io);
 
+// ================= DB =================
 connectDB();
 
+// ================= MIDDLEWARE =================
 app.use(
   cors({
-    origin:
-      process.env.CLIENT_URL || "https://legal-compilance-portal.vercel.app",
+    origin: "*", // temporary for testing
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Static
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// ================= ROUTES =================
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/lawyer", lawyerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin-lawyer", adminLawyerRoutes);
-// app.use("/api/admin-master", adminMasterRoutes); // Commented - may be broken
-// app.use("/api/article", articleRoutes); // Commented - controller empty
-// app.use("/api/case", caseRoutes); // Commented - controller empty
 app.use("/api/category", categoryRoutes);
-// app.use("/api/discussion", discussionRoutes); // Commented - controller empty
 app.use("/api/document", documentRoutes);
-// app.use("/api/event", eventRoutes); // Commented - controller empty
 app.use("/api/message", messageRoutes);
-// app.use("/api/notification", notificationRoutes); // Commented - controller empty
 app.use("/api/ocr", ocrRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/public-lawyer", publicLawyerRoutes);
@@ -85,14 +81,45 @@ app.use("/api/public", publicRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/user-article", userArticleRoutes);
 app.use("/api/master", masterRoutes);
-app.use("/api/call", require("./routes/callRoutes"));
+app.use("/api/call", callRoutes);
 
+// ================= HEALTH CHECK =================
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
 
+// ================= TEST MAIL ROUTE =================
+app.get("/test-mail", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: "Test Email",
+      text: "Email working 🚀",
+    });
+
+    console.log("EMAIL SENT:", info.response);
+    res.send("Email sent ✅");
+  } catch (err) {
+    console.log("EMAIL ERROR:", err);
+    res.send("Failed ❌");
+  }
+});
+
+// ================= ERROR HANDLER =================
 app.use(errorHandler);
 
+// ================= SOCKET EVENTS =================
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
@@ -102,9 +129,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (data) => {
-    const recipientId = data.recipientId;
-    const message = data.message;
-    io.to(recipientId).emit("receiveMessage", message);
+    io.to(data.recipientId).emit("receiveMessage", data.message);
   });
 
   socket.on("disconnect", () => {
@@ -112,9 +137,8 @@ io.on("connection", (socket) => {
   });
 });
 
+// ================= SERVER =================
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
-
-module.exports = app;

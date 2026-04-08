@@ -151,7 +151,6 @@ exports.getPendingLawyerUsers = async (req, res) => {
   }
 };
 
-const { sendEmail } = require("../utils/emailService"); // ✅ add at top
 
 exports.approveLawyerUser = async (req, res) => {
   try {
@@ -163,11 +162,18 @@ exports.approveLawyerUser = async (req, res) => {
       return res.status(400).json({ msg: "This user is not a lawyer" });
     }
 
-    // ✅ Approve lawyer
+    //  Generate NEW temp password HERE
+    const tempPassword = Math.random().toString(36).slice(-8);
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(tempPassword, salt);
+
+    //   Update user
+    user.passwordHash = passwordHash;
     user.lawyerApprovalStatus = "approved";
     await user.save();
 
-    // ✅ SEND EMAIL (NEW CODE)
+    //  SEND EMAIL WITH LOGIN CREDENTIALS
     await sendEmail(
       user.email,
       "Lawyer Application Approved 🎉",
@@ -175,7 +181,10 @@ exports.approveLawyerUser = async (req, res) => {
         <h2>Congratulations ${user.name}!</h2>
         <p>Your lawyer application has been <b>approved</b> ✅</p>
 
-        <p>You can now login using your registered email.</p>
+        <p><b>Email:</b> ${user.email}</p>
+        <p><b>Password:</b> ${tempPassword}</p>
+
+        <p>Please login and change your password immediately.</p>
 
         <a href="${process.env.CLIENT_URL}/login">
           Login Now
@@ -185,14 +194,15 @@ exports.approveLawyerUser = async (req, res) => {
       `
     );
 
-    res.json({ msg: "Lawyer approved successfully ✅", user });
+    res.json({ msg: "Lawyer approved & credentials sent ✅", user });
+
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Server error" });
   }
 };
 
-// ❌ Reject lawyer user
+//  Reject lawyer user
 exports.rejectLawyerUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

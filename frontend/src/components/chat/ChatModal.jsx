@@ -34,7 +34,7 @@ import {
   SmilePlus,
 } from "lucide-react";
 
-export default function ChatModal({ open, onClose, receiverId, receiverName }) {
+export default function ChatModal({ open, onClose, receiverId, receiverName, fullPage = false }) {
   const user = JSON.parse(localStorage.getItem("user"));
   const senderId = user?.id;
   const senderRole = user?.role;
@@ -49,6 +49,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName }) {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showReactions, setShowReactions] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
+  const [participantImageLoading, setParticipantImageLoading] = useState(false);
 
   const bottomRef = useRef(null);
   const typingTimer = useRef(null);
@@ -394,17 +395,25 @@ export default function ChatModal({ open, onClose, receiverId, receiverName }) {
   // Reaction options
   const reactionOptions = ["👍", "❤️", "😂", "😢", "😡", "🙏"];
 
-  if (!open) return null;
+  if (!fullPage && !open) return null;
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white dark:bg-gray-800 w-full max-w-md h-[650px] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl flex flex-col overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
+  className={
+    fullPage
+      ? "w-full h-screen flex flex-col bg-white"
+      : "fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+  }
+  onClick={!fullPage ? onClose : undefined}
+>
+<div
+  className={
+    fullPage
+      ? "w-full h-full flex flex-col bg-white"
+      : "bg-white dark:bg-gray-800 w-full max-w-md h-[650px] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl flex flex-col overflow-hidden"
+  }
+  onClick={(e) => e.stopPropagation()}
+>
         {/* Header */}
         <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
           <div className="flex items-center justify-between">
@@ -459,12 +468,11 @@ export default function ChatModal({ open, onClose, receiverId, receiverName }) {
               <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
                 <Info className="h-4 w-4 text-gray-600 dark:text-gray-400" />
               </button>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-              >
-                <X className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-              </button>
+              {!fullPage && (
+  <button onClick={onClose}>
+    <X className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+  </button>
+)}
             </div>
           </div>
         </div>

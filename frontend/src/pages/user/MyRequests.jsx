@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../../api/axios";
-import ChatModal from "../../components/chat/ChatModal";
+
 import {
   MessageSquare,
   Clock,
@@ -41,7 +42,10 @@ import {
   HelpCircle
 } from "lucide-react";
 
+
+
 export default function MyRequests() {
+  const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,9 +54,7 @@ export default function MyRequests() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
 
-  // Chat Modal state
-  const [openChat, setOpenChat] = useState(false);
-  const [chatLawyer, setChatLawyer] = useState(null);
+
 
   const fetchMyRequests = async () => {
     try {
@@ -98,16 +100,16 @@ export default function MyRequests() {
   }, [requests, searchTerm, statusFilter]);
 
   const handleOpenChat = (lawyer) => {
-    if (!lawyer?._id) return alert("Lawyer not found for this request!");
-    setChatLawyer(lawyer);
-    setOpenChat(true);
+    if (!lawyer?._id) return alert("Lawyer not found!");
+  
+    navigate(`/chat/${lawyer._id}`, {
+      state: {
+        receiverName: lawyer.name,
+      },
+    });
   };
 
-  const handleCloseChat = () => {
-    setOpenChat(false);
-    setChatLawyer(null);
-    refreshRequests();
-  };
+  
 
   const getStatusBadge = (status) => {
     switch(status) {
@@ -298,7 +300,7 @@ export default function MyRequests() {
               : "You haven't sent any consultation requests to lawyers yet."}
           </p>
           <button
-            onClick={() => window.location.href = "/user/talk-to-lawyer"}
+            onClick={() => navigate("/user/talk-to-lawyer")}
             className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg text-sm font-medium hover:from-blue-700 hover:to-blue-800 transition-all shadow-md inline-flex items-center space-x-2"
           >
             <span>Browse Lawyers</span>
@@ -432,7 +434,7 @@ export default function MyRequests() {
                     
                     {request.status === "Rejected" && (
                       <button
-                        onClick={() => window.location.href = "/user/talk-to-lawyer"}
+                      onClick={() => navigate("/user/talk-to-lawyer")}
                         className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg text-sm font-medium hover:from-blue-700 hover:to-blue-800 transition-all shadow-md"
                       >
                         <Send className="h-4 w-4" />
@@ -447,13 +449,7 @@ export default function MyRequests() {
         </div>
       )}
 
-      {/* Chat Modal */}
-      <ChatModal
-        open={openChat}
-        onClose={handleCloseChat}
-        receiverId={chatLawyer?._id}
-        receiverName={chatLawyer?.name}
-      />
+      
     </div>
   );
 }

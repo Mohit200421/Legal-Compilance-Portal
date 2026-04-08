@@ -5,6 +5,7 @@ const Category = require("../models/Category");
 const Lawyer = require("../models/Lawyer");
 const Job = require("../models/Job");
 const News = require("../models/News");
+const { sendEmail } = require("../utils/emailService");
 
 /* ================= USERS =================== */
 
@@ -150,7 +151,8 @@ exports.getPendingLawyerUsers = async (req, res) => {
   }
 };
 
-// ✅ Approve lawyer user
+const { sendEmail } = require("../utils/emailService"); // ✅ add at top
+
 exports.approveLawyerUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -161,8 +163,27 @@ exports.approveLawyerUser = async (req, res) => {
       return res.status(400).json({ msg: "This user is not a lawyer" });
     }
 
+    // ✅ Approve lawyer
     user.lawyerApprovalStatus = "approved";
     await user.save();
+
+    // ✅ SEND EMAIL (NEW CODE)
+    await sendEmail(
+      user.email,
+      "Lawyer Application Approved 🎉",
+      `
+        <h2>Congratulations ${user.name}!</h2>
+        <p>Your lawyer application has been <b>approved</b> ✅</p>
+
+        <p>You can now login using your registered email.</p>
+
+        <a href="${process.env.CLIENT_URL}/login">
+          Login Now
+        </a>
+
+        <p>Thank you for joining us!</p>
+      `
+    );
 
     res.json({ msg: "Lawyer approved successfully ✅", user });
   } catch (err) {

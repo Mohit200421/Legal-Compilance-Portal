@@ -148,7 +148,7 @@ export default function VerifyOtp() {
                 <Scale className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                LegalCompliance
+                LawSetu
               </span>
             </div>
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl mb-4 mx-auto">

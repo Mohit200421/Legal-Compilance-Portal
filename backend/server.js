@@ -36,18 +36,43 @@ require("./cron/subscriptionExpiry");
 const app = express();
 const server = http.createServer(app);
 
-// ================= ALLOWED ORIGINS =================
+// ================= DB =================
+connectDB();
+
+// ================= CORS FIX (IMPORTANT) =================
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://legal-compliance-portal.vercel.app",
-  "https://legal-compliance-portal-8boxdnv1e-mohit200421s-projects.vercel.app",
 ];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.includes("vercel.app") // ✅ allow all vercel deployments
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // ================= SOCKET.IO =================
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || origin.includes("vercel.app")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -55,23 +80,7 @@ const io = new Server(server, {
 
 app.set("io", io);
 
-// ================= DB =================
-connectDB();
-
 // ================= MIDDLEWARE =================
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -102,10 +111,10 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
 
-// ================= RESEND SETUP =================
+// ================= EMAIL (RESEND) =================
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ================= TEST MAIL ROUTE =================
+// ================= TEST MAIL =================
 app.get("/test-mail", async (req, res) => {
   try {
     const response = await resend.emails.send({
@@ -132,7 +141,7 @@ io.on("connection", (socket) => {
 
   socket.on("join", (userId) => {
     socket.join(userId);
-    console.log("User " + userId + " joined room");
+    console.log("User joined:", userId);
   });
 
   socket.on("sendMessage", (data) => {

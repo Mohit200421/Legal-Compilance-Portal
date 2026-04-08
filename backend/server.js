@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const { Resend } = require("resend"); // ✅ added
+const { Resend } = require("resend");
 
 const connectDB = require("./config/db");
 
@@ -36,10 +36,18 @@ require("./cron/subscriptionExpiry");
 const app = express();
 const server = http.createServer(app);
 
+// ================= ALLOWED ORIGINS =================
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://legal-compliance-portal.vercel.app",
+  "https://legal-compliance-portal-8boxdnv1e-mohit200421s-projects.vercel.app",
+];
+
 // ================= SOCKET.IO =================
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -53,7 +61,13 @@ connectDB();
 // ================= MIDDLEWARE =================
 app.use(
   cors({
-    origin: "*", // change later to your frontend URL
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -95,8 +109,8 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 app.get("/test-mail", async (req, res) => {
   try {
     const response = await resend.emails.send({
-      from: "onboarding@resend.dev", // default working sender
-      to: process.env.EMAIL_USER, // send to your own email
+      from: "onboarding@resend.dev",
+      to: process.env.EMAIL_USER,
       subject: "Test Email",
       html: "<h2>Email working 🚀</h2>",
     });

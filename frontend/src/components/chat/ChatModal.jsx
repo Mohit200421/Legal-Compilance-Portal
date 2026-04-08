@@ -57,7 +57,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
 
   // Join room when modal opens
   useEffect(() => {
-    if (open && senderId) {
+    if ((open || fullPage) && senderId) {
       socket.emit("joinRoom", senderId);
     }
   }, [open, senderId]);
@@ -65,15 +65,15 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
   // Load old messages when modal opens
   useEffect(() => {
     const loadConversation = async () => {
-      if (!open || !receiverId) return;
+      if ((!open && !fullPage) || !receiverId) return;
 
       try {
         setLoading(true);
-        const res = await API.get(`/messages/conversation/${receiverId}`);
+        const res = await API.get(`/message/conversation/${receiverId}`);
         setMessages(res.data);
 
         // Mark messages as read
-        await API.put(`/messages/${receiverId}/read`);
+        await API.put(`/message/${receiverId}/read`);
       } catch (err) {
         console.log(err);
         toast.error("Failed to load chat");
@@ -107,7 +107,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
 
         // Mark as read if we're receiving
         if (dataSenderId === currentReceiverId) {
-          API.put(`/messages/${receiverId}/read`).catch(console.log);
+          API.put(`/message/${receiverId}/read`).catch(console.log);
         }
       }
     };
@@ -221,7 +221,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
   const handleTyping = (e) => {
     setMessage(e.target.value);
 
-    socket.emit("typing", {
+    socket.emit("userTyping", {
       receiverId,
       senderId,
       senderRole,
@@ -230,7 +230,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
     clearTimeout(typingTimer.current);
 
     typingTimer.current = setTimeout(() => {
-      socket.emit("stopTyping", {
+      socket.emit("userStoppedTyping", {
         receiverId,
         senderId,
         senderRole,
@@ -269,7 +269,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
       socket.emit("sendMessage", msgData);
 
       // Save to DB
-      const res = await API.post("/messages/send", {
+      const res = await API.post("/message/send", {
         receiverId,
         message: msgData.message,
       });
@@ -322,7 +322,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
       });
 
       // Save to backend
-      const res = await API.post(`/messages/${messageId}/reaction`, { emoji });
+      const res = await API.post(`/message/${messageId}/reaction`, { emoji });
 
       // Update local state
       setMessages((prev) =>
@@ -342,7 +342,7 @@ export default function ChatModal({ open, onClose, receiverId, receiverName, ful
 
   const handleDeleteMessage = async (messageId) => {
     try {
-      await API.delete(`/messages/${messageId}`);
+      await API.delete(`/message/${messageId}`);
       setMessages((prev) => prev.filter((m) => m._id !== messageId));
       toast.success("Message deleted");
     } catch (err) {

@@ -52,6 +52,9 @@ import UserDiscussion from "./pages/user/Discussion";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import ChatPage from "./pages/common/ChatPage";
+
+
 
 function App() {
   return (
@@ -197,17 +200,30 @@ function App() {
               </ProtectedRoute>
             }
           >
+
+
+           
             <Route index element={<UserDashboard />} />
             <Route path="talk-to-lawyer" element={<TalkToLawyer />} />
             <Route path="search-lawyer" element={<SearchLawyer />} />
             <Route path="articles" element={<UserArticles />} />
             <Route path="discussion" element={<UserDiscussion />} />
             <Route path="my-requests" element={<MyRequests />} />
+            
             <Route path="jobs" element={<UserJobs />} />
             <Route path="events" element={<UserEvents />} />
             <Route path="documents" element={<UserDocuments />} />
             <Route path="feedback" element={<Feedback />} />
           </Route>
+
+          <Route
+  path="/chat/:id"
+  element={
+    <ProtectedRoute allow="user">
+      <ChatPage />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
       </BrowserRouter>
     </CallProvider>

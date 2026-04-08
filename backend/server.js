@@ -118,7 +118,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 app.get("/test-mail", async (req, res) => {
   try {
     const response = await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "legal@lawsetu.com",
       to: process.env.EMAIL_USER,
       subject: "Test Email",
       html: "<h2>Email working 🚀</h2>",

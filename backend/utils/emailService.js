@@ -13,7 +13,7 @@ exports.sendEmail = async (to, subject, html) => {
     }
 
     const response = await resend.emails.send({
-      from: "onboarding@resend.dev", // default sender (works instantly)
+      from: "legal@lawsetu.com", // default sender (works instantly)
       to: to,
       subject: subject,
       html: html,

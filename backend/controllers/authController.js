@@ -333,7 +333,7 @@ exports.applyLawyer = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      const tempPassword = "lawyer@123";
+      const tempPassword = Math.random().toString(36).slice(-8);
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(tempPassword, salt);
 

@@ -63,18 +63,32 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+
+
+
 // ================= SOCKET.IO =================
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      if (!origin || origin.includes("vercel.app")) {
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://legal-compliance-portal.vercel.app",
+      ];
+
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.includes("vercel.app")
+      ) {
         callback(null, true);
       } else {
+        console.log("❌ Socket blocked:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST"],
-    credentials: true,
+    methods: ["GET", "POST"],   
+    credentials: true,          
   },
 });
 
@@ -139,13 +153,13 @@ app.use(errorHandler);
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
-  socket.on("join", (userId) => {
+  socket.on("joinRoom", (userId) => {
     socket.join(userId);
     console.log("User joined:", userId);
   });
 
   socket.on("sendMessage", (data) => {
-    io.to(data.recipientId).emit("receiveMessage", data.message);
+    io.to(data.receiverId).emit("receiveMessage", data);
   });
 
   socket.on("disconnect", () => {

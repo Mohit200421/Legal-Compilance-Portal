@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend"); // ✅ added
 
 const connectDB = require("./config/db");
 
@@ -53,7 +53,7 @@ connectDB();
 // ================= MIDDLEWARE =================
 app.use(
   cors({
-    origin: "*", // temporary for testing
+    origin: "*", // change later to your frontend URL
     credentials: true,
   })
 );
@@ -88,27 +88,20 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
 
+// ================= RESEND SETUP =================
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 // ================= TEST MAIL ROUTE =================
 app.get("/test-mail", async (req, res) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
+    const response = await resend.emails.send({
+      from: "onboarding@resend.dev", // default working sender
+      to: process.env.EMAIL_USER, // send to your own email
       subject: "Test Email",
-      text: "Email working 🚀",
+      html: "<h2>Email working 🚀</h2>",
     });
 
-    console.log("EMAIL SENT:", info.response);
+    console.log("EMAIL SENT:", response);
     res.send("Email sent ✅");
   } catch (err) {
     console.log("EMAIL ERROR:", err);

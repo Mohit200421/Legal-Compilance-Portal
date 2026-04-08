@@ -3,23 +3,23 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { sendEmail } = require("../utils/emailService");
 
-// 🔥 Helper: Generate 6 digit OTP
+// Helper: Generate 6 digit OTP
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
-// 🔥 Helper: create token
+// Helper: create token
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-// ✅ Helper: set cookie (LOCALHOST FIX)
+// Helper: set cookie (LOCALHOST FIX)
 const setTokenCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // ✅ localhost needs false
-    sameSite: "lax", // ✅ localhost needs lax
+    secure: true, 
+    sameSite: "None",    
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -174,8 +174,8 @@ exports.logout = async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "None",
     });
 
     res.json({ msg: "Logged out successfully ✅" });

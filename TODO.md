@@ -1,12 +1,17 @@
-# Fix EditProfile page failed to load profile
+# Razorpay Fix Plan ✅
 
-## Steps:
+## 1. [x] Created frontend/.env (VITE_API_URL=localhost:5000)
 
-- [x] 1. Add getMyProfile to frontend/src/api/lawyerApi.js
-- [x] 2. Fix backend/controllers/lawyerController.js getMyProfile: add populate('cityId stateId'), transform practiceAreas/services to [{_id: str}]
-- [x] 3. Update frontend/src/pages/lawyer/EditProfile.jsx: use getMyProfile, safe .map for practiceAreas, better error handling
-- [ ] 4. Test: restart backend/frontend, check /lawyer/profile loads data, EditProfile fills form
-- [ ] 5. Update Dashboard.jsx if needed for real profile data
-- [ ] 6. attempt_completion
+## 2. [ ] Update backend/controllers/paymentController.js
 
-Current: Starting step 1
+## 3. [ ] Fix config/razorpay.js env vars
+
+## 4. [ ] Add debug endpoint
+
+## 5. [ ] Test locally: Pay button → Razorpay popup
+
+## 6. [ ] Render env vars setup + redeploy
+
+## 7. [ ] Prod test
+
+**Next**: `npm run dev` in frontend

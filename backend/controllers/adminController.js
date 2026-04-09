@@ -7,6 +7,8 @@ const Job = require("../models/Job");
 const News = require("../models/News");
 const { sendEmail } = require("../utils/emailService");
 const bcrypt = require("bcryptjs");
+const Payment = require("../models/Payment");
+const ContactRequest = require("../models/ContactRequest");
 
 /* ================= USERS =================== */
 
@@ -221,5 +223,40 @@ exports.rejectLawyerUser = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Server error" });
+  }
+};
+
+
+
+
+// ✅ Admin approves payment (optional override)
+exports.approvePayment = async (req, res) => {
+  try {
+    const { paymentId } = req.params;
+
+    const payment = await Payment.findById(paymentId);
+
+    if (!payment) {
+      return res.status(404).json({ msg: "Payment not found" });
+    }
+
+    // ✅ Update payment
+    payment.status = "VERIFIED";
+    payment.verifiedBy = req.user._id;
+    payment.verifiedAt = new Date();
+    await payment.save();
+
+    // ✅ Update request
+    const request = await ContactRequest.findById(payment.requestId);
+
+    if (request) {
+      request.status = "PAYMENT_VERIFIED";
+      await request.save();
+    }
+
+    res.json({ msg: "Payment approved by admin ✅" });
+  } catch (err) {
+    console.error("Admin approve payment error:", err);
+    res.status(500).json({ msg: err.message });
   }
 };

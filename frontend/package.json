@@ -21,6 +21,7 @@
     "framer-motion": "^12.24.10",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.554.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hot-toast": "^2.6.0",

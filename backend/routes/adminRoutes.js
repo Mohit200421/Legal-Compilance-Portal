@@ -5,7 +5,7 @@ const adminController = require("../controllers/adminController");
 const auth = require("../middleware/authMiddleware");
 const role = require("../middleware/roleMiddleware");
 
-// 🔐 Only ADMIN can access these routes
+// 🔐 Only ADMIN can access all routes
 router.use(auth, role(["admin"]));
 
 /* ================= DASHBOARD ================= */
@@ -18,13 +18,17 @@ router.put("/users/:id/activate", adminController.activateUser);
 router.put("/users/:id/deactivate", adminController.deactivateUser);
 router.delete("/users/:id", adminController.deleteUser);
 
+/* ================= PAYMENT ================= */
+// ✅ FIXED: use controller properly
+router.put("/payment/:paymentId/approve", adminController.approvePayment);
+
 /* ================= LAWYERS ================= */
 router.get("/lawyers", adminController.getAllLawyers);
-/* ================= LAWYER APPROVAL (USERS) ================= */
+
+/* ================= LAWYER APPROVAL ================= */
 router.get("/pending-lawyers", adminController.getPendingLawyerUsers);
 router.put("/pending-lawyers/:id/approve", adminController.approveLawyerUser);
 router.put("/pending-lawyers/:id/reject", adminController.rejectLawyerUser);
-
 
 /* ================= CITY ================= */
 router.post("/city", adminController.addCity);

@@ -154,13 +154,38 @@ exports.giveFeedback = async (req, res) => {
   res.json({ msg: "Feedback submitted & emailed to admin", feedback: fb });
 };
 
+const Payment = require("../models/Payment"); // ✅ ADD THIS AT TOP
+
 exports.getMyRequests = async (req, res) => {
   try {
+    // 1️⃣ Get requests
     const requests = await ContactRequest.find({ userId: req.user.id })
       .sort({ createdAt: -1 })
       .populate("lawyerId", "name email specialization");
 
-    res.json(requests);
+    // 2️⃣ Get payments
+    const payments = await Payment.find({ userId: req.user.id });
+
+    // 3️⃣ Attach paymentStatus
+    const updatedRequests = requests.map((reqItem) => {
+      const payment = payments.find(
+        (p) =>
+          p.requestId &&
+          p.requestId.toString() === reqItem._id.toString()
+      );
+
+      return {
+        ...reqItem.toObject(),
+        paymentStatus:
+  payment?.status === "SUCCESS"
+    ? "paid"
+    : payment
+    ? "pending"
+    : "pending",
+      };
+    });
+
+    res.json(updatedRequests);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

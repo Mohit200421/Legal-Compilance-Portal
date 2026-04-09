@@ -79,13 +79,18 @@ const EditProfile = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const res = await API.get("/lawyer/profile");
-        const data = res.data.data;
-
+        const res = await API.get("/lawyer/profile", {
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        });
+        const data = res.data?.data || res.data;
         setForm({
           bio: data.bio || "",
           experience: data.experience || "",
-          practiceAreas: data.practiceAreas?.map((p) => p._id) || [],
+          practiceAreas: data.practiceAreas
+  ?.filter((p) => p && p._id)
+  .map((p) => p._id) || [],
           state: data.location?.state || "",
           city: data.location?.city || "",
           address: data.location?.address || "",
@@ -103,8 +108,12 @@ const EditProfile = () => {
         });
 
         setImagePreview(data.profileImage || "");
-      } catch {
-        toast.error("Failed to load profile");
+      } catch (error) {
+        console.log("PROFILE ERROR:", error.response || error);
+      
+        if (error.response?.status !== 304) {
+          toast.error("Failed to load profile");
+        }
       } finally {
         setLoading(false);
       }

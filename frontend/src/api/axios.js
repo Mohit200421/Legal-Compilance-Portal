@@ -9,6 +9,17 @@ const API = axios.create({
   withCredentials: true,
 });
 
+// ✅ ADD THIS BLOCK (REQUEST INTERCEPTOR)
+API.interceptors.request.use((req) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return req;
+});
+
 // ✅ Auto logout if token expired (401)
 API.interceptors.response.use(
   (response) => response,

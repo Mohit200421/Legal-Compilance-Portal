@@ -32,8 +32,16 @@ export default function Login() {
 
     try {
       const res = await API.post("/auth/login", { email, password });
-      const { user } = res.data;
-      await login();
+      const { user, token } = res.data;
+
+// ✅ STORE TOKEN
+localStorage.setItem("token", token);
+
+// (optional but good)
+localStorage.setItem("user", JSON.stringify(user));
+
+// if your context needs it
+await login(user);
 
       if (user.role === "admin") navigate("/admin");
       else if (user.role === "lawyer") navigate("/lawyer");

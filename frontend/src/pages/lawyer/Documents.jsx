@@ -337,10 +337,7 @@ export default function Documents() {
               <p className="text-xs text-gray-500">OCR Completed</p>
               <p className="text-2xl font-bold text-green-600">{stats.ocrCompleted}</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 px-6 py-3">
-              <p className="text-xs text-gray-500">Total Storage</p>
-              <p className="text-2xl font-bold text-blue-600">{formatFileSize(stats.totalSize)}</p>
-            </div>
+            
             <button
               onClick={fetchDocuments}
               className="p-3 bg-white rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"

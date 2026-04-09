@@ -14,8 +14,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data?.user || null);
     } catch (err) {
       setUser(null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      
     } finally {
       setLoading(false);
     }
@@ -25,12 +24,12 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  // ✅ login after successful login API call
-  const login = async () => {
-    await loadUser();
+  //  login after successful login API call
+  const login = (userData) => {
+    setUser(userData); 
   };
 
-  // ✅ logout clears cookie + localStorage
+  //  logout clears cookie + localStorage
   const logout = async () => {
     try {
       await API.post("/auth/logout");

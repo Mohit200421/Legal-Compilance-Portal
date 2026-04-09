@@ -219,7 +219,7 @@ function App() {
           <Route
   path="/chat/:id"
   element={
-    <ProtectedRoute allow="user">
+    <ProtectedRoute allow={["user", "lawyer"]}>
       <ChatPage />
     </ProtectedRoute>
   }

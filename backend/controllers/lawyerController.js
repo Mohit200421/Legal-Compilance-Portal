@@ -584,7 +584,9 @@ exports.getLawyerProfile = async (req, res) => {
 // GET LAWYER PROFILE (own profile)
 exports.getMyProfile = async (req, res) => {
   try {
-    const lawyer = await User.findById(req.user.id).select("-passwordHash");
+    const lawyer = await User.findById(req.user.id)
+      .select("-passwordHash")
+      .populate("cityId stateId");
 
     if (!lawyer) {
       return res.status(404).json({ msg: "Profile not found" });
@@ -615,8 +617,12 @@ exports.getMyProfile = async (req, res) => {
         address: lawyer.address || "",
       },
       // Practice Areas and Services from database
-      practiceAreas: lawyer.practiceAreas || [],
-      services: lawyer.services || [],
+      practiceAreas: (lawyer.practiceAreas || []).map((area) => ({
+        _id: area,
+      })),
+
+      services: (lawyer.services || []).map((service) => ({ _id: service })),
+
       // Rating object expected by frontend
       rating: {
         average: 4.5,

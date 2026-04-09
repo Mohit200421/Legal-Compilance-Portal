@@ -4,6 +4,10 @@ export const getLawyerProfile = (lawyerId) => {
   return API.get(`/lawyers/${lawyerId}`);
 };
 
+export const getMyProfile = () => {
+  return API.get("/lawyer/profile");
+};
+
 export const updateLawyerProfile = (data) => {
   return API.put("/lawyer/profile", data);
 };

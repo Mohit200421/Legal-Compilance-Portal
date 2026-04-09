@@ -179,7 +179,7 @@ export default function ApplyLawyer() {
                 <Scale className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                LegalCompliance
+                LawSetu
               </span>
             </div>
 

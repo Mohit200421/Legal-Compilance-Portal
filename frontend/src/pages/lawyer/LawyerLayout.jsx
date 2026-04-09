@@ -106,12 +106,14 @@ const LawyerLayout = () => {
         >
           <Menu className="h-5 w-5 text-gray-700" />
         </button>
-        
+
         <div className="flex items-center space-x-1.5">
           <Scale className="h-4 w-4 text-blue-600" />
-          <span className="font-semibold text-sm text-gray-900">LegalCompliance</span>
+          <span className="font-semibold text-sm text-gray-900">
+            LegalCompliance
+          </span>
         </div>
-        
+
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
@@ -144,7 +146,9 @@ const LawyerLayout = () => {
             <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
               <Scale className="h-4 w-4 text-white" />
             </div>
-            <span className="text-sm font-bold text-white">LegalCompliance</span>
+            <span className="text-sm font-bold text-white">
+              LegalCompliance
+            </span>
           </div>
           <button
             className="md:hidden text-white/80 hover:text-white transition-colors"
@@ -166,13 +170,9 @@ const LawyerLayout = () => {
                 Adv. {user?.name || "Lawyer"}
               </p>
               <p className="text-[10px] text-gray-600 truncate">
-                Bar ID: {user?.barId || "N/A"}
+                Bar ID: {user?.barCouncilId || user?.barId || "N/A"}
               </p>
-              <div className="flex items-center mt-1">
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[8px] font-medium bg-green-100 text-green-800">
-                  ● Online
-                </span>
-              </div>
+              
             </div>
           </div>
         </div>
@@ -312,7 +312,7 @@ const LawyerLayout = () => {
                   Adv. {user?.name || "Lawyer"}
                 </p>
                 <p className="text-[10px] text-gray-500 truncate max-w-[150px]">
-                  ID: {user?.barId || "N/A"}
+                  ID: {user?.barCouncilId || user?.barId || "N/A"}
                 </p>
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
@@ -337,9 +337,7 @@ const LawyerLayout = () => {
         {/* Footer - Compact */}
         <footer className="flex-shrink-0 bg-white border-t border-gray-200 py-2 px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between text-[10px] text-gray-500 space-y-1 md:space-y-0">
-            <p>
-              © {new Date().getFullYear()} LegalCompliance
-            </p>
+            <p>© {new Date().getFullYear()} LegalCompliance</p>
             <div className="flex items-center space-x-4">
               <button className="hover:text-gray-700 transition-colors">
                 Privacy

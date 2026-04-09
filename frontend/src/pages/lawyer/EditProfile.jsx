@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../../api/axios";
-import { updateLawyerProfile } from "../../api/lawyerApi";
+import { getMyProfile, updateLawyerProfile } from "../../api/lawyerApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import {
@@ -23,7 +23,7 @@ import {
   Users,
   Car,
   Sparkles,
-  ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 
 const EditProfile = () => {
@@ -52,7 +52,7 @@ const EditProfile = () => {
     barCouncilId: "",
     consultationFee: "",
     availableForOnline: false,
-    availability: []
+    availability: [],
   });
 
   const [imagePreview, setImagePreview] = useState("");
@@ -88,9 +88,9 @@ const EditProfile = () => {
         setForm({
           bio: data.bio || "",
           experience: data.experience || "",
-          practiceAreas: data.practiceAreas
-  ?.filter((p) => p && p._id)
-  .map((p) => p._id) || [],
+          practiceAreas:
+            data.practiceAreas?.filter((p) => p && p._id).map((p) => p._id) ||
+            [],
           state: data.location?.state || "",
           city: data.location?.city || "",
           address: data.location?.address || "",
@@ -104,13 +104,13 @@ const EditProfile = () => {
           barCouncilId: data.barCouncilId || "",
           consultationFee: data.consultationFee || "",
           availableForOnline: data.availableForOnline || false,
-          availability: data.availability || []
+          availability: data.availability || [],
         });
 
         setImagePreview(data.profileImage || "");
       } catch (error) {
         console.log("PROFILE ERROR:", error.response || error);
-      
+
         if (error.response?.status !== 304) {
           toast.error("Failed to load profile");
         }
@@ -132,9 +132,9 @@ const EditProfile = () => {
   /* ================= INPUT HANDLER ================= */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm({ 
-      ...form, 
-      [name]: type === "checkbox" ? checked : value 
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -143,7 +143,7 @@ const EditProfile = () => {
     if (newService.trim()) {
       setForm({
         ...form,
-        services: [...form.services, newService.trim()]
+        services: [...form.services, newService.trim()],
       });
       setNewService("");
     }
@@ -152,7 +152,7 @@ const EditProfile = () => {
   const removeService = (index) => {
     setForm({
       ...form,
-      services: form.services.filter((_, i) => i !== index)
+      services: form.services.filter((_, i) => i !== index),
     });
   };
 
@@ -161,7 +161,7 @@ const EditProfile = () => {
     if (language && !form.languages.includes(language)) {
       setForm({
         ...form,
-        languages: [...form.languages, language]
+        languages: [...form.languages, language],
       });
     }
   };
@@ -169,7 +169,7 @@ const EditProfile = () => {
   const removeLanguage = (language) => {
     setForm({
       ...form,
-      languages: form.languages.filter(l => l !== language)
+      languages: form.languages.filter((l) => l !== language),
     });
   };
 
@@ -252,12 +252,19 @@ const EditProfile = () => {
                 <User className="h-14 w-14 text-white" />
               </div>
             </div>
-            
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Loading Profile</h3>
-            <p className="text-sm text-gray-500 mb-6">Please wait while we fetch your information...</p>
-            
+
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              Loading Profile
+            </h3>
+            <p className="text-sm text-gray-500 mb-6">
+              Please wait while we fetch your information...
+            </p>
+
             <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-              <div className="bg-gradient-to-r from-purple-600 to-purple-700 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+              <div
+                className="bg-gradient-to-r from-purple-600 to-purple-700 h-2 rounded-full animate-pulse"
+                style={{ width: "60%" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -268,39 +275,38 @@ const EditProfile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-20">
       {/* Header - Only with back button, no title */}
-      
-        <div className="max-w-6xl mx-auto px-4">
-          
 
-          {/* Mobile Tabs */}
-          <div className="md:hidden flex overflow-x-auto scrollbar-hide -mb-px">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-all ${
-                    activeTab === tab.id
-                      ? "border-purple-600 text-purple-600"
-                      : "border-transparent text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
+      <div className="max-w-6xl mx-auto px-4">
+        {/* Mobile Tabs */}
+        <div className="md:hidden flex overflow-x-auto scrollbar-hide -mb-px">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? "border-purple-600 text-purple-600"
+                    : "border-transparent text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
-      
+      </div>
 
       {/* Success Message */}
       {showSuccessMessage && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown">
           <div className="bg-green-100 border border-green-200 rounded-lg px-4 py-3 shadow-lg flex items-center space-x-2">
             <CheckCircle className="h-5 w-5 text-green-600" />
-            <span className="text-sm font-medium text-green-800">Profile updated successfully!</span>
+            <span className="text-sm font-medium text-green-800">
+              Profile updated successfully!
+            </span>
           </div>
         </div>
       )}
@@ -342,9 +348,11 @@ const EditProfile = () => {
                   />
                 </div>
               </div>
-              
+
               <div className="flex-1 text-center md:text-left">
-                <h3 className="font-semibold text-gray-900 mb-1">Profile Photo</h3>
+                <h3 className="font-semibold text-gray-900 mb-1">
+                  Profile Photo
+                </h3>
                 <p className="text-sm text-gray-500 mb-3">
                   Upload a professional photo to help clients recognize you
                 </p>
@@ -439,10 +447,10 @@ const EditProfile = () => {
                     placeholder="Add language (e.g., English, Spanish)"
                     className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
                     onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === "Enter") {
                         e.preventDefault();
                         addLanguage(e.target.value);
-                        e.target.value = '';
+                        e.target.value = "";
                       }
                     }}
                   />
@@ -478,23 +486,31 @@ const EditProfile = () => {
                               const value = e.target.value;
                               setForm((prev) => ({
                                 ...prev,
-                                practiceAreas: prev.practiceAreas.includes(value)
-                                  ? prev.practiceAreas.filter((id) => id !== value)
+                                practiceAreas: prev.practiceAreas.includes(
+                                  value
+                                )
+                                  ? prev.practiceAreas.filter(
+                                      (id) => id !== value
+                                    )
                                   : [...prev.practiceAreas, value],
                               }));
                             }}
                             className="hidden"
                           />
-                          <Icon className={`h-5 w-5 mr-2 ${
-                            form.practiceAreas.includes(area._id)
-                              ? "text-purple-600"
-                              : "text-gray-400"
-                          }`} />
-                          <span className={`text-sm ${
-                            form.practiceAreas.includes(area._id)
-                              ? "text-purple-700 font-medium"
-                              : "text-gray-600"
-                          }`}>
+                          <Icon
+                            className={`h-5 w-5 mr-2 ${
+                              form.practiceAreas.includes(area._id)
+                                ? "text-purple-600"
+                                : "text-gray-400"
+                            }`}
+                          />
+                          <span
+                            className={`text-sm ${
+                              form.practiceAreas.includes(area._id)
+                                ? "text-purple-700 font-medium"
+                                : "text-gray-600"
+                            }`}
+                          >
                             {area.name}
                           </span>
                         </label>
@@ -577,8 +593,10 @@ const EditProfile = () => {
             {activeTab === "location" && (
               <div className="space-y-6">
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Office Location</h3>
-                  
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Office Location
+                  </h3>
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -648,7 +666,7 @@ const EditProfile = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-3">
                     Services Offered
                   </label>
-                  
+
                   <div className="space-y-3 mb-4">
                     {form.services.map((service, index) => (
                       <div
@@ -675,7 +693,7 @@ const EditProfile = () => {
                       placeholder="Add a service (e.g., Contract Review)"
                       className="flex-1 rounded-xl border border-gray-300 px-4 py-2 text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
                       onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                           e.preventDefault();
                           addService();
                         }
@@ -717,7 +735,7 @@ const EditProfile = () => {
                 <User className="h-5 w-5 text-purple-600 mr-2" />
                 Basic Information
               </h2>
-              
+
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -792,10 +810,10 @@ const EditProfile = () => {
                     placeholder="Add language (e.g., English, Spanish)"
                     className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
                     onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === "Enter") {
                         e.preventDefault();
                         addLanguage(e.target.value);
-                        e.target.value = '';
+                        e.target.value = "";
                       }
                     }}
                   />
@@ -835,23 +853,31 @@ const EditProfile = () => {
                               const value = e.target.value;
                               setForm((prev) => ({
                                 ...prev,
-                                practiceAreas: prev.practiceAreas.includes(value)
-                                  ? prev.practiceAreas.filter((id) => id !== value)
+                                practiceAreas: prev.practiceAreas.includes(
+                                  value
+                                )
+                                  ? prev.practiceAreas.filter(
+                                      (id) => id !== value
+                                    )
                                   : [...prev.practiceAreas, value],
                               }));
                             }}
                             className="hidden"
                           />
-                          <Icon className={`h-5 w-5 mr-2 ${
-                            form.practiceAreas.includes(area._id)
-                              ? "text-purple-600"
-                              : "text-gray-400"
-                          }`} />
-                          <span className={`text-sm ${
-                            form.practiceAreas.includes(area._id)
-                              ? "text-purple-700 font-medium"
-                              : "text-gray-600"
-                          }`}>
+                          <Icon
+                            className={`h-5 w-5 mr-2 ${
+                              form.practiceAreas.includes(area._id)
+                                ? "text-purple-600"
+                                : "text-gray-400"
+                            }`}
+                          />
+                          <span
+                            className={`text-sm ${
+                              form.practiceAreas.includes(area._id)
+                                ? "text-purple-700 font-medium"
+                                : "text-gray-600"
+                            }`}
+                          >
                             {area.name}
                           </span>
                         </label>
@@ -934,7 +960,7 @@ const EditProfile = () => {
                 <MapPin className="h-5 w-5 text-purple-600 mr-2" />
                 Office Location
               </h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1006,7 +1032,7 @@ const EditProfile = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-3">
                     Services Offered
                   </label>
-                  
+
                   <div className="space-y-3 mb-4">
                     {form.services.map((service, index) => (
                       <div
@@ -1033,7 +1059,7 @@ const EditProfile = () => {
                       placeholder="Add a service (e.g., Contract Review)"
                       className="flex-1 rounded-xl border border-gray-300 px-4 py-2 text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
                       onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                           e.preventDefault();
                           addService();
                         }

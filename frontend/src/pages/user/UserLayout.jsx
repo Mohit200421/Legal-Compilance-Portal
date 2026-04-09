@@ -109,7 +109,7 @@ const UserLayout = () => {
         
         <div className="flex items-center space-x-1.5">
           <Scale className="h-4 w-4 text-blue-600" />
-          <span className="font-semibold text-sm text-gray-900">LegalCompliance</span>
+          <span className="font-semibold text-sm text-gray-900">LawSetu</span>
         </div>
         
         <div className="relative">
@@ -144,7 +144,7 @@ const UserLayout = () => {
             <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
               <Shield className="h-4 w-4 text-white" />
             </div>
-            <span className="text-sm font-bold text-white">LegalCompliance</span>
+            <span className="text-sm font-bold text-white">LawSetu</span>
           </div>
           <button
             className="md:hidden text-white/80 hover:text-white transition-colors"
@@ -338,7 +338,7 @@ const UserLayout = () => {
         <footer className="flex-shrink-0 bg-white border-t border-gray-200 py-2 px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between text-[10px] text-gray-500 space-y-1 md:space-y-0">
             <p>
-              © {new Date().getFullYear()} LegalCompliance
+              © {new Date().getFullYear()} LawSetu
             </p>
             <div className="flex items-center space-x-4">
               <button className="hover:text-gray-700 transition-colors">

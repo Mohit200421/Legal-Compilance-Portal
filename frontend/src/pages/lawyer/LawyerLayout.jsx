@@ -337,7 +337,7 @@ const LawyerLayout = () => {
         {/* Footer - Compact */}
         <footer className="flex-shrink-0 bg-white border-t border-gray-200 py-2 px-4 md:px-6">
           <div className="flex flex-col md:flex-row items-center justify-between text-[10px] text-gray-500 space-y-1 md:space-y-0">
-            <p>© {new Date().getFullYear()} LegalCompliance</p>
+            <p>© {new Date().getFullYear()} LawSetu</p>
             <div className="flex items-center space-x-4">
               <button className="hover:text-gray-700 transition-colors">
                 Privacy

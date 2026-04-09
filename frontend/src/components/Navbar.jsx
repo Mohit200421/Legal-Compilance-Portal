@@ -112,7 +112,7 @@ function Navbar() {
               <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
             </div>
             <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-              LegalCompliance
+            LawSetu
             </span>
           </Link>
 

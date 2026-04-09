@@ -65,7 +65,7 @@ export default function TermsAndConditions() {
                 <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
               </div>
               <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                LegalCompliance
+              LawSetu
               </span>
             </Link>
 
@@ -180,7 +180,7 @@ export default function TermsAndConditions() {
                   <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5 mr-3" />
                   <p className="text-sm text-blue-700 dark:text-blue-300">
                     Please read these Terms and Conditions carefully before
-                    using the LegalCompliance platform. By accessing or using
+                    using the LawSetu platform. By accessing or using
                     our services, you agree to be bound by these terms.
                   </p>
                 </div>
@@ -198,15 +198,15 @@ export default function TermsAndConditions() {
                   </h2>
                   <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
                     <p>
-                      By accessing and using LegalCompliance ("the Platform"),
+                      By accessing and using LawSetu ("the Platform"),
                       you accept and agree to be bound by the terms and
                       provision of this agreement. Additionally, when using
-                      LegalCompliance's services, you shall be subject to any
+                      LawSetu's services, you shall be subject to any
                       posted guidelines or rules applicable to such services.
                     </p>
                     <p className="mt-4">
                       If you do not agree to abide by these terms, please do not
-                      use this Platform. Your continued use of LegalCompliance
+                      use this Platform. Your continued use of LawSetu
                       following any changes to these terms will mean you accept
                       those changes.
                     </p>
@@ -223,7 +223,7 @@ export default function TermsAndConditions() {
                   </h2>
                   <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
                     <p>
-                      LegalCompliance is a comprehensive legal practice
+                      LawSetu is a comprehensive legal practice
                       management platform that provides:
                     </p>
                     <ul className="list-disc pl-6 mt-4 space-y-2">
@@ -284,7 +284,7 @@ export default function TermsAndConditions() {
                     User Obligations
                   </h2>
                   <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
-                    <p>When using LegalCompliance, you agree NOT to:</p>
+                    <p>When using LawSetu, you agree NOT to:</p>
                     <ul className="list-disc pl-6 mt-4 space-y-2">
                       <li>Violate any applicable laws or regulations</li>
                       <li>Infringe upon the rights of others</li>
@@ -317,8 +317,8 @@ export default function TermsAndConditions() {
                   </h2>
                   <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
                     <p>
-                      The LegalCompliance platform, including all content,
-                      features, and functionality, is owned by LegalCompliance
+                      The LawSetu platform, including all content,
+                      features, and functionality, is owned by LawSetu
                       and is protected by copyright, trademark, and other
                       intellectual property laws.
                     </p>
@@ -379,7 +379,7 @@ export default function TermsAndConditions() {
                   </h2>
                   <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
                     <p>
-                      TO THE MAXIMUM EXTENT PERMITTED BY LAW, LEGALCOMPLIANCE
+                      TO THE MAXIMUM EXTENT PERMITTED BY LAW, LawSetu
                       SHALL NOT BE LIABLE FOR:
                     </p>
                     <ul className="list-disc pl-6 mt-4 space-y-2">
@@ -451,10 +451,10 @@ export default function TermsAndConditions() {
                     </p>
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mt-4">
                       <p>
-                        <strong>LegalCompliance</strong>
+                        <strong>LawSetu</strong>
                       </p>
                       <p>123 Legal Street, Mumbai, India</p>
-                      <p>Email: legal@legalcompliance.com</p>
+                      <p>Email: legal@LawSetu.com</p>
                       <p>Phone: +91 12345 67890</p>
                     </div>
                   </div>
@@ -470,7 +470,7 @@ export default function TermsAndConditions() {
                       Agreement to Terms
                     </h3>
                     <p className="text-sm opacity-90">
-                      By creating an account or using LegalCompliance, you
+                      By creating an account or using LawSetu, you
                       acknowledge that you have read, understood, and agree to
                       be bound by these Terms and Conditions and our Privacy
                       Policy.
@@ -489,7 +489,7 @@ export default function TermsAndConditions() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
               <Scale className="h-6 w-6 text-blue-500" />
-              <span className="font-bold">LegalCompliance</span>
+              <span className="font-bold">LawSetu</span>
             </div>
             <div className="flex space-x-6 text-sm text-gray-400">
               <Link
@@ -507,7 +507,7 @@ export default function TermsAndConditions() {
               </Link>
             </div>
             <p className="text-sm text-gray-500 mt-4 md:mt-0">
-              © {new Date().getFullYear()} LegalCompliance. All rights reserved.
+              © {new Date().getFullYear()} LawSetu. All rights reserved.
             </p>
           </div>
         </div>

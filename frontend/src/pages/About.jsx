@@ -220,7 +220,7 @@ export default function About() {
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Scale className="h-8 w-8 text-blue-400" />
             <span className="text-xl font-bold text-white">
-              LegalCompliance
+            LawSetu
             </span>
           </div>
           <p className="text-slate-400 mb-4">
@@ -228,7 +228,7 @@ export default function About() {
             sectors.
           </p>
           <div className="border-t border-slate-800 pt-8 text-slate-500">
-            © 2025 LegalCompliance. All Rights Reserved.
+            © 2025 LawSetu. All Rights Reserved.
           </div>
         </div>
       </footer>

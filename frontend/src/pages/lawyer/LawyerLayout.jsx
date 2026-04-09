@@ -110,7 +110,7 @@ const LawyerLayout = () => {
         <div className="flex items-center space-x-1.5">
           <Scale className="h-4 w-4 text-blue-600" />
           <span className="font-semibold text-sm text-gray-900">
-            LegalCompliance
+            LawSetu
           </span>
         </div>
 
@@ -147,7 +147,7 @@ const LawyerLayout = () => {
               <Scale className="h-4 w-4 text-white" />
             </div>
             <span className="text-sm font-bold text-white">
-              LegalCompliance
+              LawSetu
             </span>
           </div>
           <button

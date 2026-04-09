@@ -2,13 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const auth = require("../middleware/authMiddleware");
-const upload = require("../middleware/multer"); // 👈 required for file upload
 
 const {
   mockPayment,
-  submitPayment,
-  verifyPaymentByLawyer,
-  getLawyerPayments,
+  createOrder,
+  verifyRazorpayPayment,
   getUserPayments,
 } = require("../controllers/paymentController");
 
@@ -21,31 +19,21 @@ router.post("/mock", auth, mockPayment);
 
 /**
  * =========================================
- * 📤 USER SUBMITS PAYMENT
+ * 💰 RAZORPAY PAYMENT FLOW
  * =========================================
  */
-router.post(
-  "/submit",
-  auth,
-  upload.single("screenshot"), // 👈 field name must match frontend
-  submitPayment
-);
+
+// 🧾 Create Razorpay Order
+router.post("/create-order", auth, createOrder);
+
+// ✅ Verify Razorpay Payment
+router.post("/verify-razorpay", auth, verifyRazorpayPayment);
 
 /**
  * =========================================
- * ⚖️ LAWYER VERIFIES PAYMENT
+ * 📊 USER PAYMENTS
  * =========================================
  */
-router.post("/verify", auth, verifyPaymentByLawyer);
-
-/**
- * =========================================
- * 📊 DASHBOARD ROUTES
- * =========================================
- */
-
-// Lawyer → see submitted payments
-router.get("/lawyer", auth, getLawyerPayments);
 
 // User → see their payments
 router.get("/user", auth, getUserPayments);

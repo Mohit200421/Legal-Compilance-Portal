@@ -2,23 +2,15 @@ const Payment = require("../models/Payment");
 const SubscriptionPlan = require("../models/SubscriptionPlan");
 const User = require("../models/User");
 const ContactRequest = require("../models/ContactRequest");
-const cloudinary = require("../config/cloudinary");
 
-const streamifier = require("streamifier");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
 
-// ✅ Upload buffer to Cloudinary
-const uploadFromBuffer = (buffer) => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "payments" },
-      (error, result) => {
-        if (result) resolve(result);
-        else reject(error);
-      }
-    );
-    streamifier.createReadStream(buffer).pipe(stream);
-  });
-};
+// 🔑 Razorpay instance
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_SECRET,
+});
 
 /**
  * =========================================
@@ -89,25 +81,12 @@ exports.mockPayment = async (req, res) => {
 
 /**
  * =========================================
- * 2️⃣ USER SUBMITS PAYMENT (UPI + SCREENSHOT)
+ * 2️⃣ CREATE RAZORPAY ORDER
  * =========================================
  */
-exports.submitPayment = async (req, res) => {
+exports.createOrder = async (req, res) => {
   try {
-    const { requestId, utr } = req.body;
-
-    if (!requestId || !utr || !req.file) {
-      return res.status(400).json({
-        msg: "requestId, UTR and screenshot are required",
-      });
-    }
-
-    if (utr.length < 8) {
-      return res.status(400).json({ msg: "Invalid UTR" });
-    }
-
-    // ✅ Upload to Cloudinary using buffer
-    const upload = await uploadFromBuffer(req.file.buffer);
+    const { requestId } = req.body;
 
     const request = await ContactRequest.findById(requestId);
 
@@ -115,92 +94,81 @@ exports.submitPayment = async (req, res) => {
       return res.status(404).json({ msg: "Request not found" });
     }
 
-    const existing = await Payment.findOne({ requestId });
+    const amount = (request.amount || 500) * 100; // paise
 
-    if (existing) {
-      return res.status(400).json({
-        msg: "Payment already submitted for this request",
-      });
-    }
+    const options = {
+      amount,
+      currency: "INR",
+      receipt: `receipt_${requestId}`,
+    };
 
-    const payment = await Payment.create({
-      userId: req.user._id,
-      lawyerId: request.lawyerId,
-      requestId,
-      amount: request.amount || 500,
-      utr,
-      screenshot: upload.secure_url,
-      purpose: "CONSULTATION",
-      gateway: "UPI",
-      status: "SUBMITTED",
-    });
-
-    request.status = "PAYMENT_SUBMITTED";
-    await request.save();
+    const order = await razorpay.orders.create(options);
 
     res.json({
-      msg: "Payment submitted successfully ✅",
-      payment,
+      order,
+      key: process.env.RAZORPAY_KEY_ID,
     });
   } catch (err) {
-    console.error("Submit payment error:", err);
-    res.status(500).json({
-      msg: "Payment submission failed",
-      error: err.message,
-    });
+    console.error("Create order error:", err);
+    res.status(500).json({ msg: "Order creation failed" });
   }
 };
 
 /**
  * =========================================
- * 3️⃣ LAWYER VERIFIES PAYMENT
+ * 3️⃣ VERIFY RAZORPAY PAYMENT
  * =========================================
  */
-exports.verifyPaymentByLawyer = async (req, res) => {
+exports.verifyRazorpayPayment = async (req, res) => {
   try {
-    const { paymentId, action } = req.body;
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      requestId,
+    } = req.body;
 
-    if (!paymentId || !["ACCEPT", "REJECT"].includes(action)) {
-      return res.status(400).json({
-        msg: "paymentId and valid action required",
-      });
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_SECRET)
+      .update(body)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ msg: "Invalid signature" });
     }
 
-    const payment = await Payment.findById(paymentId);
-
-    if (!payment) {
-      return res.status(404).json({ msg: "Payment not found" });
-    }
-
-    if (payment.lawyerId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ msg: "Unauthorized" });
-    }
-
-    const request = await ContactRequest.findById(payment.requestId);
+    const request = await ContactRequest.findById(requestId);
 
     if (!request) {
       return res.status(404).json({ msg: "Request not found" });
     }
 
-    if (action === "ACCEPT") {
-      payment.status = "VERIFIED";
-      request.status = "PAYMENT_VERIFIED";
-    } else {
-      payment.status = "REJECTED";
-      request.status = "PAYMENT_REJECTED";
+    // Prevent duplicate
+    const existing = await Payment.findOne({ requestId });
+    if (existing) {
+      return res.status(400).json({ msg: "Payment already done" });
     }
 
-    payment.verifiedBy = req.user._id;
-    payment.verifiedAt = new Date();
+    // Save payment
+    await Payment.create({
+      userId: req.user._id,
+      lawyerId: request.lawyerId,
+      requestId,
+      amount: request.amount,
+      razorpayOrderId: razorpay_order_id,
+      razorpayPaymentId: razorpay_payment_id,
+      purpose: "CONSULTATION",
+      gateway: "RAZORPAY",
+      status: "SUCCESS",
+    });
 
-    await payment.save();
+    // ✅ Unlock chat
+    request.status = "PAYMENT_VERIFIED";
     await request.save();
 
-    res.json({
-      msg: `Payment ${
-        action === "ACCEPT" ? "verified" : "rejected"
-      } successfully`,
-    });
+    res.json({ msg: "Payment successful ✅" });
   } catch (err) {
     console.error("Verify payment error:", err);
     res.status(500).json({
@@ -212,31 +180,7 @@ exports.verifyPaymentByLawyer = async (req, res) => {
 
 /**
  * =========================================
- * 4️⃣ GET PAYMENTS FOR LAWYER
- * =========================================
- */
-exports.getLawyerPayments = async (req, res) => {
-  try {
-    const payments = await Payment.find({
-      lawyerId: req.user._id,
-      status: "SUBMITTED",
-    })
-      .populate("userId", "name email")
-      .populate("requestId");
-
-    res.json(payments);
-  } catch (err) {
-    console.error("Fetch payments error:", err);
-    res.status(500).json({
-      msg: "Failed to fetch payments",
-      error: err.message,
-    });
-  }
-};
-
-/**
- * =========================================
- * 5️⃣ GET USER PAYMENTS
+ * 4️⃣ GET USER PAYMENTS
  * =========================================
  */
 exports.getUserPayments = async (req, res) => {
@@ -247,10 +191,7 @@ exports.getUserPayments = async (req, res) => {
 
     res.json(payments);
   } catch (err) {
-    console.error("Fetch user payments error:", err);
-    res.status(500).json({
-      msg: "Failed to fetch payments",
-      error: err.message,
-    });
+    console.error(err);
+    res.status(500).json({ msg: "Failed to fetch payments" });
   }
 };

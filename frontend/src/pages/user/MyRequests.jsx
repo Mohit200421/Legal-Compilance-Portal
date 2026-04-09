@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../api/axios";
-import { QRCodeCanvas } from "qrcode.react";
 
 export default function MyRequests() {
   const navigate = useNavigate();
 
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showQR, setShowQR] = useState(null);
-
-  // 🧾 New states
-  const [utrInputs, setUtrInputs] = useState({});
-  const [screenshots, setScreenshots] = useState({});
-  const [submitting, setSubmitting] = useState(null);
+  const [paying, setPaying] = useState(null);
 
   const fetchMyRequests = async () => {
     try {
@@ -38,33 +32,47 @@ export default function MyRequests() {
     });
   };
 
-  const handleSubmitPayment = async (requestId) => {
-    const utr = utrInputs[requestId];
-    const file = screenshots[requestId];
-
-    if (!utr || !file) {
-      return alert("Enter UTR & upload screenshot");
-    }
-
-    const formData = new FormData();
-    formData.append("utr", utr);
-    formData.append("requestId", requestId);
-    formData.append("screenshot", file);
-
+  // 💳 RAZORPAY HANDLER
+  const handleRazorpay = async (request) => {
     try {
-      setSubmitting(requestId);
+      setPaying(request._id);
 
-      await API.post("/payment/submit", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await API.post("/payment/create-order", {
+        requestId: request._id,
       });
 
-      alert("Payment submitted successfully ✅");
-      fetchMyRequests();
+      const { order, key } = res.data;
+
+      const options = {
+        key,
+        amount: order.amount,
+        currency: "INR",
+        name: "LawSetu",
+        description: "Consultation Payment",
+        order_id: order.id,
+
+        handler: async function (response) {
+          await API.post("/payment/verify-razorpay", {
+            ...response,
+            requestId: request._id,
+          });
+
+          alert("Payment successful ✅");
+          fetchMyRequests();
+        },
+
+        theme: {
+          color: "#2563eb",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err) {
       console.log(err);
-      alert("Payment submission failed");
+      alert("Payment failed");
     } finally {
-      setSubmitting(null);
+      setPaying(null);
     }
   };
 
@@ -80,9 +88,7 @@ export default function MyRequests() {
 
       {!loading &&
         requests.map((request) => {
-          const amount = request.amount || 1;
-
-          const upiLink = `upi://pay?pa=mohitkantilalbadgujar@axl&pn=LawSetu&am=${amount}&cu=INR`;
+          const amount = request.amount || 500;
 
           return (
             <div
@@ -93,6 +99,7 @@ export default function MyRequests() {
               <h3 className="font-semibold text-lg">
                 {request.subject}
               </h3>
+
               <p className="text-gray-600 text-sm">
                 {request.message}
               </p>
@@ -113,77 +120,20 @@ export default function MyRequests() {
 
               {/* ================= ACTIONS ================= */}
 
+              {/* 💳 PAY BUTTON */}
               {request.status === "Accepted" && (
-                <div className="mt-4 space-y-3">
-                  {/* 💰 PAY BUTTON */}
-                  <button
-                    onClick={() => {
-                      const isMobile =
-                        /Android|iPhone|iPad/i.test(
-                          navigator.userAgent
-                        );
-
-                      if (isMobile) {
-                        window.location.href = upiLink;
-                      } else {
-                        setShowQR(request._id);
-                      }
-                    }}
-                    className="bg-green-600 text-white px-4 py-2 rounded w-full"
-                  >
-                    Pay ₹{amount}
-                  </button>
-
-                  {/* 🧾 PAYMENT FORM */}
-                  <div className="border p-3 rounded bg-gray-50 space-y-2">
-                    <input
-                      type="text"
-                      placeholder="Enter UTR Number"
-                      value={utrInputs[request._id] || ""}
-                      onChange={(e) =>
-                        setUtrInputs({
-                          ...utrInputs,
-                          [request._id]: e.target.value,
-                        })
-                      }
-                      className="border px-3 py-2 w-full rounded"
-                    />
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setScreenshots({
-                          ...screenshots,
-                          [request._id]: e.target.files[0],
-                        })
-                      }
-                      className="border px-3 py-2 w-full rounded"
-                    />
-
-                    <button
-                      onClick={() =>
-                        handleSubmitPayment(request._id)
-                      }
-                      disabled={submitting === request._id}
-                      className="bg-blue-600 text-white px-4 py-2 rounded w-full"
-                    >
-                      {submitting === request._id
-                        ? "Submitting..."
-                        : "Submit Payment"}
-                    </button>
-                  </div>
-                </div>
+                <button
+                  onClick={() => handleRazorpay(request)}
+                  disabled={paying === request._id}
+                  className="mt-4 bg-green-600 text-white px-4 py-2 rounded w-full"
+                >
+                  {paying === request._id
+                    ? "Processing..."
+                    : `Pay ₹${amount}`}
+                </button>
               )}
 
-              {/* 🕒 WAITING STATE */}
-              {request.status === "PAYMENT_SUBMITTED" && (
-                <p className="mt-4 text-yellow-600 font-medium">
-                  Waiting for lawyer verification ⏳
-                </p>
-              )}
-
-              {/* 💬 CHAT UNLOCK */}
+              {/* 💬 CHAT */}
               {request.status === "PAYMENT_VERIFIED" && (
                 <button
                   onClick={() =>
@@ -205,24 +155,6 @@ export default function MyRequests() {
                 >
                   Send New Request
                 </button>
-              )}
-
-              {/* 📱 QR CODE */}
-              {showQR === request._id && (
-                <div className="mt-4 p-4 border rounded text-center bg-gray-100">
-                  <p className="text-sm font-medium mb-2">
-                    Scan & Pay (GPay / PhonePe)
-                  </p>
-
-                  <QRCodeCanvas value={upiLink} size={180} />
-
-                  <button
-                    onClick={() => setShowQR(null)}
-                    className="mt-3 text-red-500"
-                  >
-                    Close
-                  </button>
-                </div>
               )}
             </div>
           );

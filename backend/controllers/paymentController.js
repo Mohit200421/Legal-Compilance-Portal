@@ -86,31 +86,37 @@ exports.mockPayment = async (req, res) => {
  */
 exports.createOrder = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+
     const { requestId } = req.body;
 
     const request = await ContactRequest.findById(requestId);
 
     if (!request) {
+      console.log("❌ Request not found:", requestId);
       return res.status(404).json({ msg: "Request not found" });
     }
 
-    const amount = (request.amount || 500) * 100; // paise
+    const amount = (request.amount || 500) * 100;
 
-    const options = {
+    console.log("Amount:", amount);
+
+    const order = await razorpay.orders.create({
       amount,
       currency: "INR",
       receipt: `receipt_${requestId}`,
-    };
-
-    const order = await razorpay.orders.create(options);
+    });
 
     res.json({
       order,
       key: process.env.RAZORPAY_KEY_ID,
     });
   } catch (err) {
-    console.error("Create order error:", err);
-    res.status(500).json({ msg: "Order creation failed" });
+    console.error("🔥 CREATE ORDER ERROR:", err);
+    res.status(500).json({
+      msg: "Order creation failed",
+      error: err.message,
+    });
   }
 };
 

@@ -82,6 +82,16 @@ export default function LawyerCard({
         lightBg: "bg-emerald-50",
       };
     }
+    if (isAccepted && !isVerified) {
+      return {
+        icon: IndianRupee,
+        text: "Pay to Chat",
+        bg: "bg-orange-100",
+        textColor: "text-orange-700",
+        border: "border-orange-200",
+        lightBg: "bg-orange-50",
+      };
+    }
     if (isAccepted) {
       return {
         icon: CheckCircle,

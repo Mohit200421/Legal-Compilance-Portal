@@ -79,12 +79,12 @@ const LawyerLayout = () => {
     { to: "/lawyer/edit-profile", icon: Settings, label: "Edit Profile" },
     { to: "/lawyer/articles", icon: FileText, label: "Manage Articles" },
     { to: "/lawyer/documents", icon: FolderOpen, label: "Documents" },
-    {
+  /*  {
       to: "/lawyer/discussion",
       icon: MessageSquare,
       label: "Discussions",
       badge: unreadCount,
-    },
+    },*/
     { to: "/lawyer/cases", icon: Briefcase, label: "Cases" },
     { to: "/lawyer/case-events", icon: Calendar, label: "Case Events" },
     { to: "/lawyer/requests", icon: ClipboardList, label: "Requests" },

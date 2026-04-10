@@ -79,7 +79,8 @@ const UserLayout = () => {
     { to: "/user/talk-to-lawyer", icon: UserPlus, label: "Talk To Lawyer" },
     { to: "/user/articles", icon: FileText, label: "Legal Articles" },
     { to: "/user/my-requests", icon: ClipboardList, label: "My Requests" },
-    {
+    { to: "/user/documents", icon: FolderOpen, label: "Documents" },
+  /*  {
       to: "/user/discussion",
       icon: MessageSquare,
       label: "Discussions",
@@ -87,7 +88,7 @@ const UserLayout = () => {
     },
     { to: "/user/events", icon: Calendar, label: "Events" },
     { to: "/user/documents", icon: FolderOpen, label: "Documents" },
-    { to: "/user/jobs", icon: Briefcase, label: "Job Listings" },
+    { to: "/user/jobs", icon: Briefcase, label: "Job Listings" },*/
   ];
 
   const quickActions = [

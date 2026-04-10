@@ -22,13 +22,15 @@ import {
 } from "lucide-react";
 import CallButton from "./CallButton";
 import API from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function LawyerCard({
   lawyer,
-  requestStatus, // "Pending" | "Accepted" | "Rejected" | undefined
+  requestStatus, // "Pending" | "Accepted" | "PAYMENT_VERIFIED" | "Rejected" | undefined
   refreshRequests, // function to refresh status map
   onChat, // optional
 }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -63,15 +65,27 @@ export default function LawyerCard({
     }
   };
 
+  // ✅ FIXED LOGIC - Pay once, chat forever
   const isPending = requestStatus === "Pending";
   const isAccepted = requestStatus === "Accepted";
+  const isVerified = requestStatus === "PAYMENT_VERIFIED";
   const isRejected = requestStatus === "Rejected";
 
   const getStatusBadge = () => {
+    if (isVerified) {
+      return {
+        icon: CheckCircle,
+        text: "Chat Unlocked",
+        bg: "bg-emerald-100",
+        textColor: "text-emerald-700",
+        border: "border-emerald-200",
+        lightBg: "bg-emerald-50",
+      };
+    }
     if (isAccepted) {
       return {
         icon: CheckCircle,
-        text: "Accepted",
+        text: "Accepted - Pay to Chat",
         bg: "bg-green-100",
         textColor: "text-green-700",
         border: "border-green-200",
@@ -240,8 +254,8 @@ export default function LawyerCard({
               <CallButton lawyer={lawyer} />
             </div>
 
-            {/* Action Buttons based on status */}
-            {requestStatus === "PAYMENT_VERIFIED" && (
+            {/* ✅ FIXED: Pay once chat forever */}
+            {isVerified && (
               <button
                 onClick={() => {
                   if (onChat) onChat(lawyer);
@@ -253,7 +267,7 @@ export default function LawyerCard({
               </button>
             )}
 
-            {requestStatus === "Accepted" && !isPending && (
+            {isAccepted && !isVerified && !isPending && (
               <button
                 onClick={() => navigate("/user/my-requests")}
                 className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-all shadow-md font-medium"
@@ -263,22 +277,7 @@ export default function LawyerCard({
               </button>
             )}
 
-            {/* Chat Button - Only when accepted (legacy) */}
-            {isAccepted && (
-              <button
-                onClick={() => {
-                  if (onChat) onChat(lawyer);
-                  else
-                    alert("Chat is not connected here. Open My Requests page.");
-                }}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-green-600 border border-green-600 rounded-lg hover:bg-green-700 transition-all"
-              >
-                <MessageCircle className="h-4 w-4 text-white" />
-                <span className="text-xs sm:text-sm font-medium text-white">
-                  Chat
-                </span>
-              </button>
-            )}
+            {/* LEGACY CHAT BUTTON REMOVED - PAYMENT_VERIFIED ONLY */}
 
             {/* Send Request / Pending Button */}
             {isPending ? (

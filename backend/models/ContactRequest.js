@@ -24,9 +24,9 @@ const contactRequestSchema = new mongoose.Schema(
 
     amount: {
       type: Number,
-      default: 500,
+      default: 1,
       min: 0,
-    }, // Consultation fee in INR
+    }, // Consultation fee ₹1
   },
   { timestamps: true }
 );

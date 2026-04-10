@@ -169,19 +169,17 @@ exports.getMyRequests = async (req, res) => {
     // 3️⃣ Attach paymentStatus
     const updatedRequests = requests.map((reqItem) => {
       const payment = payments.find(
-        (p) =>
-          p.requestId &&
-          p.requestId.toString() === reqItem._id.toString()
+        (p) => p.requestId && p.requestId.toString() === reqItem._id.toString()
       );
 
       return {
         ...reqItem.toObject(),
         paymentStatus:
-  payment?.status === "SUCCESS"
-    ? "paid"
-    : payment
-    ? "pending"
-    : "pending",
+          payment?.status === "SUCCESS"
+            ? "paid"
+            : payment
+            ? "pending"
+            : "pending",
       };
     });
 
@@ -227,18 +225,21 @@ exports.searchDocuments = async (req, res) => {
 
 exports.getMyRequestsMap = async (req, res) => {
   try {
-    const requests = await ContactRequest.find({ userId: req.user.id }).select(
-      "lawyerId status"
-    );
+    const requests = await ContactRequest.find({
+      userId: req.user.id,
+      status: { $in: ["Pending", "Accepted", "PAYMENT_VERIFIED", "Rejected"] },
+    }).select("lawyerId status");
 
-    // map: lawyerId -> status
+    // map: lawyerId -> status (ALL statuses including PAYMENT_VERIFIED)
     const map = {};
     requests.forEach((r) => {
       map[r.lawyerId.toString()] = r.status;
     });
 
+    console.log("📍 MyRequestsMap:", map);
     res.json(map);
   } catch (err) {
+    console.error("getMyRequestsMap error:", err);
     res.status(500).json({ error: err.message });
   }
 };

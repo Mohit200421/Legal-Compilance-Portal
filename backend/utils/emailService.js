@@ -1,12 +1,9 @@
-setuconst { Resend } = require("resend");
-
-// Initialize Resend with API key
 const { Resend } = require("resend");
 
 // Initialize Resend with API key
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ✅ Production Email Sender - Uses onboarding@resend.dev
+// ✅ Email Sender
 exports.sendEmail = async (to, subject, html) => {
   try {
     if (!process.env.RESEND_API_KEY) {
@@ -15,10 +12,10 @@ exports.sendEmail = async (to, subject, html) => {
     }
 
     const response = await resend.emails.send({
-      from: "onboarding@resend.dev", 
-      to: to,
-      subject: subject,
-      html: html,
+      from: "onboarding@resend.dev",
+      to,
+      subject,
+      html,
     });
 
     console.log("✅ Email sent successfully:", { to, subject });

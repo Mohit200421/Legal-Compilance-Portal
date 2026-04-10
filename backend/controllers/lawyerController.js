@@ -409,7 +409,9 @@ exports.updateRequestStatus = async (req, res) => {
   try {
     const { status } = req.body;
 
-    if (!["Pending", "Accepted", "Rejected"].includes(status)) {
+    if (
+      !["Pending", "Accepted", "Rejected", "PAYMENT_VERIFIED"].includes(status)
+    ) {
       return res.status(400).json({ msg: "Invalid status" });
     }
 
@@ -417,12 +419,27 @@ exports.updateRequestStatus = async (req, res) => {
       { _id: req.params.id, lawyerId: req.user.id },
       { status },
       { new: true }
-    );
+    ).populate("userId", "name email");
 
     if (!request) return res.status(404).json({ msg: "Request not found" });
 
+    // 🔥 Real-time: Notify user instantly
+    const io = req.app.get("io");
+    if (io && request.userId) {
+      io.to(request.userId._id.toString()).emit("requestStatusUpdated", {
+        requestId: request._id,
+        status,
+        lawyerId: request.lawyerId,
+        lawyerName: req.user.name,
+      });
+      console.log(
+        `📡 Emitted requestStatusUpdated to user ${request.userId._id}: ${status}`
+      );
+    }
+
     res.json({ msg: "Status updated", request });
   } catch (err) {
+    console.error("updateRequestStatus error:", err);
     res.status(500).json({ error: err.message });
   }
 };

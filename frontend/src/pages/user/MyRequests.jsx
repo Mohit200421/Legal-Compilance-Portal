@@ -88,7 +88,7 @@ export default function MyRequests() {
 
       {!loading &&
         requests.map((request) => {
-          const amount = request.amount || 500;
+          const amount = request.amount || 1;
 
           return (
             <div

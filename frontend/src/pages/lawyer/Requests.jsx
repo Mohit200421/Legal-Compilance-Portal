@@ -39,7 +39,7 @@ import {
   Scale,
   ThumbsUp,
   ThumbsDown,
-  HelpCircle
+  HelpCircle,
 } from "lucide-react";
 
 export default function Requests() {
@@ -53,8 +53,6 @@ export default function Requests() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
-
-  
 
   const fetchRequests = async () => {
     try {
@@ -74,22 +72,35 @@ export default function Requests() {
     fetchRequests();
   }, []);
 
+  // 🔥 Real-time payment verified → show chat
+  useEffect(() => {
+    const handlePaymentVerified = (data) => {
+      console.log("💰 paymentVerified:", data);
+      toast.success(`Payment verified from ${data.userName}! Chat unlocked 💬`);
+      fetchRequests(); // refresh list
+    };
+
+    socket.on("paymentVerified", handlePaymentVerified);
+    return () => socket.off("paymentVerified", handlePaymentVerified);
+  }, []);
+
   // Filter and search
   useEffect(() => {
     let result = [...requests];
 
     // Apply status filter
     if (statusFilter !== "all") {
-      result = result.filter(r => r.status === statusFilter);
+      result = result.filter((r) => r.status === statusFilter);
     }
 
     // Apply search
     if (searchTerm) {
-      result = result.filter(r => 
-        r.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        r.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        r.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        r.userId?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      result = result.filter(
+        (r) =>
+          r.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          r.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          r.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          r.userId?.email?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -121,7 +132,7 @@ export default function Requests() {
 
   const handleOpenChat = (user) => {
     if (!user?._id) return toast.error("User not found");
-  
+
     navigate(`/chat/${user._id}`, {
       state: {
         receiverName: user.name,
@@ -129,15 +140,13 @@ export default function Requests() {
     });
   };
 
-  
-
   const viewRequestDetails = (request) => {
     setSelectedRequest(request);
     setShowDetails(true);
   };
 
   const getStatusBadge = (status) => {
-    switch(status) {
+    switch (status) {
       case "Accepted":
         return {
           icon: CheckCircle,
@@ -145,7 +154,7 @@ export default function Requests() {
           bg: "bg-green-100",
           textColor: "text-green-700",
           border: "border-green-200",
-          lightBg: "bg-green-50"
+          lightBg: "bg-green-50",
         };
       case "Rejected":
         return {
@@ -154,7 +163,7 @@ export default function Requests() {
           bg: "bg-red-100",
           textColor: "text-red-700",
           border: "border-red-200",
-          lightBg: "bg-red-50"
+          lightBg: "bg-red-50",
         };
       default:
         return {
@@ -163,7 +172,7 @@ export default function Requests() {
           bg: "bg-yellow-100",
           textColor: "text-yellow-700",
           border: "border-yellow-200",
-          lightBg: "bg-yellow-50"
+          lightBg: "bg-yellow-50",
         };
     }
   };
@@ -171,21 +180,21 @@ export default function Requests() {
   const getStatusCounts = () => {
     return {
       total: requests.length,
-      pending: requests.filter(r => r.status === "Pending").length,
-      accepted: requests.filter(r => r.status === "Accepted").length,
-      rejected: requests.filter(r => r.status === "Rejected").length
+      pending: requests.filter((r) => r.status === "Pending").length,
+      accepted: requests.filter((r) => r.status === "Accepted").length,
+      rejected: requests.filter((r) => r.status === "Rejected").length,
     };
   };
 
   const counts = getStatusCounts();
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -197,7 +206,9 @@ export default function Requests() {
           <div>
             <div className="inline-flex items-center bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg mb-3">
               <Users className="h-4 w-4 text-purple-600 mr-2" />
-              <span className="text-xs font-semibold text-purple-600 tracking-wider">CLIENT REQUESTS</span>
+              <span className="text-xs font-semibold text-purple-600 tracking-wider">
+                CLIENT REQUESTS
+              </span>
             </div>
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
               Client Requests
@@ -206,7 +217,7 @@ export default function Requests() {
               Manage and respond to consultation requests from clients
             </p>
           </div>
-          
+
           {/* Refresh Button */}
           <button
             onClick={fetchRequests}
@@ -222,22 +233,30 @@ export default function Requests() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <div className="bg-white rounded-xl border-l-4 border-purple-600 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-shadow">
           <p className="text-xs text-gray-500 mb-1">Total</p>
-          <p className="text-xl md:text-2xl font-bold text-gray-900">{counts.total}</p>
+          <p className="text-xl md:text-2xl font-bold text-gray-900">
+            {counts.total}
+          </p>
           <p className="text-xs text-gray-400 mt-1">All requests</p>
         </div>
         <div className="bg-white rounded-xl border-l-4 border-yellow-500 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-shadow">
           <p className="text-xs text-gray-500 mb-1">Pending</p>
-          <p className="text-xl md:text-2xl font-bold text-yellow-600">{counts.pending}</p>
+          <p className="text-xl md:text-2xl font-bold text-yellow-600">
+            {counts.pending}
+          </p>
           <p className="text-xs text-gray-400 mt-1">Awaiting response</p>
         </div>
         <div className="bg-white rounded-xl border-l-4 border-green-500 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-shadow">
           <p className="text-xs text-gray-500 mb-1">Accepted</p>
-          <p className="text-xl md:text-2xl font-bold text-green-600">{counts.accepted}</p>
+          <p className="text-xl md:text-2xl font-bold text-green-600">
+            {counts.accepted}
+          </p>
           <p className="text-xs text-gray-400 mt-1">Can chat now</p>
         </div>
         <div className="bg-white rounded-xl border-l-4 border-red-500 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-shadow">
           <p className="text-xs text-gray-500 mb-1">Rejected</p>
-          <p className="text-xl md:text-2xl font-bold text-red-600">{counts.rejected}</p>
+          <p className="text-xl md:text-2xl font-bold text-red-600">
+            {counts.rejected}
+          </p>
           <p className="text-xs text-gray-400 mt-1">Not accepted</p>
         </div>
       </div>
@@ -302,7 +321,11 @@ export default function Requests() {
             </select>
 
             <span className="text-sm text-gray-500 ml-auto">
-              Showing <span className="font-medium text-gray-900">{filteredRequests.length}</span> of {requests.length} requests
+              Showing{" "}
+              <span className="font-medium text-gray-900">
+                {filteredRequests.length}
+              </span>{" "}
+              of {requests.length} requests
             </span>
           </div>
 
@@ -347,10 +370,12 @@ export default function Requests() {
           <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Send className="h-8 w-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No requests found</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No requests found
+          </h3>
           <p className="text-sm text-gray-500 mb-4">
-            {searchTerm || statusFilter !== "all" 
-              ? "Try adjusting your filters" 
+            {searchTerm || statusFilter !== "all"
+              ? "Try adjusting your filters"
               : "You haven't received any client requests yet"}
           </p>
         </div>
@@ -383,7 +408,9 @@ export default function Requests() {
                             <h3 className="text-lg font-bold text-gray-900">
                               {request.subject}
                             </h3>
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.textColor}`}>
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.textColor}`}
+                            >
                               <StatusIcon className="h-3 w-3 mr-1" />
                               {statusBadge.text}
                             </span>
@@ -397,7 +424,9 @@ export default function Requests() {
                           {/* Client Info Grid */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                             <div className="bg-gray-50 rounded-lg p-3">
-                              <p className="text-xs text-gray-500 mb-1">Client</p>
+                              <p className="text-xs text-gray-500 mb-1">
+                                Client
+                              </p>
                               <div className="flex items-center">
                                 <User className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
                                 <span className="text-sm font-medium text-gray-900 truncate">
@@ -407,7 +436,9 @@ export default function Requests() {
                             </div>
 
                             <div className="bg-gray-50 rounded-lg p-3">
-                              <p className="text-xs text-gray-500 mb-1">Email</p>
+                              <p className="text-xs text-gray-500 mb-1">
+                                Email
+                              </p>
                               <div className="flex items-center">
                                 <Mail className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
                                 <span className="text-sm text-gray-600 truncate">
@@ -417,13 +448,17 @@ export default function Requests() {
                             </div>
 
                             <div className="bg-gray-50 rounded-lg p-3">
-                              <p className="text-xs text-gray-500 mb-1">Received</p>
+                              <p className="text-xs text-gray-500 mb-1">
+                                Received
+                              </p>
                               <div className="flex items-center">
                                 <Calendar className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
                                 <span className="text-sm text-gray-600">
-                                  {new Date(request.createdAt).toLocaleDateString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric'
+                                  {new Date(
+                                    request.createdAt
+                                  ).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
                                   })}
                                 </span>
                               </div>
@@ -431,7 +466,9 @@ export default function Requests() {
 
                             {request.consultationType && (
                               <div className="bg-gray-50 rounded-lg p-3">
-                                <p className="text-xs text-gray-500 mb-1">Type</p>
+                                <p className="text-xs text-gray-500 mb-1">
+                                  Type
+                                </p>
                                 <div className="flex items-center">
                                   {request.consultationType === "video" ? (
                                     <Video className="h-4 w-4 text-blue-400 mr-2" />
@@ -470,7 +507,9 @@ export default function Requests() {
 
                             {request.status !== "Accepted" && (
                               <button
-                                onClick={() => updateStatus(request._id, "Accepted")}
+                                onClick={() =>
+                                  updateStatus(request._id, "Accepted")
+                                }
                                 className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-all shadow-md flex items-center space-x-2"
                               >
                                 <CheckCircle className="h-4 w-4" />
@@ -478,15 +517,18 @@ export default function Requests() {
                               </button>
                             )}
 
-                            {request.status !== "Rejected" && request.status !== "Accepted" && (
-                              <button
-                                onClick={() => updateStatus(request._id, "Rejected")}
-                                className="px-4 py-2 border border-red-300 text-red-700 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center space-x-2"
-                              >
-                                <XCircle className="h-4 w-4" />
-                                <span>Reject</span>
-                              </button>
-                            )}
+                            {request.status !== "Rejected" &&
+                              request.status !== "Accepted" && (
+                                <button
+                                  onClick={() =>
+                                    updateStatus(request._id, "Rejected")
+                                  }
+                                  className="px-4 py-2 border border-red-300 text-red-700 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center space-x-2"
+                                >
+                                  <XCircle className="h-4 w-4" />
+                                  <span>Reject</span>
+                                </button>
+                              )}
                           </div>
                         </div>
                       </div>
@@ -506,7 +548,9 @@ export default function Requests() {
             <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-700 p-5 flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <FileText className="h-5 w-5 text-white" />
-                <h3 className="text-lg font-bold text-white">Request Details</h3>
+                <h3 className="text-lg font-bold text-white">
+                  Request Details
+                </h3>
               </div>
               <button
                 onClick={() => {
@@ -518,17 +562,21 @@ export default function Requests() {
                 <X className="h-5 w-5 text-white" />
               </button>
             </div>
-            
+
             <div className="p-6">
               <div className="space-y-6">
                 {/* Subject */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedRequest.subject}</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    {selectedRequest.subject}
+                  </h2>
                   {(() => {
                     const badge = getStatusBadge(selectedRequest.status);
                     const Icon = badge.icon;
                     return (
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${badge.bg} ${badge.textColor}`}>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${badge.bg} ${badge.textColor}`}
+                      >
                         <Icon className="h-4 w-4 mr-1" />
                         {badge.text}
                       </span>
@@ -556,21 +604,29 @@ export default function Requests() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-500">Name</p>
-                      <p className="text-sm font-medium text-gray-900">{selectedRequest.userId?.name || "N/A"}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {selectedRequest.userId?.name || "N/A"}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Email</p>
-                      <p className="text-sm text-gray-900">{selectedRequest.userId?.email || "N/A"}</p>
+                      <p className="text-sm text-gray-900">
+                        {selectedRequest.userId?.email || "N/A"}
+                      </p>
                     </div>
                     {selectedRequest.userId?.phone && (
                       <div>
                         <p className="text-xs text-gray-500">Phone</p>
-                        <p className="text-sm text-gray-900">{selectedRequest.userId.phone}</p>
+                        <p className="text-sm text-gray-900">
+                          {selectedRequest.userId.phone}
+                        </p>
                       </div>
                     )}
                     <div>
                       <p className="text-xs text-gray-500">User ID</p>
-                      <p className="text-sm text-gray-500 font-mono">{selectedRequest.userId?._id}</p>
+                      <p className="text-sm text-gray-500 font-mono">
+                        {selectedRequest.userId?._id}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -584,12 +640,17 @@ export default function Requests() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-500">Requested On</p>
-                      <p className="text-sm text-gray-900">{formatDate(selectedRequest.createdAt)}</p>
+                      <p className="text-sm text-gray-900">
+                        {formatDate(selectedRequest.createdAt)}
+                      </p>
                     </div>
-                    {selectedRequest.updatedAt !== selectedRequest.createdAt && (
+                    {selectedRequest.updatedAt !==
+                      selectedRequest.createdAt && (
                       <div>
                         <p className="text-xs text-gray-500">Last Updated</p>
-                        <p className="text-sm text-gray-900">{formatDate(selectedRequest.updatedAt)}</p>
+                        <p className="text-sm text-gray-900">
+                          {formatDate(selectedRequest.updatedAt)}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -598,7 +659,9 @@ export default function Requests() {
                 {/* Consultation Type (if available) */}
                 {selectedRequest.consultationType && (
                   <div className="border-t border-gray-200 pt-4">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Consultation Type</h4>
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                      Consultation Type
+                    </h4>
                     <div className="flex items-center space-x-2">
                       {selectedRequest.consultationType === "video" && (
                         <Video className="h-5 w-5 text-blue-600" />
@@ -609,13 +672,15 @@ export default function Requests() {
                       {selectedRequest.consultationType === "chat" && (
                         <MessageSquare className="h-5 w-5 text-purple-600" />
                       )}
-                      <span className="text-sm text-gray-900 capitalize">{selectedRequest.consultationType}</span>
+                      <span className="text-sm text-gray-900 capitalize">
+                        {selectedRequest.consultationType}
+                      </span>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-            
+
             <div className="border-t border-gray-200 p-5 bg-gray-50 flex justify-end space-x-3">
               <button
                 onClick={() => {
@@ -654,16 +719,19 @@ export default function Requests() {
         </div>
       )}
 
-      
-
       {/* Quick Tips */}
       <div className="mt-6 bg-purple-50 border-l-4 border-purple-600 rounded-xl p-4">
         <div className="flex items-start">
           <AlertCircle className="h-5 w-5 text-purple-600 mr-3 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="text-sm font-medium text-purple-900 mb-1">Managing Requests</h3>
+            <h3 className="text-sm font-medium text-purple-900 mb-1">
+              Managing Requests
+            </h3>
             <p className="text-xs text-purple-700">
-              Accept requests to start chatting with clients. Once accepted, you can communicate directly through the chat feature. Rejected requests cannot be undone. Use the filters to organize your requests by status.
+              Accept requests to start chatting with clients. Once accepted, you
+              can communicate directly through the chat feature. Rejected
+              requests cannot be undone. Use the filters to organize your
+              requests by status.
             </p>
           </div>
         </div>

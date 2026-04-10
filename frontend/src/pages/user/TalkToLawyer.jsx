@@ -29,7 +29,7 @@ import {
   Video,
   Calendar,
   ChevronRight,
-  Menu
+  Menu,
 } from "lucide-react";
 
 export default function TalkToLawyer() {
@@ -75,6 +75,21 @@ export default function TalkToLawyer() {
   useEffect(() => {
     fetchLawyers();
     fetchMyRequestsMap();
+  }, []);
+
+  // 🔥 Real-time request status updates
+  useEffect(() => {
+    const handleStatusUpdate = (data) => {
+      console.log("📡 requestStatusUpdated:", data);
+      setRequestMap((prev) => ({
+        ...prev,
+        [data.lawyerId]: data.status,
+      }));
+      toast.success(`Request ${data.status}!`);
+    };
+
+    socket.on("requestStatusUpdated", handleStatusUpdate);
+    return () => socket.off("requestStatusUpdated", handleStatusUpdate);
   }, []);
 
   const filteredLawyers = useMemo(() => {
@@ -138,14 +153,18 @@ export default function TalkToLawyer() {
             <div>
               <div className="inline-flex items-center bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg mb-2">
                 <MessageSquare className="h-4 w-4 text-blue-600 mr-2" />
-                <span className="text-xs font-semibold text-blue-600 tracking-wider">CONSULTATION</span>
+                <span className="text-xs font-semibold text-blue-600 tracking-wider">
+                  CONSULTATION
+                </span>
               </div>
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900">Talk to Lawyer</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+                Talk to Lawyer
+              </h1>
               <p className="text-xs md:text-sm text-gray-500 mt-1">
                 Connect with experienced legal professionals
               </p>
             </div>
-            
+
             {/* Mobile Filter Toggle */}
             <button
               onClick={() => setShowMobileFilters(!showMobileFilters)}
@@ -177,11 +196,14 @@ export default function TalkToLawyer() {
         {/* Filter Sidebar - Mobile */}
         {showMobileFilters && (
           <div className="fixed inset-0 z-50 lg:hidden">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowMobileFilters(false)} />
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowMobileFilters(false)}
+            />
             <div className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-2xl overflow-y-auto">
               <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 p-4 flex items-center justify-between">
                 <h3 className="font-bold text-white">Filters</h3>
-                <button 
+                <button
                   onClick={() => setShowMobileFilters(false)}
                   className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
                 >
@@ -262,11 +284,18 @@ export default function TalkToLawyer() {
                   </span>
                 )}
                 {selectedProblems.map((problem) => (
-                  <span key={problem} className="inline-flex items-center px-2 py-1 bg-blue-50 border border-blue-200 rounded-lg text-xs">
+                  <span
+                    key={problem}
+                    className="inline-flex items-center px-2 py-1 bg-blue-50 border border-blue-200 rounded-lg text-xs"
+                  >
                     <Briefcase className="h-3 w-3 text-blue-600 mr-1" />
                     {problem}
                     <button
-                      onClick={() => setSelectedProblems(selectedProblems.filter(p => p !== problem))}
+                      onClick={() =>
+                        setSelectedProblems(
+                          selectedProblems.filter((p) => p !== problem)
+                        )
+                      }
                       className="ml-1 text-blue-600 hover:text-blue-800"
                     >
                       <X className="h-3 w-3" />
@@ -291,13 +320,24 @@ export default function TalkToLawyer() {
             <div className="flex items-center space-x-2">
               <Users className="h-4 w-4 text-blue-600" />
               <p className="text-sm text-gray-600">
-                Showing <span className="font-medium text-gray-900">{filteredLawyers.length}</span> lawyers
-                {search && <span> for "<span className="font-medium">{search}</span>"</span>}
+                Showing{" "}
+                <span className="font-medium text-gray-900">
+                  {filteredLawyers.length}
+                </span>{" "}
+                lawyers
+                {search && (
+                  <span>
+                    {" "}
+                    for "<span className="font-medium">{search}</span>"
+                  </span>
+                )}
               </p>
             </div>
             <div className="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-gray-200">
               <Award className="h-4 w-4 text-yellow-500" />
-              <span className="text-xs text-gray-600">{lawyers.length} available</span>
+              <span className="text-xs text-gray-600">
+                {lawyers.length} available
+              </span>
             </div>
           </div>
 
@@ -317,9 +357,12 @@ export default function TalkToLawyer() {
               <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No lawyers found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No lawyers found
+              </h3>
               <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">
-                Try adjusting your search or filter criteria to find the right legal professional.
+                Try adjusting your search or filter criteria to find the right
+                legal professional.
               </p>
               <button
                 onClick={() => {

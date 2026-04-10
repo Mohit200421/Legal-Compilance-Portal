@@ -56,6 +56,18 @@ const socketHandler = (io) => {
       }
     );
 
+    // 🔥 REQUEST STATUS UPDATES - Lawyer Accept → User Notification
+    socket.on("requestStatusUpdated", (data) => {
+      console.log("🔄 Relaying requestStatusUpdated:", data);
+      io.to(data.userId.toString()).emit("requestStatusUpdated", data);
+    });
+
+    // 🔥 PAYMENT VERIFIED - User Pay → Lawyer Chat Unlock
+    socket.on("paymentVerified", (data) => {
+      console.log("💰 Relaying paymentVerified:", data);
+      io.to(data.lawyerId.toString()).emit("paymentVerified", data);
+    });
+
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });

@@ -113,16 +113,19 @@ exports.createOrder = async (req, res) => {
 
     console.log(`💰 Creating order: amount=${amount} for request=${requestId}`);
 
-    // 🚨 RAZORPAY ORDER CREATION
+    // 🚨 RAZORPAY ORDER CREATION - Fixed receipt length
+    const receiptId = `req_${requestId.slice(-10)}`;
     const order = await razorpay.orders.create({
       amount,
       currency: "INR",
-      receipt: `receipt_${requestId}_${Date.now()}`,
+      receipt: receiptId,
       notes: {
         requestId,
         userId: req.user?.id,
       },
     });
+
+    console.log(`📄 Receipt ID: ${receiptId}`);
 
     console.log("✅ RAZORPAY ORDER CREATED:", order.id);
 
@@ -139,8 +142,8 @@ exports.createOrder = async (req, res) => {
       source: err.source,
     });
 
-    // 🚨 SPECIFIC RAZORPAY 401 HANDLING
-    if (err.statusCode === 401 || err.message.includes("api key")) {
+    // 🚨 SPECIFIC RAZORPAY ERROR HANDLING - NULL SAFE
+    if (err.statusCode === 401 || (err?.message || "").includes("api key")) {
       return res.status(500).json({
         msg: "Razorpay authentication failed - check RENDER env vars",
         error: "RAZORPAY_401",
@@ -207,6 +210,21 @@ exports.verifyRazorpayPayment = async (req, res) => {
 
     request.status = "PAYMENT_VERIFIED";
     await request.save();
+
+    // 🔥 Real-time: Notify lawyer CHAT UNLOCKED 💬
+    const io = req.app.get("io");
+    if (io && request.lawyerId) {
+      io.to(request.lawyerId.toString()).emit("paymentVerified", {
+        requestId: request._id,
+        userId: req.user._id,
+        userName: req.user.name,
+        status: "PAYMENT_VERIFIED",
+        amount: request.amount,
+      });
+      console.log(
+        `💰📡 Emitted paymentVerified to lawyer ${request.lawyerId}: Chat unlocked!`
+      );
+    }
 
     console.log("✅ Payment verified:", razorpay_payment_id);
 

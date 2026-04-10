@@ -1,15 +1,19 @@
 import { io } from "socket.io-client";
 
-// Connect automatically when imported
-const socket = io(import.meta.env.VITE_API_URL || "http://localhost:5000", {
-  autoConnect: true, // Enable auto connect
+// 🔥 Remove /api if present
+const BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5000")
+  .replace("/api", "")
+  .replace(/\/$/, "");
+
+const socket = io(BASE_URL, {
+  autoConnect: true,
   withCredentials: true,
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
 });
 
-// Log connection status
+// Debug logs
 socket.on("connect", () => {
   console.log("✅ Socket connected:", socket.id);
 });
@@ -19,7 +23,7 @@ socket.on("disconnect", () => {
 });
 
 socket.on("connect_error", (error) => {
-  console.error("Socket connection error:", error);
+  console.error("❌ Socket connection error:", error.message);
 });
 
 export default socket;

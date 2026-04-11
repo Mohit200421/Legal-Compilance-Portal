@@ -22,6 +22,9 @@ import {
   Info,
 } from "lucide-react";
 
+// Import the app logo
+import appLogo from "../../assets/app_logo.png";
+
 export default function ApplyLawyer() {
   const navigate = useNavigate();
 
@@ -172,12 +175,14 @@ export default function ApplyLawyer() {
       {/* Main Content */}
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
-          {/* Logo */}
+          {/* Logo with Image */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center space-x-2 mb-3">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2.5 rounded-xl shadow-lg">
-                <Scale className="h-6 w-6 text-white" />
-              </div>
+              <img 
+                src={appLogo} 
+                alt="LawSetu Logo" 
+                className="h-10 w-auto object-contain"
+              />
               <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 LawSetu
               </span>

@@ -4,32 +4,32 @@ import API from "../../api/axios";
 import { AuthContext } from "../../context/AuthContext";
 import {
   LayoutDashboard,
-  MessageSquare,
-  Calendar,
-  FolderOpen,
   FileText,
-  UserPlus,
-  ClipboardList,
+  FolderOpen,
   Briefcase,
+  Calendar,
+  ClipboardList,
   LogOut,
   Menu,
-  X,
-  Bell,
   ChevronRight,
-  Shield,
   User,
   Settings,
   HelpCircle,
-  Scale,
-  Gavel
+  Shield,
+  Gavel,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon,
+  UserPlus,
 } from "lucide-react";
+
+// Import the app logo
+import appLogo from "../../assets/app_logo.png";
 
 const UserLayout = () => {
   const navigate = useNavigate();
   const { setUser, user } = useContext(AuthContext);
-  const [unreadCount, setUnreadCount] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const intervalRef = useRef(null);
 
   const handleLogout = async () => {
@@ -45,196 +45,164 @@ const UserLayout = () => {
     }
   };
 
-  const fetchUnreadCount = async () => {
-    try {
-      const res = await API.get("/user/discussion");
-      let totalUnread = 0;
-      res.data.forEach((d) => {
-        const count =
-          d?.messages?.filter(
-            (m) => m.senderRole === "lawyer" && m.isRead === false
-          )?.length || 0;
-        totalUnread += count;
-      });
-      setUnreadCount(totalUnread);
-    } catch (err) {
-      console.log("Unread count fetch failed:", err);
-      if (err.response?.status === 401) {
-        setUser(null);
-        navigate("/login", { replace: true });
-      }
-    }
-  };
-
   useEffect(() => {
-    fetchUnreadCount();
-    intervalRef.current = setInterval(() => {
-      fetchUnreadCount();
-    }, 5000);
-    return () => clearInterval(intervalRef.current);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, []);
 
+  // Load sidebar state from localStorage
+  useEffect(() => {
+    const savedState = localStorage.getItem("userSidebarCollapsed");
+    if (savedState !== null) {
+      setIsSidebarCollapsed(savedState === "true");
+    }
+  }, []);
+
+  // Save sidebar state to localStorage
+  const toggleSidebarCollapse = () => {
+    const newState = !isSidebarCollapsed;
+    setIsSidebarCollapsed(newState);
+    localStorage.setItem("userSidebarCollapsed", newState);
+  };
+
   const navItems = [
-    { to: "/user", icon: LayoutDashboard, label: "Dashboard", end: true },
+    { to: "/user", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/user/talk-to-lawyer", icon: UserPlus, label: "Talk To Lawyer" },
     { to: "/user/articles", icon: FileText, label: "Legal Articles" },
     { to: "/user/my-requests", icon: ClipboardList, label: "My Requests" },
     { to: "/user/documents", icon: FolderOpen, label: "Documents" },
-  /*  {
-      to: "/user/discussion",
-      icon: MessageSquare,
-      label: "Discussions",
-      badge: unreadCount,
-    },
-    { to: "/user/events", icon: Calendar, label: "Events" },
-    { to: "/user/documents", icon: FolderOpen, label: "Documents" },
-    { to: "/user/jobs", icon: Briefcase, label: "Job Listings" },*/
-  ];
-
-  const quickActions = [
-    { to: "/user/profile", label: "Profile Settings", icon: Settings },
-    { to: "/user/help", label: "Help Center", icon: HelpCircle },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex overflow-hidden">
-      {/* Mobile Header - Compact */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 px-3 py-2 flex items-center justify-between">
+    <div className="min-h-screen bg-gray-50 flex overflow-hidden">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 px-4 py-3 flex items-center justify-between">
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           aria-label="Open menu"
         >
           <Menu className="h-5 w-5 text-gray-700" />
         </button>
-        
-        <div className="flex items-center space-x-1.5">
-          <Scale className="h-4 w-4 text-blue-600" />
-          <span className="font-semibold text-sm text-gray-900">LawSetu</span>
+
+        <div className="flex items-center space-x-2">
+          <img 
+            src={appLogo} 
+            alt="LawSetu Logo" 
+            className="h-7 w-auto object-contain"
+          />
+          <span className="font-semibold text-base text-gray-900">
+            LawSetu
+          </span>
         </div>
-        
-        <div className="relative">
-          <button
-            onClick={() => setShowNotifications(!showNotifications)}
-            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors relative"
-            aria-label="Notifications"
-          >
-            <Bell className="h-4 w-4 text-gray-700" />
-            {unreadCount > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] w-3.5 h-3.5 flex items-center justify-center rounded-full">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </button>
-        </div>
+
+        <div className="w-8"></div>
       </div>
 
       {/* Sidebar */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-2xl
-          transform transition-transform duration-300 ease-in-out
+          fixed inset-y-0 left-0 z-50 bg-white shadow-lg
+          transform transition-all duration-300 ease-in-out
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 md:relative md:shadow-xl
+          md:translate-x-0
+          ${isSidebarCollapsed ? "md:w-16" : "md:w-64"}
           flex flex-col
         `}
       >
-        {/* Sidebar Header - Compact */}
-        <div className="flex-shrink-0 h-14 flex items-center justify-between px-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700">
-          <div className="flex items-center space-x-2">
-            <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
-              <Shield className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-sm font-bold text-white">LawSetu</span>
-          </div>
-          <button
-            className="md:hidden text-white/80 hover:text-white transition-colors"
-            onClick={() => setIsSidebarOpen(false)}
-            aria-label="Close menu"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        {/* User Profile Card - Compact */}
-        <div className="flex-shrink-0 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-b border-blue-100">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-md">
-              <User className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-gray-900 truncate">
-                {user?.name || "User"}
-              </p>
-              <p className="text-[10px] text-gray-600 truncate">
-                Client Portal
-              </p>
-              <div className="flex items-center mt-1">
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[8px] font-medium bg-green-100 text-green-800">
-                  ● Online
+        {/* Sidebar Header - Logo Area */}
+        <div className={`flex-shrink-0 h-16 flex items-center px-4 border-b border-gray-100 bg-white`}>
+          {!isSidebarCollapsed ? (
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center space-x-2">
+                <img 
+                  src={appLogo} 
+                  alt="LawSetu Logo" 
+                  className="h-8 w-auto object-contain"
+                />
+                <span className="text-lg font-bold text-gray-900">
+                  LawSetu
                 </span>
               </div>
+              <button
+                onClick={toggleSidebarCollapse}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-600"
+                aria-label="Collapse sidebar"
+              >
+                <ChevronLeft size={16} />
+              </button>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center justify-between w-full">
+              <img 
+                src={appLogo} 
+                alt="LawSetu Logo" 
+                className="h-7 w-auto object-contain mx-auto"
+              />
+              <button
+                onClick={toggleSidebarCollapse}
+                className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-400 hover:text-gray-600 -mr-1"
+                aria-label="Expand sidebar"
+              >
+                <ChevronRightIcon size={16} />
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Navigation - Scrollable */}
-        <nav className="flex-1 overflow-y-auto py-3 px-3 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-          <div className="space-y-0.5">
-            <p className="px-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">
-              Main Menu
-            </p>
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) =>
-                  `flex items-center justify-between px-2 py-2 rounded-lg text-xs transition-all ${
-                    isActive
-                      ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`
-                }
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <div className="flex items-center space-x-2 min-w-0">
-                  <item.icon className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="truncate font-medium">{item.label}</span>
-                </div>
-                {item.badge > 0 && (
-                  <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                    {item.badge > 99 ? "99+" : item.badge}
-                  </span>
-                )}
-              </NavLink>
-            ))}
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto py-4">
+          <div className="px-3">
+            {/* MAIN Section */}
+            {!isSidebarCollapsed && (
+              <p className="px-2 text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                MAIN
+              </p>
+            )}
+            <div className="space-y-1">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === "/user"}
+                  className={({ isActive }) =>
+                    `flex items-center ${
+                      isSidebarCollapsed ? "justify-center" : "justify-start"
+                    } px-2 py-2 rounded-lg text-sm transition-all ${
+                      isActive
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    }`
+                  }
+                  onClick={() => setIsSidebarOpen(false)}
+                  title={isSidebarCollapsed ? item.label : ""}
+                >
+                  <item.icon className={`h-5 w-5 flex-shrink-0 ${isSidebarCollapsed ? "" : "mr-3"}`} />
+                  {!isSidebarCollapsed && (
+                    <span className="font-medium">{item.label}</span>
+                  )}
+                </NavLink>
+              ))}
+            </div>
           </div>
         </nav>
 
-        {/* Quick Actions & Logout - Compact */}
-        <div className="flex-shrink-0 p-3 border-t border-gray-200 bg-gray-50">
-          {quickActions.map((action, index) => {
-            const Icon = action.icon;
-            return (
-              <NavLink
-                key={index}
-                to={action.to}
-                className="flex items-center space-x-2 w-full px-2 py-2 rounded-lg text-xs text-gray-700 hover:bg-gray-200 transition-colors mb-0.5"
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <Icon className="h-3.5 w-3.5 flex-shrink-0 text-gray-500" />
-                <span className="truncate font-medium">{action.label}</span>
-              </NavLink>
-            );
-          })}
-
+        {/* Bottom Section - Logout */}
+        <div className="flex-shrink-0 p-3 border-t border-gray-100">
           <button
             onClick={handleLogout}
-            className="flex items-center space-x-2 w-full px-2 py-2 rounded-lg text-xs text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all shadow-md mt-1"
+            className={`flex items-center ${
+              isSidebarCollapsed ? "justify-center" : "justify-start"
+            } w-full px-2 py-2 rounded-lg text-sm text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all`}
+            title={isSidebarCollapsed ? "Logout" : ""}
           >
-            <LogOut className="h-3.5 w-3.5 flex-shrink-0" />
-            <span className="truncate font-medium">Logout</span>
+            <LogOut className={`h-5 w-5 flex-shrink-0 ${isSidebarCollapsed ? "" : "mr-3"}`} />
+            {!isSidebarCollapsed && (
+              <span className="font-medium">Logout</span>
+            )}
           </button>
         </div>
       </aside>
@@ -242,91 +210,19 @@ const UserLayout = () => {
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden md:ml-0">
-        {/* Desktop Header - Compact */}
-        <header className="hidden md:flex flex-shrink-0 bg-white border-b border-gray-200 h-14 items-center justify-between px-6 sticky top-0 z-30">
-          <div className="flex items-center">
-            <div className="flex items-center space-x-1.5 text-xs">
-              <span className="text-gray-500">User Portal</span>
-              <ChevronRight className="h-3 w-3 text-gray-400" />
-              <span className="text-gray-900 font-medium">Dashboard</span>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            {/* Notifications */}
-            <div className="relative">
-              <button
-                className="relative p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                onClick={() => setShowNotifications(!showNotifications)}
-                aria-label="Notifications"
-              >
-                <Bell className="h-4 w-4 text-gray-700" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] w-3.5 h-3.5 flex items-center justify-center rounded-full">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Notifications Dropdown */}
-              {showNotifications && (
-                <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg border border-gray-200 shadow-xl z-50">
-                  <div className="p-3 border-b border-gray-200">
-                    <h3 className="text-xs font-semibold text-gray-900">
-                      Notifications
-                    </h3>
-                  </div>
-                  <div className="p-3 text-center text-xs text-gray-500">
-                    {unreadCount > 0 ? (
-                      <div>
-                        <p className="mb-1.5">
-                          You have {unreadCount} unread message
-                          {unreadCount > 1 ? "s" : ""}
-                        </p>
-                        <NavLink
-                          to="/user/discussion"
-                          className="text-blue-600 hover:text-blue-700 text-[10px] font-medium"
-                          onClick={() => setShowNotifications(false)}
-                        >
-                          View all messages →
-                        </NavLink>
-                      </div>
-                    ) : (
-                      <p>No new notifications</p>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* User Menu - Compact */}
-            <div className="flex items-center space-x-2 pl-3 border-l border-gray-200">
-              <div className="text-right">
-                <p className="text-xs font-semibold text-gray-900 truncate max-w-[150px]">
-                  {user?.name || "User"}
-                </p>
-                <p className="text-[10px] text-gray-500 truncate max-w-[150px]">
-                  Client
-                </p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
-                <User className="h-4 w-4 text-white" />
-              </div>
-            </div>
-          </div>
-        </header>
-
+      <div className={`flex-1 flex flex-col h-screen overflow-hidden transition-all duration-300 ${
+        isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
+      }`}>
         {/* Mobile Header Spacer */}
-        <div className="md:hidden h-12"></div>
+        <div className="md:hidden h-14"></div>
 
-        {/* Page Content - Scrollable */}
+        {/* Page Content */}
         <main className="flex-1 overflow-y-auto bg-gray-50">
           <div className="p-4 md:p-6">
             <div className="max-w-7xl mx-auto">
@@ -335,21 +231,19 @@ const UserLayout = () => {
           </div>
         </main>
 
-        {/* Footer - Compact */}
-        <footer className="flex-shrink-0 bg-white border-t border-gray-200 py-2 px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between text-[10px] text-gray-500 space-y-1 md:space-y-0">
-            <p>
-              © {new Date().getFullYear()} LawSetu
-            </p>
-            <div className="flex items-center space-x-4">
+        {/* Footer */}
+        <footer className="flex-shrink-0 bg-white border-t border-gray-200 py-3 px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 space-y-2 md:space-y-0">
+            <p>© {new Date().getFullYear()} LawSetu. All rights reserved.</p>
+            <div className="flex items-center space-x-6">
               <button className="hover:text-gray-700 transition-colors">
-                Privacy
+                Privacy Policy
               </button>
               <button className="hover:text-gray-700 transition-colors">
-                Terms
+                Terms of Service
               </button>
               <button className="hover:text-gray-700 transition-colors">
-                Help
+                Help Center
               </button>
             </div>
           </div>

@@ -13,6 +13,9 @@ import {
   AlertCircle
 } from "lucide-react";
 
+// Import the app logo
+import appLogo from "../../assets/app_logo.png";
+
 export default function VerifyOtp() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -126,9 +129,9 @@ export default function VerifyOtp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Back Button */}
-      <div className="absolute top-6 left-6 md:top-8 md:left-8">
+    <div className="min-h-screen bg-white">
+      {/* Back Button - Hidden on mobile, visible on desktop */}
+      <div className="hidden md:block absolute top-6 left-6 md:top-8 md:left-8">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group"
@@ -141,19 +144,19 @@ export default function VerifyOtp() {
       {/* Main Content */}
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          {/* Logo */}
+          {/* Logo with Image - App name below logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center space-x-2 mb-4">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2.5 rounded-xl shadow-lg">
-                <Scale className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+            <div className="flex flex-col items-center justify-center space-y-3 mb-4">
+              <img 
+                src={appLogo} 
+                alt="LawSetu Logo" 
+                className="h-16 w-auto object-contain"
+              />
+              <span className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 LawSetu
               </span>
             </div>
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl mb-4 mx-auto">
-              <Mail className="h-6 w-6 text-white" />
-            </div>
+            
             <h2 className="text-2xl font-bold text-gray-900">Check your inbox</h2>
             <p className="text-sm text-gray-600 mt-2">
               We've sent a 6-digit verification code to

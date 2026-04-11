@@ -13,6 +13,9 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+// Import the app logo
+import appLogo from "../assets/app_logo.png";
+
 export default function TermsAndConditions() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -39,7 +42,7 @@ export default function TermsAndConditions() {
     { id: "acceptance", label: "Acceptance of Terms" },
     { id: "description", label: "Description of Service" },
     { id: "account", label: "User Accounts" },
-    { id: " obligations", label: "User Obligations" },
+    { id: "obligations", label: "User Obligations" },
     { id: "intellectual", label: "Intellectual Property" },
     { id: "termination", label: "Termination" },
     { id: "liability", label: "Limitation of Liability" },
@@ -48,24 +51,26 @@ export default function TermsAndConditions() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-white">
       {/* Navigation Bar */}
       <nav
         className={`fixed w-full z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg"
-            : "bg-white dark:bg-gray-900"
+            ? "bg-white/95 backdrop-blur-md shadow-lg"
+            : "bg-white"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">
-            {/* Logo */}
+            {/* Logo with stacked layout */}
             <Link to="/" className="flex items-center space-x-2 group">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2 rounded-xl group-hover:scale-110 transition-transform shadow-lg">
-                <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
-              </div>
-              <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-              LawSetu
+              <img 
+                src={appLogo} 
+                alt="LawSetu Logo" 
+                className="h-8 w-auto object-contain"
+              />
+              <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                LawSetu
               </span>
             </Link>
 
@@ -73,7 +78,7 @@ export default function TermsAndConditions() {
             <div className="hidden md:flex items-center space-x-6">
               <Link
                 to="/login"
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
               >
                 Login
               </Link>
@@ -87,13 +92,13 @@ export default function TermsAndConditions() {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
-                <X className="h-6 w-6 text-gray-700 dark:text-gray-300" />
+                <X className="h-6 w-6 text-gray-700" />
               ) : (
-                <Menu className="h-6 w-6 text-gray-700 dark:text-gray-300" />
+                <Menu className="h-6 w-6 text-gray-700" />
               )}
             </button>
           </div>
@@ -101,18 +106,18 @@ export default function TermsAndConditions() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+          <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-4 py-4 space-y-3">
               <Link
                 to="/login"
-                className="block py-2 text-gray-700 dark:text-gray-300 font-medium"
+                className="block py-2 text-gray-700 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="block py-2 text-blue-600 dark:text-blue-400 font-medium"
+                className="block py-2 text-blue-600 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Register
@@ -127,8 +132,8 @@ export default function TermsAndConditions() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar - Table of Contents */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
-              <div className="sticky top-24 bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">
+              <div className="sticky top-24 bg-gray-50 rounded-xl p-6">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 mb-4">
                   Table of Contents
                 </h3>
                 <ul className="space-y-2">
@@ -136,7 +141,7 @@ export default function TermsAndConditions() {
                     <li key={item.id}>
                       <button
                         onClick={() => scrollToSection(item.id)}
-                        className="text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-left"
+                        className="text-sm text-gray-600 hover:text-blue-600 transition-colors text-left"
                       >
                         {item.label}
                       </button>
@@ -148,10 +153,10 @@ export default function TermsAndConditions() {
 
             {/* Main Content */}
             <main className="flex-1 py-8 lg:py-12">
-              {/* Back Button */}
+              {/* Back Button - Hidden on mobile, visible on desktop */}
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6"
+                className="hidden md:flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors mb-6"
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span className="text-sm font-medium">Back</span>
@@ -159,10 +164,10 @@ export default function TermsAndConditions() {
 
               {/* Header */}
               <div className="mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                   Terms and Conditions
                 </h1>
-                <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center space-x-4 text-sm text-gray-500">
                   <div className="flex items-center space-x-1">
                     <Clock className="h-4 w-4" />
                     <span>Last updated: January 2025</span>
@@ -175,10 +180,10 @@ export default function TermsAndConditions() {
               </div>
 
               {/* Introduction */}
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-6 mb-8">
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8">
                 <div className="flex items-start">
-                  <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5 mr-3" />
-                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5 mr-3" />
+                  <p className="text-sm text-blue-700">
                     Please read these Terms and Conditions carefully before
                     using the LawSetu platform. By accessing or using
                     our services, you agree to be bound by these terms.
@@ -190,13 +195,13 @@ export default function TermsAndConditions() {
               <div className="space-y-8">
                 {/* Section 1: Acceptance of Terms */}
                 <section id="acceptance" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       1
                     </span>
                     Acceptance of Terms
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
                       By accessing and using LawSetu ("the Platform"),
                       you accept and agree to be bound by the terms and
@@ -215,13 +220,13 @@ export default function TermsAndConditions() {
 
                 {/* Section 2: Description of Service */}
                 <section id="description" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       2
                     </span>
                     Description of Service
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
                       LawSetu is a comprehensive legal practice
                       management platform that provides:
@@ -244,13 +249,13 @@ export default function TermsAndConditions() {
 
                 {/* Section 3: User Accounts */}
                 <section id="account" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       3
                     </span>
                     User Accounts
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
                       To access certain features of the Platform, you must
                       create an account. You agree to:
@@ -277,13 +282,13 @@ export default function TermsAndConditions() {
 
                 {/* Section 4: User Obligations */}
                 <section id="obligations" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       4
                     </span>
                     User Obligations
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>When using LawSetu, you agree NOT to:</p>
                     <ul className="list-disc pl-6 mt-4 space-y-2">
                       <li>Violate any applicable laws or regulations</li>
@@ -309,13 +314,13 @@ export default function TermsAndConditions() {
 
                 {/* Section 5: Intellectual Property */}
                 <section id="intellectual" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       5
                     </span>
                     Intellectual Property
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
                       The LawSetu platform, including all content,
                       features, and functionality, is owned by LawSetu
@@ -338,13 +343,13 @@ export default function TermsAndConditions() {
 
                 {/* Section 6: Termination */}
                 <section id="termination" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       6
                     </span>
                     Termination
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
                       Either party may terminate this agreement at any time.
                       Upon termination:
@@ -371,13 +376,13 @@ export default function TermsAndConditions() {
 
                 {/* Section 7: Limitation of Liability */}
                 <section id="liability" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       7
                     </span>
                     Limitation of Liability
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
                       TO THE MAXIMUM EXTENT PERMITTED BY LAW, LawSetu
                       SHALL NOT BE LIABLE FOR:
@@ -412,17 +417,17 @@ export default function TermsAndConditions() {
 
                 {/* Section 8: Privacy & Data Protection */}
                 <section id="privacy" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       8
                     </span>
                     Privacy & Data Protection
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
-                      Your privacy is important to us. Please review our our
-                      Privacy Policy, which explains how we collect, use,
-                      disclose, and safeguard your information.
+                      Your privacy is important to us. Please review our Privacy
+                      Policy, which explains how we collect, use, disclose, and
+                      safeguard your information.
                     </p>
                     <p className="mt-4">
                       By using the Platform, you consent to the processing of
@@ -438,18 +443,18 @@ export default function TermsAndConditions() {
 
                 {/* Section 9: Contact Information */}
                 <section id="contact" className="scroll-mt-20">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                     <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">
                       9
                     </span>
                     Contact Information
                   </h2>
-                  <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                  <div className="prose max-w-none text-gray-600">
                     <p>
                       If you have any questions about these Terms and
                       Conditions, please contact us:
                     </p>
-                    <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mt-4">
+                    <div className="bg-gray-50 rounded-xl p-6 mt-4">
                       <p>
                         <strong>LawSetu</strong>
                       </p>
@@ -484,11 +489,15 @@ export default function TermsAndConditions() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
+      <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <Scale className="h-6 w-6 text-blue-500" />
+              <img 
+                src={appLogo} 
+                alt="LawSetu Logo" 
+                className="h-6 w-auto object-contain brightness-0 invert"
+              />
               <span className="font-bold">LawSetu</span>
             </div>
             <div className="flex space-x-6 text-sm text-gray-400">
@@ -498,7 +507,6 @@ export default function TermsAndConditions() {
               >
                 Terms
               </Link>
-
               <Link
                 to="/contact"
                 className="hover:text-white transition-colors"

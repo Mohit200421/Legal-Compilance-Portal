@@ -3,9 +3,12 @@ import aboutImg from "../assets/about.jpg";
 import { Scale, Target, Eye, Heart, CheckCircle } from "lucide-react";
 import Navbar from "../components/Navbar";
 
+// Import the app logo
+import appLogo from "../assets/app_logo.png";
+
 export default function About() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Navbar */}
       <Navbar />
 
@@ -15,10 +18,10 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                About LawSatu
+                About LawSetu
               </h1>
               <p className="text-lg text-blue-100 mb-8 leading-relaxed">
-                LawSatu is a full-service law firm providing expert legal
+                LawSetu is a full-service law firm providing expert legal
                 guidance in civil, criminal, corporate, family and cyber law. We
                 combine deep legal knowledge with real-world experience to
                 protect your rights and deliver outcomes.
@@ -59,7 +62,7 @@ export default function About() {
       </section>
 
       {/* Mission / Vision / Values */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-6">
             {/* Mission */}
@@ -122,7 +125,7 @@ export default function About() {
       </section>
 
       {/* Team Members */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -136,7 +139,7 @@ export default function About() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* Team Member 1 */}
-            <div className="bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition">
+            <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition">
               <div className="aspect-[4/3]">
                 <img
                   src={aboutImg}
@@ -155,7 +158,7 @@ export default function About() {
             </div>
 
             {/* Team Member 2 */}
-            <div className="bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition">
+            <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition">
               <div className="aspect-[4/3]">
                 <img
                   src={aboutImg}
@@ -174,7 +177,7 @@ export default function About() {
             </div>
 
             {/* Team Member 3 */}
-            <div className="bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition">
+            <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition">
               <div className="aspect-[4/3]">
                 <img
                   src={aboutImg}
@@ -218,9 +221,13 @@ export default function About() {
       <footer className="bg-slate-900 text-slate-300 py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <Scale className="h-8 w-8 text-blue-400" />
+            <img 
+              src={appLogo} 
+              alt="LawSetu Logo" 
+              className="h-8 w-auto object-contain brightness-0 invert"
+            />
             <span className="text-xl font-bold text-white">
-            LawSetu
+              LawSetu
             </span>
           </div>
           <p className="text-slate-400 mb-4">

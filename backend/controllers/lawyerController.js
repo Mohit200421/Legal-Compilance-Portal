@@ -603,7 +603,8 @@ exports.getMyProfile = async (req, res) => {
   try {
     const lawyer = await User.findById(req.user.id)
       .select("-passwordHash")
-      .populate("cityId stateId");
+      .populate("cityId", "name")
+.populate("stateId", "name");
 
     if (!lawyer) {
       return res.status(404).json({ msg: "Profile not found" });
@@ -629,8 +630,17 @@ exports.getMyProfile = async (req, res) => {
       address: lawyer.address || "",
       // Location object expected by frontend
       location: {
-        city: lawyer.cityId?.name || "",
-        state: lawyer.stateId?.name || "",
+        city:
+  lawyer.cityId?.name ||
+  lawyer.city?.name ||
+  lawyer.city ||
+  "",
+
+state:
+  lawyer.stateId?.name ||
+  lawyer.state?.name ||
+  lawyer.state ||
+  "",
         address: lawyer.address || "",
       },
       // Practice Areas and Services from database

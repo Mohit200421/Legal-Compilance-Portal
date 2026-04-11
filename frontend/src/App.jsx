@@ -61,22 +61,81 @@ function App() {
     <CallProvider>
       <BrowserRouter>
         <Toaster
-          position="top-right"
+          position="bottom-right"
           reverseOrder={false}
           toastOptions={{
             duration: 4000,
+            position: "bottom-right",
             style: {
-              background: "#333",
+              background: "linear-gradient(135deg, #1f2937 0%, #111827 100%)",
               color: "#fff",
+              borderRadius: "12px",
+              padding: "12px 16px",
+              fontSize: "14px",
+              fontWeight: "500",
+              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
             },
             success: {
+              duration: 3000,
               style: {
-                background: "#10b981",
+                background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                color: "#fff",
+                borderRadius: "12px",
+                padding: "12px 16px",
+                fontSize: "14px",
+                fontWeight: "500",
+                boxShadow: "0 10px 15px -3px rgba(16, 185, 129, 0.2), 0 4px 6px -2px rgba(16, 185, 129, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              },
+              iconTheme: {
+                primary: "#fff",
+                secondary: "#10b981",
               },
             },
             error: {
+              duration: 5000,
               style: {
-                background: "#ef4444",
+                background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                color: "#fff",
+                borderRadius: "12px",
+                padding: "12px 16px",
+                fontSize: "14px",
+                fontWeight: "500",
+                boxShadow: "0 10px 15px -3px rgba(239, 68, 68, 0.2), 0 4px 6px -2px rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              },
+              iconTheme: {
+                primary: "#fff",
+                secondary: "#ef4444",
+              },
+            },
+            loading: {
+              style: {
+                background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                color: "#fff",
+                borderRadius: "12px",
+                padding: "12px 16px",
+                fontSize: "14px",
+                fontWeight: "500",
+                boxShadow: "0 10px 15px -3px rgba(59, 130, 246, 0.2)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              },
+            },
+            // Custom icons for different toast types
+            icon: true,
+            // RTL support if needed
+            rtl: false,
+            // Close button styling
+            closeButton: {
+              style: {
+                color: "#fff",
+                opacity: 0.7,
+                transition: "opacity 0.2s",
+              },
+              onClick: (e) => {
+                // Custom close behavior if needed
+                console.log("Toast closed");
               },
             },
           }}

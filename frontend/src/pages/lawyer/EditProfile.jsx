@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../../api/axios";
 import { getMyProfile, updateLawyerProfile } from "../../api/lawyerApi";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import {
   User,
@@ -10,7 +10,6 @@ import {
   Camera,
   Save,
   X,
-  Award,
   Loader2,
   CheckCircle,
   Scale,
@@ -58,6 +57,13 @@ const EditProfile = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [categories, setCategories] = useState([]);
 
+  // Safe name getter helper
+  const getName = (item) => {
+    if (!item) return "Unknown";
+    if (typeof item === "string") return item;
+    return item.name || item.title || item._id || "Unknown";
+  };
+
   // Icon mapping for practice areas
   const getAreaIcon = (areaName) => {
     const iconMap = {
@@ -89,8 +95,9 @@ const EditProfile = () => {
           bio: data.bio || "",
           experience: data.experience || "",
           practiceAreas:
-            data.practiceAreas?.filter((p) => p && p._id).map((p) => p._id) ||
-            [],
+            data.practiceAreas
+              ?.map((p) => (typeof p === "string" ? p : p?._id || p?.name))
+              .filter(Boolean) || [],
           state: data.location?.state || "",
           city: data.location?.city || "",
           address: data.location?.address || "",
@@ -110,10 +117,6 @@ const EditProfile = () => {
         setImagePreview(data.profileImage || "");
       } catch (error) {
         console.log("PROFILE ERROR:", error.response || error);
-
-        if (error.response?.status !== 304) {
-          toast.error("Failed to load profile");
-        }
       } finally {
         setLoading(false);
       }
@@ -126,7 +129,7 @@ const EditProfile = () => {
   useEffect(() => {
     API.get("/public/categories")
       .then((res) => setCategories(res.data || []))
-      .catch(() => toast.error("Failed to load practice areas"));
+      .catch(() => {});
   }, []);
 
   /* ================= INPUT HANDLER ================= */
@@ -198,14 +201,13 @@ const EditProfile = () => {
       const data = await res.json();
 
       if (data.error) {
-        toast.error("Image upload failed: " + data.error.message);
+        console.error("Image upload failed:", data.error.message);
       } else {
         setForm((prev) => ({ ...prev, profileImage: data.secure_url }));
         setImagePreview(data.secure_url);
-        toast.success("Profile image uploaded successfully!");
       }
     } catch (error) {
-      toast.error("Image upload failed. Please try again.");
+      console.error("Image upload failed:", error);
     } finally {
       setImageUploading(false);
     }
@@ -224,11 +226,10 @@ const EditProfile = () => {
 
     try {
       await updateLawyerProfile(form);
-      toast.success("Profile updated successfully!");
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000);
     } catch {
-      toast.error("Update failed. Please try again.");
+      console.error("Update failed");
     } finally {
       setSaving(false);
     }
@@ -426,12 +427,12 @@ const EditProfile = () => {
                     Languages Spoken
                   </label>
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {form.languages.map((lang) => (
+                    {form.languages?.map((lang, idx) => (
                       <span
-                        key={lang}
+                        key={idx}
                         className="inline-flex items-center space-x-1 px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm"
                       >
-                        <span>{lang}</span>
+                        <span>{getName(lang)}</span>
                         <button
                           type="button"
                           onClick={() => removeLanguage(lang)}
@@ -467,21 +468,21 @@ const EditProfile = () => {
                     Practice Areas
                   </label>
                   <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto p-2">
-                    {categories.map((area) => {
-                      const Icon = getAreaIcon(area.name);
+                    {categories?.map((area) => {
+                      const Icon = getAreaIcon(getName(area));
                       return (
                         <label
-                          key={area._id}
+                          key={area?._id || area}
                           className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                            form.practiceAreas.includes(area._id)
+                            form.practiceAreas.includes(area?._id)
                               ? "border-purple-600 bg-purple-50"
                               : "border-gray-200 hover:border-purple-300"
                           }`}
                         >
                           <input
                             type="checkbox"
-                            value={area._id}
-                            checked={form.practiceAreas.includes(area._id)}
+                            value={area?._id || area}
+                            checked={form.practiceAreas.includes(area?._id)}
                             onChange={(e) => {
                               const value = e.target.value;
                               setForm((prev) => ({
@@ -499,19 +500,19 @@ const EditProfile = () => {
                           />
                           <Icon
                             className={`h-5 w-5 mr-2 ${
-                              form.practiceAreas.includes(area._id)
+                              form.practiceAreas.includes(area?._id)
                                 ? "text-purple-600"
                                 : "text-gray-400"
                             }`}
                           />
                           <span
                             className={`text-sm ${
-                              form.practiceAreas.includes(area._id)
+                              form.practiceAreas.includes(area?._id)
                                 ? "text-purple-700 font-medium"
                                 : "text-gray-600"
                             }`}
                           >
-                            {area.name}
+                            {getName(area)}
                           </span>
                         </label>
                       );
@@ -528,7 +529,7 @@ const EditProfile = () => {
                     <input
                       type="text"
                       name="barCouncilId"
-                      value={form.barCouncilId}
+                      value={String(form.barCouncilId || "")}
                       onChange={handleChange}
                       placeholder="BC-123456"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -541,7 +542,7 @@ const EditProfile = () => {
                     <input
                       type="text"
                       name="education"
-                      value={form.education}
+                      value={String(form.education || "")}
                       onChange={handleChange}
                       placeholder="LL.B., University Name"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -557,7 +558,7 @@ const EditProfile = () => {
                   <input
                     type="number"
                     name="consultationFee"
-                    value={form.consultationFee}
+                    value={form.consultationFee || ""}
                     onChange={handleChange}
                     min="0"
                     step="50"
@@ -605,7 +606,7 @@ const EditProfile = () => {
                       <input
                         type="text"
                         name="address"
-                        value={form.address}
+                        value={String(form.address || "")}
                         onChange={handleChange}
                         placeholder="Street address, building, etc."
                         className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -620,7 +621,7 @@ const EditProfile = () => {
                         <input
                           type="text"
                           name="city"
-                          value={form.city}
+                          value={String(form.city || "")}
                           onChange={handleChange}
                           placeholder="City"
                           className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -633,7 +634,7 @@ const EditProfile = () => {
                         <input
                           type="text"
                           name="state"
-                          value={form.state}
+                          value={String(form.state || "")}
                           onChange={handleChange}
                           placeholder="State"
                           className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -648,7 +649,7 @@ const EditProfile = () => {
                       <input
                         type="text"
                         name="pincode"
-                        value={form.pincode}
+                        value={String(form.pincode || "")}
                         onChange={handleChange}
                         placeholder="e.g., 10001"
                         className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -668,12 +669,14 @@ const EditProfile = () => {
                   </label>
 
                   <div className="space-y-3 mb-4">
-                    {form.services.map((service, index) => (
+                    {form.services?.map((service, index) => (
                       <div
                         key={index}
                         className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200"
                       >
-                        <span className="text-sm text-gray-700">{service}</span>
+                        <span className="text-sm text-gray-700">
+                          {getName(service)}
+                        </span>
                         <button
                           type="button"
                           onClick={() => removeService(index)}
@@ -717,7 +720,7 @@ const EditProfile = () => {
                   <input
                     type="url"
                     name="website"
-                    value={form.website}
+                    value={String(form.website || "")}
                     onChange={handleChange}
                     placeholder="https://yourwebsite.com"
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -744,13 +747,13 @@ const EditProfile = () => {
                   <textarea
                     name="bio"
                     rows="5"
-                    value={form.bio}
+                    value={String(form.bio || "")}
                     onChange={handleChange}
                     placeholder="Tell clients about your experience, expertise, and approach..."
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 transition-all resize-none"
                   />
                   <p className="text-xs text-gray-400 mt-2">
-                    {form.bio.length}/500 characters
+                    {form.bio?.length || 0}/500 characters
                   </p>
                 </div>
 
@@ -762,7 +765,7 @@ const EditProfile = () => {
                     <input
                       type="number"
                       name="experience"
-                      value={form.experience}
+                      value={form.experience || ""}
                       onChange={handleChange}
                       min="0"
                       max="70"
@@ -776,7 +779,7 @@ const EditProfile = () => {
                     <input
                       type="tel"
                       name="phone"
-                      value={form.phone}
+                      value={String(form.phone || "")}
                       onChange={handleChange}
                       placeholder="+1 234 567 8900"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -789,12 +792,12 @@ const EditProfile = () => {
                     Languages Spoken
                   </label>
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {form.languages.map((lang) => (
+                    {form.languages?.map((lang, idx) => (
                       <span
-                        key={lang}
+                        key={idx}
                         className="inline-flex items-center space-x-1 px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm"
                       >
-                        <span>{lang}</span>
+                        <span>{getName(lang)}</span>
                         <button
                           type="button"
                           onClick={() => removeLanguage(lang)}
@@ -834,21 +837,23 @@ const EditProfile = () => {
                     Practice Areas
                   </label>
                   <div className="grid grid-cols-3 gap-3 max-h-80 overflow-y-auto p-2">
-                    {categories.map((area) => {
-                      const Icon = getAreaIcon(area.name);
+                    {categories?.map((area) => {
+                      const Icon = getAreaIcon(getName(area));
                       return (
                         <label
-                          key={area._id}
+                          key={area?._id || area}
                           className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                            form.practiceAreas.includes(area._id)
+                            form.practiceAreas.includes(area?._id || area)
                               ? "border-purple-600 bg-purple-50"
                               : "border-gray-200 hover:border-purple-300"
                           }`}
                         >
                           <input
                             type="checkbox"
-                            value={area._id}
-                            checked={form.practiceAreas.includes(area._id)}
+                            value={area?._id || area}
+                            checked={form.practiceAreas.includes(
+                              area?._id || area
+                            )}
                             onChange={(e) => {
                               const value = e.target.value;
                               setForm((prev) => ({
@@ -866,19 +871,19 @@ const EditProfile = () => {
                           />
                           <Icon
                             className={`h-5 w-5 mr-2 ${
-                              form.practiceAreas.includes(area._id)
+                              form.practiceAreas.includes(area?._id || area)
                                 ? "text-purple-600"
                                 : "text-gray-400"
                             }`}
                           />
                           <span
                             className={`text-sm ${
-                              form.practiceAreas.includes(area._id)
+                              form.practiceAreas.includes(area?._id || area)
                                 ? "text-purple-700 font-medium"
                                 : "text-gray-600"
                             }`}
                           >
-                            {area.name}
+                            {getName(area)}
                           </span>
                         </label>
                       );
@@ -894,7 +899,7 @@ const EditProfile = () => {
                     <input
                       type="text"
                       name="barCouncilId"
-                      value={form.barCouncilId}
+                      value={String(form.barCouncilId || "")}
                       onChange={handleChange}
                       placeholder="BC-123456"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -907,7 +912,7 @@ const EditProfile = () => {
                     <input
                       type="text"
                       name="education"
-                      value={form.education}
+                      value={String(form.education || "")}
                       onChange={handleChange}
                       placeholder="LL.B., University Name"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -922,7 +927,7 @@ const EditProfile = () => {
                   <input
                     type="number"
                     name="consultationFee"
-                    value={form.consultationFee}
+                    value={form.consultationFee || ""}
                     onChange={handleChange}
                     min="0"
                     step="50"
@@ -969,7 +974,7 @@ const EditProfile = () => {
                   <input
                     type="text"
                     name="address"
-                    value={form.address}
+                    value={String(form.address || "")}
                     onChange={handleChange}
                     placeholder="Street address, building, etc."
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -984,7 +989,7 @@ const EditProfile = () => {
                     <input
                       type="text"
                       name="city"
-                      value={form.city}
+                      value={String(form.city || "")}
                       onChange={handleChange}
                       placeholder="City"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -997,7 +1002,7 @@ const EditProfile = () => {
                     <input
                       type="text"
                       name="state"
-                      value={form.state}
+                      value={String(form.state || "")}
                       onChange={handleChange}
                       placeholder="State"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -1010,7 +1015,7 @@ const EditProfile = () => {
                     <input
                       type="text"
                       name="pincode"
-                      value={form.pincode}
+                      value={String(form.pincode || "")}
                       onChange={handleChange}
                       placeholder="e.g., 10001"
                       className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
@@ -1034,12 +1039,14 @@ const EditProfile = () => {
                   </label>
 
                   <div className="space-y-3 mb-4">
-                    {form.services.map((service, index) => (
+                    {form.services?.map((service, index) => (
                       <div
                         key={index}
                         className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200"
                       >
-                        <span className="text-sm text-gray-700">{service}</span>
+                        <span className="text-sm text-gray-700">
+                          {getName(service)}
+                        </span>
                         <button
                           type="button"
                           onClick={() => removeService(index)}
@@ -1082,7 +1089,7 @@ const EditProfile = () => {
                   <input
                     type="url"
                     name="website"
-                    value={form.website}
+                    value={String(form.website || "")}
                     onChange={handleChange}
                     placeholder="https://yourwebsite.com"
                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-600 focus:ring-2 focus:ring-purple-200"

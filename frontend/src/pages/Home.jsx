@@ -27,6 +27,9 @@ import {
   Brain,
 } from "lucide-react";
 
+// Import the app logo
+import appLogo from "../assets/app_logo.png";
+
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -346,14 +349,16 @@ const Home = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            {/* Logo */}
+            {/* Logo with image */}
             <div
               className="flex items-center cursor-pointer z-50"
               onClick={() => navigate("/")}
             >
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg">
-                <Scale className="h-6 w-6 text-white" />
-              </div>
+              <img 
+                src={appLogo} 
+                alt="LawSetu Logo" 
+                className="h-10 w-auto object-contain"
+              />
               <span className="ml-2 text-xl font-semibold text-gray-900">
                 Law<span className="text-blue-600">Setu</span>
               </span>
@@ -428,11 +433,13 @@ const Home = () => {
             {/* Menu Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center">
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg">
-                  <Scale className="h-6 w-6 text-white" />
-                </div>
+                <img 
+                  src={appLogo} 
+                  alt="LawSetu Logo" 
+                  className="h-8 w-auto object-contain"
+                />
                 <span className="ml-2 text-xl font-semibold text-gray-900">
-                  Legal<span className="text-blue-600">Suite</span>
+                  Law<span className="text-blue-600">Setu</span>
                 </span>
               </div>
               <button
@@ -496,7 +503,7 @@ const Home = () => {
             {/* Menu Footer */}
             <div className="p-6 border-t border-gray-200">
               <p className="text-xs text-center text-gray-500">
-                &copy; 2024 LawSetu. All rights reserved.
+                &copy; 2026 LawSetu. All rights reserved.
               </p>
             </div>
           </div>
@@ -862,9 +869,11 @@ const Home = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-1.5 rounded-lg">
-                  <Scale className="h-5 w-5 text-white" />
-                </div>
+                <img 
+                  src={appLogo} 
+                  alt="LawSetu Logo" 
+                  className="h-8 w-auto object-contain"
+                />
                 <span className="ml-2 font-semibold text-gray-900">
                   LawSetu
                 </span>

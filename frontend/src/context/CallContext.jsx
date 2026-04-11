@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import Peer from "simple-peer";
+import * as Peer from "simple-peer";
 import socket from "../api/socket";
 
 const CallContext = createContext();

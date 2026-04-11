@@ -1,70 +1,11 @@
-# Payment Verification Flow Implementation
+# Fix React Crash in EditProfile.jsx - TODO
 
-✅ Plan approved - User confirmed to proceed
+## Planned Steps:
 
-## Current Status
+- [x] Step 1: Edit frontend/src/pages/lawyer/EditProfile.jsx - Add defensive rendering for practice areas (area?.name), normalize practiceAreas data in loadProfile useEffect.
+- [x] Step 2: Read frontend/vite.config.js to check simple-peer config, edit if needed for browser warnings.
+- [ ] Step 3: Test changes - reload page, confirm no React crash.
+- [ ] Step 4: Run `cd frontend && npm run dev` if needed.
+- [ ] Step 5: attempt_completion.
 
-- [x] User Send Request ✅ (TalkToLawyer → LawyerCard)
-- [x] Lawyer Accept Request ✅ (Lawyer Requests page)
-- [x] User Pay Razorpay ✅ (MyRequests page)
-- [x] Backend Order/Verify ✅ (paymentController)
-- [x] DB Save Payment ✅ (Payment model)
-- [x] Request PAYMENT_VERIFIED ✅ (paymentController)
-- [x] Frontend Chat Unlock ✅ (MyRequests Chat button)
-
-## To Complete (11 Steps)
-
-### 1. Backend Model (ContactRequest)
-
-- [ ] Add `amount: { type: Number, default: 500 }`
-
-### 2. Backend Controller Updates (3 files)
-
-- [ ] userController.js: Add GET /user/my-requests-map
-- [ ] lawyerController.js: updateRequestStatus → emit socket 'requestStatusUpdated'
-- [ ] paymentController.js: verifyRazorpayPayment → emit socket 'paymentVerified'
-
-### 3. Backend SocketHandler.js
-
-- [ ] Add handlers for 'requestStatusUpdated', 'paymentVerified'
-- [ ] Relay to specific user rooms
-
-### 4. Frontend LawyerCard.jsx
-
-- [ ] Add status badges/buttons: Request | Pay | Chat
-- [ ] Use requestStatus prop from TalkToLawyer
-
-### 5. Frontend TalkToLawyer.jsx
-
-- [ ] Socket listeners for status updates → refresh requestMap
-
-### 6. Frontend LawyerRequests.jsx
-
-- [ ] Socket listener for payment verified → show chat button
-
-### 7. Test Flow End-to-End
-
-```
-1. User → TalkToLawyer → Send Request to lawyer
-2. Lawyer → Requests → Accept
-3. User → MyRequests → Pay ₹500 ✅
-4. Request → PAYMENT_VERIFIED
-5. Lawyer → Chat button appears 💬
-6. Real-time updates work
-```
-
-## Progress Tracking
-
-```
-✅ Backend Model
-✅ Backend Controllers + Socket Emits
-✅ Backend SocketHandler relay
-✅ Frontend LawyerCard status UI
-✅ Frontend TalkToLawyer socket listener
-✅ Frontend LawyerRequests socket listener
-
-Completed: 6/7 major steps
-Next: Test full flow end-to-end
-```
-
-**Current Task Progress: 85% → Target: 100%**
+**Current Progress:** Steps 1-2 complete. Frontend fixes applied for React crash and simple-peer warnings.

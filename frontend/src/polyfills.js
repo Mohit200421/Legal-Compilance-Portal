@@ -1,5 +1,6 @@
-// Polyfill for simple-peer 'global' issue in browser
-if (typeof global === "undefined") {
-  window.global = window;
-  window.Buffer = window.Buffer || {};
-}
+import process from "process";
+import { Buffer } from "buffer";
+
+window.global = window;
+window.process = process;
+window.Buffer = Buffer;

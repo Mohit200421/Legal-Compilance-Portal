@@ -28,7 +28,7 @@ const adminLawyerRoutes = require("./routes/adminLawyerRoutes");
 const callRoutes = require("./routes/callRoutes");
 
 const errorHandler = require("./middleware/errorHandler");
-
+const aiChatRoutes = require("./routes/aiChatRoutes");
 // Cron jobs
 require("./cron/eventReminder");
 require("./cron/subscriptionExpiry");
@@ -119,6 +119,7 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/user-article", userArticleRoutes);
 app.use("/api/master", masterRoutes);
 app.use("/api/call", callRoutes);
+app.use("/api/ai-chat", aiChatRoutes);
 
 // ================= HEALTH CHECK =================
 app.get("/api/health", (req, res) => {

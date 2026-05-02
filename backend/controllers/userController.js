@@ -340,3 +340,35 @@ exports.markUserDiscussionRead = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// ✅ USER DASHBOARD STATS
+exports.getUserDashboardStats = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Get counts for various stats
+    const requestsCount = await ContactRequest.countDocuments({ userId });
+    const documentsCount = await Document.countDocuments({
+      assignedUserId: userId,
+    });
+    const articlesCount = await Article.countDocuments();
+    const discussionsCount = await Discussion.countDocuments({ userId });
+
+    // Get recent activity (last 5 requests)
+    const recentRequests = await ContactRequest.find({ userId })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate("lawyerId", "name");
+
+    res.json({
+      requestsCount,
+      documentsCount,
+      articlesCount,
+      discussionsCount,
+      recentRequests,
+    });
+  } catch (err) {
+    console.error("getUserDashboardStats error:", err);
+    res.status(500).json({ error: err.message });
+  }
+};

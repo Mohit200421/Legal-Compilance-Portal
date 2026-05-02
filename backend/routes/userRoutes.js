@@ -20,16 +20,22 @@ const {
   getSingleUserDiscussion,
   userReplyDiscussion,
   markUserDiscussionRead,
-
+  getUserDashboardStats,
 } = require("../controllers/userController");
 
+// ✅ USER DASHBOARD STATS
+router.get("/dashboard-stats", auth, role("user"), getUserDashboardStats);
 
 // ✅ USER DISCUSSION
 router.get("/discussion", auth, role("user"), getUserDiscussions);
 router.get("/discussion/:id", auth, role("user"), getSingleUserDiscussion);
 router.post("/discussion/:id/reply", auth, role("user"), userReplyDiscussion);
-router.patch("/discussion/:id/read", auth, role("user"), markUserDiscussionRead);
-
+router.patch(
+  "/discussion/:id/read",
+  auth,
+  role("user"),
+  markUserDiscussionRead
+);
 
 router.get("/my-requests-map", auth, role("user"), getMyRequestsMap);
 
@@ -59,7 +65,6 @@ router.post("/contact-lawyer", auth, role("user"), contactLawyer);
 router.get("/document/:id/download", auth, role("user"), downloadDocument);
 
 router.get("/search-documents", auth, role("user"), searchDocuments);
-
 
 // FEEDBACK
 router.post("/feedback", auth, role("user"), giveFeedback);

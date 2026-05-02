@@ -45,8 +45,9 @@ connectDB();
 const isProd = process.env.NODE_ENV === "production";
 
 // ================= CORS (FIXED FOR BOTH LOCAL + PROD) =================
+// Frontend uses "legal-compilance" (typo - missing 'l'), match it for production
 const allowedOrigins = isProd
-  ? "https://legal-compliance-portal.vercel.app"
+  ? "https://legal-compilance-portal.vercel.app"
   : ["http://localhost:5173", "http://localhost:3000"];
 
 // Configure CORS with all required headers and methods
@@ -71,8 +72,9 @@ app.options(
 );
 
 // ================= SOCKET.IO =================
+// Frontend uses "legal-compilance" (typo - missing 'l'), match it for production
 const socketAllowedOrigins = isProd
-  ? "https://legal-compliance-portal.vercel.app"
+  ? "https://legal-compilance-portal.vercel.app"
   : ["http://localhost:5173", "http://localhost:3000"];
 
 const io = new Server(server, {

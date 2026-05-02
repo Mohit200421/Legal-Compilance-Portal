@@ -1,193 +1,102 @@
-# Email Setup Guide for Legal Portal
+# Email Setup Guide
 
-## Prerequisites
+## Quick Test
 
-The following dependencies are already installed:
+1. **Check Configuration:**
 
-- ✅ nodemailer v7.0.12
-- ✅ resend v6.10.0
-- ✅ dotenv v17.4.1
+   - Local: http://localhost:5000/test-mail/config
+   - Production: https://legal-compilance-portal.onrender.com/test-mail/config
 
-## Dual Email System
-
-This project uses a **dual email system** with automatic fallback:
-
-1. **Primary**: Resend API (if `RESEND_API_KEY` provided)
-2. **Fallback**: Nodemailer (Gmail SMTP, if `EMAIL_USER` + `EMAIL_PASS` provided)
-
-The server will use whichever service is configured and fallback automatically!
-
-## Environment Variables
-
-Add the following to your `backend/.env` file:
-
-```env
-# ================= EMAIL CONFIG =================
-# Option 1: Resend API (Primary - recommended)
-RESEND_API_KEY=your_resend_api_key
-
-# Option 2: Gmail SMTP (Fallback)
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
-
-# Optional: Custom SMTP settings (for fallback)
-# SMTP_HOST=smtp.gmail.com
-# SMTP_PORT=587
-```
-
-## IMPORTANT: How to Generate Gmail App Password
-
-Gmail does not allow using your normal password for less secure apps. You must use an **App Password**:
-
-### Steps to Generate App Password:
-
-1. **Go to your Google Account**
-
-   - Visit: https://myaccount.google.com/
-
-2. **Enable 2-Factor Authentication** (if not already enabled)
-
-   - Go to Security → How you sign in to Google
-   - Enable 2-Step Verification
-
-3. **Generate App Password**
-
-   - Go to Security → How you sign in to Google
-   - Search for "App Passwords" in the search bar
-   - Select "Other (custom name)" and enter "Legal Portal"
-   - Click Generate
-   - **Copy the 16-character password** (format: `xxxx xxxx xxxx xxxx`)
-
-4. **Use this App Password in your .env file**
-   ```
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASS=abcd efgh ijkl mnop  ← Use this 16-char password (no spaces)
-   ```
-
-## Testing the Email System
-
-### Option 1: Using Postman/cURL
-
-```bash
-# Test sending an email
-curl -X POST http://localhost:5000/api/test-email \
-  -H "Content-Type: application/json" \
-  -d '{
-    "to": "test@example.com",
-    "subject": "Test Email",
-    "type": "welcome"
-  }'
-
-# Verify email configuration
-curl http://localhost:5000/api/test-email/config
-```
-
-### Option 2: Using the Browser
-
-Visit: `http://localhost:5000/api/test-email`
-
-### Expected Response
-
-Success:
-
-```json
-{
-  "success": true,
-  "message": "Email sent successfully",
-  "messageId": "<abc123@example.com>"
-}
-```
-
-Error:
-
-```json
-{
-  "success": false,
-  "message": "Failed to send email",
-  "error": "Invalid credentials"
-}
-```
-
-## Common Issues & Solutions
-
-### Error: "Invalid credentials"
-
-- **Solution**: Generate a new App Password from Google Account security settings
-
-### Error: "Less secure app access"
-
-- **Solution**: You're using an old password. Use App Password instead
-
-### Error: "ENOTFOUND - smtp.gmail.com"
-
-- **Solution**: Check your internet connection
-
-### Error: "Connection timed out"
-
-- **Solution**: Port 587 might be blocked by firewall. Try port 465 with secure: true
-
-### Email not arriving
-
-- **Check**: Spam folder
-- **Check**: Email address is correct
-- **Note**: It may take a few minutes for first emails
-
-## Production (Render) Deployment
-
-For production, set environment variables in Render Dashboard:
-
-1. Go to your Render Service → Environment
-2. Add these variables:
-   - `EMAIL_USER` = your_gmail@gmail.com
-   - `EMAIL_PASS` = your_16_char_app_password
-3. Redeploy the service
-
-### Note for Gmail on Production:
-
-- Gmail has sending limits (500/day for free accounts)
-- Consider using services like SendGrid,Mailgun for high volume
-- The current setup should work for moderate use
-
-## Example Controller Usage
-
-```javascript
-const {
-  sendEmail,
-  getWelcomeEmailTemplate,
-  getOTPEmailTemplate,
-} = require("../utils/emailService");
-
-// In your controller:
-exports.register = async (req, res) => {
-  try {
-    // ... user creation logic ...
-
-    // Send welcome email
-    const welcomeHtml = getWelcomeEmailTemplate(user.name);
-    await sendEmail(user.email, "Welcome to Legal Portal", welcomeHtml);
-
-    res.status(201).json({ success: true, user });
-  } catch (err) {
-    console.error("Registration error:", err);
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
-```
-
-## API Routes
-
-| Method | Endpoint                 | Description     | Body                  |
-| ------ | ------------------------ | --------------- | --------------------- |
-| POST   | `/api/test-email`        | Send test email | `{to, subject, type}` |
-| GET    | `/api/test-email/config` | Verify config   | -                     |
-
-## Type Parameter for test-email
-
-- `welcome` - Welcome email template
-- `otp` - OTP verification template
-- `contact` - Contact support template
-- `custom` - Custom HTML (use `subject` field)
+2. **Send Test Email:**
+   - Local: http://localhost:5000/test-mail
+   - Production: https://legal-compilance-portal.onrender.com/test-mail
 
 ---
 
-**Setup complete!** 🎉
+## Email Providers
+
+### Option 1: Resend (Recommended - Easiest Setup)
+
+1. Go to https://resend.com
+2. Sign up (free tier: 100 emails/month)
+3. Get your API key: `re_xxxxxxxxxxxxx`
+4. Add to Render environment variables:
+
+```
+RESEND_API_KEY=re_xxxxxxxxxxxxx
+```
+
+No additional setup needed!
+
+---
+
+### Option 2: Gmail SMTP (Fallback)
+
+If you prefer Gmail:
+
+1. Enable 2-Step Verification on your Google Account:
+
+   - https://myaccount.google.com/
+   - Security → How you sign in to Google → 2-Step Verification
+
+2. Create App Password:
+
+   - Search "App Passwords" in Google Account settings
+   - Create new → App: "Legal Portal", Device: "Other"
+   - Copy the 16-character password
+
+3. Add to Render environment variables:
+
+```
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=xxxxxxxxxxxxxxxx  (16-char app password, no spaces)
+```
+
+---
+
+## How It Works
+
+The email service auto-detects which provider to use:
+
+| Priority | Provider | Environment Variables       |
+| -------- | -------- | --------------------------- |
+| 1st      | Resend   | `RESEND_API_KEY`            |
+| 2nd      | Gmail    | `EMAIL_USER` + `EMAIL_PASS` |
+| None     | Error    | Neither set                 |
+
+---
+
+## Test Endpoints
+
+| Method | URL                 | Purpose             |
+| ------ | ------------------- | ------------------- |
+| GET    | `/test-mail`        | Send test email     |
+| GET    | `/test-mail/config` | Check config status |
+| POST   | `/api/test-email`   | Send custom email   |
+
+---
+
+## Email Logs
+
+Check Render Logs for:
+
+- `✅ Email sent via Resend: {to, subject, id}`
+- `✅ Email sent via Nodemailer: {to, subject, messageId}`
+- `❌ Email failed: {error}`
+
+---
+
+## Troubleshooting
+
+| Issue                          | Fix                                    |
+| ------------------------------ | -------------------------------------- |
+| "No email provider configured" | Add RESEND_API_KEY in Render env vars  |
+| Email not sending              | Check Render logs for errors           |
+| Resend not working             | Verify API key is correct              |
+| Gmail not working              | Use App Password, not regular password |
+
+---
+
+## Current Status
+
+The email system is configured to work with **either** Resend or Gmail. It will automatically detect which one you have set up in your Render environment variables.

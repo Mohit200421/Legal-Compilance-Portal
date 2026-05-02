@@ -173,6 +173,35 @@ app.get("/test-mail", async (req, res) => {
   }
 });
 
+// ================= TEST MAIL CONFIG =================
+app.get("/test-mail/config", async (req, res) => {
+  try {
+    // Check Resend
+    if (process.env.RESEND_API_KEY) {
+      return res.json({
+        success: true,
+        provider: "Resend",
+        configured: true,
+        apiKeyPresent: true,
+      });
+    }
+
+    // Check Nodemailer
+    const { verifyEmailConfig } = require("./utils/emailService");
+    const result = await verifyEmailConfig();
+
+    return res.json({
+      success: result.success,
+      provider: "Nodemailer (Gmail SMTP)",
+      configured: result.success,
+      error: result.error || null,
+    });
+  } catch (err) {
+    console.log("CONFIG ERROR:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ================= ERROR HANDLER =================
 app.use(errorHandler);
 

@@ -122,25 +122,54 @@ app.get("/api/health", (req, res) => {
 });
 
 // ================= EMAIL =================
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Safely initialize Resend (only if API key exists)
+let resend = null;
+if (process.env.RESEND_API_KEY) {
+  try {
+    // Dynamic import for ES module
+    const Resend = require("resend").Resend;
+    resend = new Resend(process.env.RESEND_API_KEY);
+    console.log("✅ Resend email service initialized");
+  } catch (err) {
+    console.error("❌ Failed to initialize Resend:", err.message);
+  }
+} else {
+  console.log("⚠️ RESEND_API_KEY not found - using Nodemailer fallback");
+}
 
 // ================= TEST MAIL =================
 app.get("/test-mail", async (req, res) => {
   try {
-    const response = await resend.emails.send({
-      from: "[legal@lawsetu.com](mailto:legal@lawsetu.com)",
-      to: process.env.EMAIL_USER,
-      subject: "Test Email",
-      html: "<h2>Email working 🚀</h2>",
-    });
+    // Try Resend first if available
+    if (resend && process.env.RESEND_API_KEY) {
+      const response = await resend.emails.send({
+        from: "legal@lawsetu.com",
+        to: process.env.EMAIL_USER,
+        subject: "Test Email - Resend",
+        html: "<h2>Email working via Resend 🚀</h2>",
+      });
+      console.log("EMAIL SENT via Resend:", response);
+      return res.send("Email sent via Resend ✅");
+    }
 
-    ```
-console.log("EMAIL SENT:", response);
-res.send("Email sent ✅");
-```;
+    // Fallback to Nodemailer
+    const { sendEmail } = require("./utils/emailService");
+    const result = await sendEmail(
+      process.env.EMAIL_USER,
+      "Test Email - Nodemailer",
+      "<h2>Email working via Nodemailer ✅</h2>"
+    );
+
+    if (result.success) {
+      console.log("EMAIL SENT via Nodemailer:", result.messageId);
+      return res.send("Email sent via Nodemailer ✅");
+    } else {
+      console.log("EMAIL ERROR:", result.error);
+      return res.status(500).send("Failed: " + result.error);
+    }
   } catch (err) {
     console.log("EMAIL ERROR:", err);
-    res.send("Failed ❌");
+    res.status(500).send("Failed ❌: " + err.message);
   }
 });
 

@@ -5,7 +5,17 @@
 The following dependencies are already installed:
 
 - ✅ nodemailer v7.0.12
+- ✅ resend v6.10.0
 - ✅ dotenv v17.4.1
+
+## Dual Email System
+
+This project uses a **dual email system** with automatic fallback:
+
+1. **Primary**: Resend API (if `RESEND_API_KEY` provided)
+2. **Fallback**: Nodemailer (Gmail SMTP, if `EMAIL_USER` + `EMAIL_PASS` provided)
+
+The server will use whichever service is configured and fallback automatically!
 
 ## Environment Variables
 
@@ -13,11 +23,14 @@ Add the following to your `backend/.env` file:
 
 ```env
 # ================= EMAIL CONFIG =================
-# Gmail SMTP Configuration
+# Option 1: Resend API (Primary - recommended)
+RESEND_API_KEY=your_resend_api_key
+
+# Option 2: Gmail SMTP (Fallback)
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_app_password
 
-# Optional: Custom SMTP (if not using Gmail)
+# Optional: Custom SMTP settings (for fallback)
 # SMTP_HOST=smtp.gmail.com
 # SMTP_PORT=587
 ```

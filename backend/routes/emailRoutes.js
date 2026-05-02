@@ -4,6 +4,7 @@ const {
   sendEmail,
   getWelcomeEmailTemplate,
   getOTPEmailTemplate,
+  getContactSupportEmailTemplate,
   verifyEmailConfig,
 } = require("../utils/emailService");
 

@@ -87,6 +87,7 @@ function Navbar() {
 
   const navLinks = [
     { to: "/", label: "Home", icon: Home },
+    { to: "/ai-assistant", label: "AI Assistant", icon: Bot },
     { to: "/about", label: "About", icon: Info },
     { to: "/services", label: "Services", icon: Briefcase },
     { to: "/contact", label: "Contact", icon: HelpCircle },
@@ -112,7 +113,7 @@ function Navbar() {
               <Scale className="h-5 w-5 md:h-6 md:w-6 text-white" />
             </div>
             <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-            LawSetu
+              LawSetu
             </span>
           </Link>
 

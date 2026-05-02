@@ -18,8 +18,8 @@ const generateToken = (user) => {
 const setTokenCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: true, 
-    sameSite: "None",    
+    secure: false, 
+    sameSite: "Lax",    
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -174,8 +174,8 @@ exports.logout = async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: false,
+      sameSite: "Lax",
     });
 
     res.json({ msg: "Logged out successfully ✅" });

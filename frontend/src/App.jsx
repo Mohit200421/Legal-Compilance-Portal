@@ -53,8 +53,10 @@ import UserDiscussion from "./pages/user/Discussion";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import ChatPage from "./pages/common/ChatPage";
-
-
+import AiChatPage from "./pages/common/AiChatPage";
+import ContactSupport from "./pages/ContactSupport";
+import AdminSupport from "./components/AdminSupportPanel";
+import AiFab from "./components/AiFab";
 
 function App() {
   return (
@@ -73,7 +75,8 @@ function App() {
               padding: "12px 16px",
               fontSize: "14px",
               fontWeight: "500",
-              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              boxShadow:
+                "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
             },
             success: {
@@ -85,7 +88,8 @@ function App() {
                 padding: "12px 16px",
                 fontSize: "14px",
                 fontWeight: "500",
-                boxShadow: "0 10px 15px -3px rgba(16, 185, 129, 0.2), 0 4px 6px -2px rgba(16, 185, 129, 0.1)",
+                boxShadow:
+                  "0 10px 15px -3px rgba(16, 185, 129, 0.2), 0 4px 6px -2px rgba(16, 185, 129, 0.1)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
               },
               iconTheme: {
@@ -102,7 +106,8 @@ function App() {
                 padding: "12px 16px",
                 fontSize: "14px",
                 fontWeight: "500",
-                boxShadow: "0 10px 15px -3px rgba(239, 68, 68, 0.2), 0 4px 6px -2px rgba(239, 68, 68, 0.1)",
+                boxShadow:
+                  "0 10px 15px -3px rgba(239, 68, 68, 0.2), 0 4px 6px -2px rgba(239, 68, 68, 0.1)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
               },
               iconTheme: {
@@ -141,6 +146,7 @@ function App() {
           }}
         />
         <VideoCall />
+        <AiFab />
         <Routes>
           {/* Home page with Navbar */}
           <Route path="/" element={<Home />} />
@@ -228,6 +234,7 @@ function App() {
             <Route path="news" element={<ManageNews />} />
             <Route path="events" element={<ManageEvents />} />
             <Route path="jobs" element={<ManageJobs />} />
+            <Route path="support" element={<AdminSupport />} />
           </Route>
 
           {/* LAWYER ROUTES - LawyerLayout already contains its own navigation */}
@@ -248,6 +255,7 @@ function App() {
             <Route path="cases" element={<Cases />} />
             <Route path="case-events" element={<CaseEvents />} />
             <Route path="requests" element={<Requests />} />
+            <Route path="contact-support" element={<ContactSupport />} />
           </Route>
 
           {/* USER ROUTES - UserLayout already contains its own navigation */}
@@ -259,30 +267,44 @@ function App() {
               </ProtectedRoute>
             }
           >
-
-
-           
             <Route index element={<UserDashboard />} />
             <Route path="talk-to-lawyer" element={<TalkToLawyer />} />
             <Route path="search-lawyer" element={<SearchLawyer />} />
             <Route path="articles" element={<UserArticles />} />
             <Route path="discussion" element={<UserDiscussion />} />
             <Route path="my-requests" element={<MyRequests />} />
-            
+
             <Route path="jobs" element={<UserJobs />} />
             <Route path="events" element={<UserEvents />} />
             <Route path="documents" element={<UserDocuments />} />
             <Route path="feedback" element={<Feedback />} />
+            <Route path="contact-support" element={<ContactSupport />} />
           </Route>
 
           <Route
-  path="/chat/:id"
-  element={
-    <ProtectedRoute allow={["user", "lawyer"]}>
-      <ChatPage />
-    </ProtectedRoute>
-  }
-/>
+            path="/chat/:id"
+            element={
+              <ProtectedRoute allow={["user", "lawyer"]}>
+                <ChatPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-assistant"
+            element={
+              <ProtectedRoute>
+                <AiChatPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contact-support"
+            element={
+              <ProtectedRoute allow={["user", "lawyer"]}>
+                <ContactSupport />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </CallProvider>

@@ -39,37 +39,75 @@ import {
   Sparkles
 } from "lucide-react";
 
+// Lex-Modernism Color System
+const colors = {
+  primary: "#091426",
+  primaryContainer: "#1e293b",
+  onPrimaryContainer: "#8590a6",
+  secondary: "#4648d4",
+  secondaryContainer: "#6063ee",
+  onSecondaryContainer: "#fffbff",
+  surface: "#fbf8fa",
+  surfaceDim: "#dcd9db",
+  surfaceBright: "#fbf8fa",
+  surfaceContainerLowest: "#ffffff",
+  surfaceContainerLow: "#f5f3f4",
+  surfaceContainer: "#f0edef",
+  surfaceContainerHigh: "#eae7e9",
+  surfaceContainerHighest: "#e4e2e3",
+  onSurface: "#1b1b1d",
+  onSurfaceVariant: "#45474c",
+  outline: "#75777d",
+  outlineVariant: "#c5c6cd",
+  error: "#ba1a1a",
+  errorContainer: "#ffdad6",
+  onError: "#ffffff",
+  onErrorContainer: "#93000a",
+  tertiary: "#1e1200",
+  tertiaryContainer: "#35260c",
+  onTertiaryContainer: "#a38c6a",
+};
+
 export default function Documents() {
   const [file, setFile] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [filteredDocs, setFilteredDocs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [viewMode, setViewMode] = useState("list"); // grid or list
+  const [viewMode, setViewMode] = useState("list");
 
-  // for assign dropdown
   const [requests, setRequests] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
 
-  // OCR Modal
   const [openOCR, setOpenOCR] = useState(false);
   const [ocrText, setOcrText] = useState("");
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrDocId, setOcrDocId] = useState(null);
 
-  // Filters
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterType, setFilterType] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
 
-  // Document preview
   const [previewDoc, setPreviewDoc] = useState(null);
 
   const BACKEND_URL = import.meta.env.VITE_API_URL;
 
-  // Fetch Documents
+  // Glassmorphism card style
+  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+  const inputClass = "w-full px-4 py-2.5 rounded-xl text-sm transition-all duration-200 focus:outline-none";
+
+  const handleInputFocus = (e) => {
+    e.currentTarget.style.borderColor = colors.secondary;
+    e.currentTarget.style.boxShadow = `0 0 0 3px ${colors.secondary}20`;
+  };
+
+  const handleInputBlur = (e) => {
+    e.currentTarget.style.borderColor = colors.outlineVariant;
+    e.currentTarget.style.boxShadow = "none";
+  };
+
   const fetchDocuments = async () => {
     try {
       setLoading(true);
@@ -84,7 +122,6 @@ export default function Documents() {
     }
   };
 
-  // Fetch Accepted Requests
   const fetchAcceptedRequests = async () => {
     try {
       const res = await API.get("/lawyer/requests");
@@ -101,11 +138,9 @@ export default function Documents() {
     fetchAcceptedRequests();
   }, []);
 
-  // Filter and Sort Documents
   useEffect(() => {
     let result = [...documents];
 
-    // Search filter
     if (searchTerm) {
       result = result.filter(doc => 
         doc.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -114,14 +149,12 @@ export default function Documents() {
       );
     }
 
-    // OCR status filter
     if (filterStatus !== "all") {
       result = result.filter(doc => 
         filterStatus === "completed" ? doc.ocrTextId : !doc.ocrTextId
       );
     }
 
-    // File type filter
     if (filterType !== "all") {
       result = result.filter(doc => {
         const ext = doc.filename?.split('.').pop()?.toLowerCase();
@@ -133,27 +166,17 @@ export default function Documents() {
       });
     }
 
-    // Sort
     result.sort((a, b) => {
-      if (sortBy === "newest") {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      }
-      if (sortBy === "oldest") {
-        return new Date(a.createdAt) - new Date(b.createdAt);
-      }
-      if (sortBy === "name") {
-        return a.filename?.localeCompare(b.filename);
-      }
-      if (sortBy === "size") {
-        return (b.size || 0) - (a.size || 0);
-      }
+      if (sortBy === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortBy === "oldest") return new Date(a.createdAt) - new Date(b.createdAt);
+      if (sortBy === "name") return a.filename?.localeCompare(b.filename);
+      if (sortBy === "size") return (b.size || 0) - (a.size || 0);
       return 0;
     });
 
     setFilteredDocs(result);
   }, [documents, searchTerm, filterStatus, filterType, sortBy]);
 
-  // Upload
   const handleUpload = async (e) => {
     e.preventDefault();
 
@@ -175,7 +198,6 @@ export default function Documents() {
       setSelectedUserId("");
       fetchDocuments();
       
-      // Reset file input
       const fileInput = document.getElementById("file-upload");
       if (fileInput) fileInput.value = "";
     } catch (err) {
@@ -186,7 +208,6 @@ export default function Documents() {
     }
   };
 
-  // Delete
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this document?")) return;
 
@@ -200,18 +221,15 @@ export default function Documents() {
     }
   };
 
-  // View
   const handleView = (doc) => {
     const fileUrl = `${BACKEND_URL}/${doc.path}`;
     window.open(fileUrl, "_blank");
   };
 
-  // Preview
   const handlePreview = (doc) => {
     setPreviewDoc(doc);
   };
 
-  // Download
   const handleDownload = (doc) => {
     const fileUrl = `${BACKEND_URL}/${doc.path}`;
     const link = document.createElement("a");
@@ -222,7 +240,6 @@ export default function Documents() {
     document.body.removeChild(link);
   };
 
-  // Run OCR
   const handleRunOCR = async (docId) => {
     try {
       setOcrLoading(true);
@@ -237,7 +254,6 @@ export default function Documents() {
     }
   };
 
-  // View OCR Text
   const handleViewOCR = async (docId) => {
     try {
       setOcrLoading(true);
@@ -257,12 +273,12 @@ export default function Documents() {
 
   const getFileIcon = (filename) => {
     const ext = filename?.split('.').pop()?.toLowerCase();
-    if (ext === 'pdf') return <FileText className="h-5 w-5 text-red-500" />;
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return <Image className="h-5 w-5 text-blue-500" />;
-    if (['doc', 'docx', 'txt', 'rtf'].includes(ext)) return <FileText className="h-5 w-5 text-blue-600" />;
-    if (['xls', 'xlsx', 'csv'].includes(ext)) return <FileSpreadsheet className="h-5 w-5 text-green-600" />;
-    if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return <FileArchive className="h-5 w-5 text-yellow-600" />;
-    return <File className="h-5 w-5 text-gray-500" />;
+    if (ext === 'pdf') return <FileText className="h-5 w-5" style={{ color: colors.error }} />;
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return <Image className="h-5 w-5" style={{ color: colors.secondary }} />;
+    if (['doc', 'docx', 'txt', 'rtf'].includes(ext)) return <FileText className="h-5 w-5" style={{ color: colors.secondary }} />;
+    if (['xls', 'xlsx', 'csv'].includes(ext)) return <FileSpreadsheet className="h-5 w-5" style={{ color: "#4caf50" }} />;
+    if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return <FileArchive className="h-5 w-5" style={{ color: colors.tertiary }} />;
+    return <File className="h-5 w-5" style={{ color: colors.onSurfaceVariant }} />;
   };
 
   const getFileType = (filename) => {
@@ -294,69 +310,77 @@ export default function Documents() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6 lg:p-8">
-      {/* Header */}
+    <div className="min-h-screen p-4 md:p-6 lg:p-8" style={{ backgroundColor: colors.surface }}>
+      {/* Header Section */}
       <div className="mb-6 md:mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-lg mb-3">
-              <HardDrive className="h-4 w-4 text-purple-600 mr-2" />
-              <span className="text-xs font-semibold text-purple-600 tracking-wider">DOCUMENT MANAGEMENT</span>
+            <div 
+              className="inline-flex items-center px-3 py-1.5 rounded-lg mb-3"
+              style={{ backgroundColor: `${colors.secondary}10`, border: `1px solid ${colors.secondary}20` }}
+            >
+              <HardDrive className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
+              <span className="text-xs font-semibold tracking-wider" style={{ color: colors.secondary }}>
+                DOCUMENT MANAGEMENT
+              </span>
             </div>
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.2] tracking-[-0.02em]" style={{ color: colors.onSurface }}>
               Document Management
             </h1>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">
+            <p className="text-xs md:text-sm mt-1" style={{ color: colors.onSurfaceVariant }}>
               Upload, manage, and process legal documents with OCR
             </p>
           </div>
           
-          {/* Stats Cards - Mobile Horizontal Scroll */}
+          {/* Stats Cards - Mobile */}
           <div className="md:hidden flex space-x-2 overflow-x-auto pb-2">
-            <div className="flex-shrink-0 bg-white rounded-xl border border-gray-200 px-4 py-2 min-w-[100px]">
-              <p className="text-xs text-gray-500">Total</p>
-              <p className="text-lg font-bold text-gray-900">{stats.total}</p>
+            <div className={`flex-shrink-0 ${glassCardClass} px-4 py-2 min-w-[100px]`}>
+              <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>Total</p>
+              <p className="text-lg font-bold" style={{ color: colors.onSurface }}>{stats.total}</p>
             </div>
-            <div className="flex-shrink-0 bg-white rounded-xl border border-gray-200 px-4 py-2 min-w-[100px]">
-              <p className="text-xs text-gray-500">OCR Done</p>
-              <p className="text-lg font-bold text-green-600">{stats.ocrCompleted}</p>
+            <div className={`flex-shrink-0 ${glassCardClass} px-4 py-2 min-w-[100px]`}>
+              <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>OCR Done</p>
+              <p className="text-lg font-bold" style={{ color: "#4caf50" }}>{stats.ocrCompleted}</p>
             </div>
-            <div className="flex-shrink-0 bg-white rounded-xl border border-gray-200 px-4 py-2 min-w-[100px]">
-              <p className="text-xs text-gray-500">Storage</p>
-              <p className="text-lg font-bold text-blue-600">{formatFileSize(stats.totalSize)}</p>
+            <div className={`flex-shrink-0 ${glassCardClass} px-4 py-2 min-w-[100px]`}>
+              <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>Storage</p>
+              <p className="text-lg font-bold" style={{ color: colors.secondary }}>{formatFileSize(stats.totalSize)}</p>
             </div>
           </div>
 
           {/* Desktop Stats */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="bg-white rounded-xl border border-gray-200 px-6 py-3">
-              <p className="text-xs text-gray-500">Total Documents</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+            <div className={`${glassCardClass} px-6 py-3`}>
+              <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>Total Documents</p>
+              <p className="text-2xl font-bold" style={{ color: colors.onSurface }}>{stats.total}</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 px-6 py-3">
-              <p className="text-xs text-gray-500">OCR Completed</p>
-              <p className="text-2xl font-bold text-green-600">{stats.ocrCompleted}</p>
+            <div className={`${glassCardClass} px-6 py-3`}>
+              <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>OCR Completed</p>
+              <p className="text-2xl font-bold" style={{ color: "#4caf50" }}>{stats.ocrCompleted}</p>
             </div>
             
             <button
               onClick={fetchDocuments}
-              className="p-3 bg-white rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
+              className={`${glassCardClass} p-3 transition-all duration-200 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}
               title="Refresh"
             >
-              <RefreshCw className="h-5 w-5 text-gray-600" />
+              <RefreshCw className="h-5 w-5" style={{ color: colors.onSurfaceVariant }} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Upload Form */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 mb-6 overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-5">
+      {/* Upload Form - Glass Card */}
+      <div className={`${glassCardClass} mb-6 overflow-hidden`}>
+        <div 
+          className="p-5"
+          style={{ background: `linear-gradient(135deg, ${colors.secondary}, ${colors.secondaryContainer})` }}
+        >
           <div className="flex items-center space-x-2">
             <Upload className="h-5 w-5 text-white" />
             <h2 className="text-lg font-bold text-white">Upload New Document</h2>
           </div>
-          <p className="text-xs text-purple-100 mt-1">
+          <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.8)" }}>
             Assign documents to clients for review and processing
           </p>
         </div>
@@ -365,15 +389,23 @@ export default function Documents() {
           <div className="grid md:grid-cols-3 gap-4">
             {/* User Selection */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: colors.onSurfaceVariant }}>
                 Assign to Client
               </label>
               <div className="relative">
-                <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: colors.outline }} />
                 <select
                   value={selectedUserId}
                   onChange={(e) => setSelectedUserId(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white rounded-xl text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200 transition-all appearance-none"
+                  className={`${inputClass} appearance-none`}
+                  style={{
+                    backgroundColor: colors.surfaceContainerLowest,
+                    border: `1px solid ${colors.outlineVariant}`,
+                    color: colors.onSurface,
+                    paddingLeft: "2.25rem"
+                  }}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
                 >
                   <option value="">Select a client</option>
                   {requests.length === 0 ? (
@@ -386,13 +418,13 @@ export default function Documents() {
                     ))
                   )}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" style={{ color: colors.outline }} />
               </div>
             </div>
 
             {/* File Upload */}
             <div className="md:col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: colors.onSurfaceVariant }}>
                 Select File
               </label>
               <div className="flex flex-col sm:flex-row gap-3">
@@ -403,15 +435,39 @@ export default function Documents() {
                     onChange={(e) => setFile(e.target.files[0])}
                     className="absolute inset-0 opacity-0 cursor-pointer z-10"
                   />
-                  <div className="w-full px-4 py-2.5 border border-gray-300 bg-white rounded-xl text-sm text-gray-500 flex items-center">
-                    <File className="h-4 w-4 mr-2 text-gray-400" />
+                  <div 
+                    className={`w-full px-4 py-2.5 ${inputClass} flex items-center`}
+                    style={{
+                      backgroundColor: colors.surfaceContainerLowest,
+                      border: `1px solid ${colors.outlineVariant}`,
+                      color: colors.onSurfaceVariant,
+                    }}
+                  >
+                    <File className="h-4 w-4 mr-2" style={{ color: colors.outline }} />
                     <span className="truncate">{file ? file.name : "Choose a file..."}</span>
                   </div>
                 </div>
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl font-medium hover:from-purple-700 hover:to-purple-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg flex items-center justify-center space-x-2"
+                  className="px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  style={{ 
+                    backgroundColor: colors.secondary,
+                    color: "white",
+                    boxShadow: `0 4px 12px ${colors.secondary}40`
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!uploading) {
+                      e.currentTarget.style.backgroundColor = colors.secondaryContainer;
+                      e.currentTarget.style.transform = "translateY(-1px)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!uploading) {
+                      e.currentTarget.style.backgroundColor = colors.secondary;
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }
+                  }}
                 >
                   {uploading ? (
                     <>
@@ -431,59 +487,81 @@ export default function Documents() {
         </form>
       </div>
 
-      {/* Filters Bar */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 mb-6 p-4">
+      {/* Filters Bar - Glass Card */}
+      <div className={`${glassCardClass} mb-6 p-4`}>
         <div className="flex flex-col gap-4">
-          {/* Search and View Toggle */}
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: colors.outline }} />
               <input
                 type="text"
                 placeholder="Search by filename or client..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 border border-gray-300 bg-white rounded-xl text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200 transition-all"
+                className={inputClass}
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                  paddingLeft: "2.25rem"
+                }}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
               />
             </div>
             
             {/* View Toggle */}
-            <div className="hidden md:flex bg-gray-100 rounded-xl p-1">
+            <div className="hidden md:flex p-1 rounded-xl" style={{ backgroundColor: colors.surfaceContainerHighest }}>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === "list" ? "bg-white shadow-md" : "hover:bg-gray-200"
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  viewMode === "list" ? "bg-white shadow-md" : ""
                 }`}
+                style={{
+                  backgroundColor: viewMode === "list" ? colors.surfaceContainerLowest : "transparent",
+                  color: colors.onSurfaceVariant
+                }}
               >
-                <List className="h-5 w-5 text-gray-600" />
+                <List className="h-5 w-5" />
               </button>
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === "grid" ? "bg-white shadow-md" : "hover:bg-gray-200"
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  viewMode === "grid" ? "bg-white shadow-md" : ""
                 }`}
+                style={{
+                  backgroundColor: viewMode === "grid" ? colors.surfaceContainerLowest : "transparent",
+                  color: colors.onSurfaceVariant
+                }}
               >
-                <Grid className="h-5 w-5 text-gray-600" />
+                <Grid className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Mobile Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden p-2.5 bg-gray-100 rounded-xl"
+              className="md:hidden p-2.5 rounded-xl"
+              style={{ backgroundColor: colors.surfaceContainerHighest }}
             >
-              <Filter className="h-5 w-5 text-gray-600" />
+              <Filter className="h-5 w-5" style={{ color: colors.onSurfaceVariant }} />
             </button>
           </div>
 
           {/* Filters - Desktop */}
           <div className="hidden md:flex items-center gap-3">
             <div className="flex items-center space-x-2">
-              <Filter className="h-4 w-4 text-gray-400" />
+              <Filter className="h-4 w-4" style={{ color: colors.outline }} />
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
+                className="px-3 py-2 rounded-lg text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                }}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
               >
                 <option value="all">All Status</option>
                 <option value="completed">OCR Completed</option>
@@ -494,7 +572,14 @@ export default function Documents() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
+              className="px-3 py-2 rounded-lg text-sm transition-all duration-200 focus:outline-none"
+              style={{
+                backgroundColor: colors.surfaceContainerLowest,
+                border: `1px solid ${colors.outlineVariant}`,
+                color: colors.onSurface,
+              }}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
             >
               <option value="all">All Types</option>
               <option value="pdf">PDF</option>
@@ -506,7 +591,14 @@ export default function Documents() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm focus:border-purple-600 focus:ring-2 focus:ring-purple-200"
+              className="px-3 py-2 rounded-lg text-sm transition-all duration-200 focus:outline-none"
+              style={{
+                backgroundColor: colors.surfaceContainerLowest,
+                border: `1px solid ${colors.outlineVariant}`,
+                color: colors.onSurface,
+              }}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -514,7 +606,7 @@ export default function Documents() {
               <option value="size">Size</option>
             </select>
 
-            <span className="text-sm text-gray-500 ml-auto">
+            <span className="text-sm ml-auto" style={{ color: colors.onSurfaceVariant }}>
               Showing {filteredDocs.length} of {documents.length} documents
             </span>
           </div>
@@ -525,7 +617,12 @@ export default function Documents() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm"
+                className="w-full px-3 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                }}
               >
                 <option value="all">All Status</option>
                 <option value="completed">OCR Completed</option>
@@ -535,7 +632,12 @@ export default function Documents() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm"
+                className="w-full px-3 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                }}
               >
                 <option value="all">All Types</option>
                 <option value="pdf">PDF</option>
@@ -547,7 +649,12 @@ export default function Documents() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm"
+                className="w-full px-3 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                }}
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -555,21 +662,28 @@ export default function Documents() {
                 <option value="size">Size</option>
               </select>
 
-              {/* Mobile View Toggle */}
-              <div className="flex bg-gray-100 rounded-lg p-1">
+              <div className="flex p-1 rounded-lg" style={{ backgroundColor: colors.surfaceContainerHighest }}>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`flex-1 py-2 rounded-lg text-sm ${
+                  className={`flex-1 py-2 rounded-lg text-sm transition-all duration-200 ${
                     viewMode === "list" ? "bg-white shadow-md" : ""
                   }`}
+                  style={{
+                    backgroundColor: viewMode === "list" ? colors.surfaceContainerLowest : "transparent",
+                    color: colors.onSurfaceVariant
+                  }}
                 >
                   List View
                 </button>
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`flex-1 py-2 rounded-lg text-sm ${
+                  className={`flex-1 py-2 rounded-lg text-sm transition-all duration-200 ${
                     viewMode === "grid" ? "bg-white shadow-md" : ""
                   }`}
+                  style={{
+                    backgroundColor: viewMode === "grid" ? colors.surfaceContainerLowest : "transparent",
+                    color: colors.onSurfaceVariant
+                  }}
                 >
                   Grid View
                 </button>
@@ -579,15 +693,15 @@ export default function Documents() {
         </div>
       </div>
 
-      {/* Documents List/Grid */}
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-        <div className="border-b border-gray-200 p-5">
+      {/* Documents List/Grid - Glass Card */}
+      <div className={`${glassCardClass} overflow-hidden`}>
+        <div className="p-5" style={{ borderBottom: `1px solid ${colors.outlineVariant}` }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <FolderOpen className="h-5 w-5 text-purple-600" />
-              <h2 className="text-lg font-bold text-gray-900">Uploaded Documents</h2>
+              <FolderOpen className="h-5 w-5" style={{ color: colors.secondary }} />
+              <h2 className="text-lg font-bold" style={{ color: colors.onSurface }}>Uploaded Documents</h2>
             </div>
-            <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full font-medium">
+            <span className="text-xs px-3 py-1.5 rounded-full font-medium" style={{ backgroundColor: `${colors.secondary}10`, color: colors.secondary }}>
               {filteredDocs.length} of {documents.length}
             </span>
           </div>
@@ -597,17 +711,17 @@ export default function Documents() {
           {loading ? (
             <div className="text-center py-12">
               <div className="inline-flex items-center space-x-3">
-                <Loader2 className="h-6 w-6 text-purple-600 animate-spin" />
-                <p className="text-gray-600">Loading documents...</p>
+                <Loader2 className="h-6 w-6 animate-spin" style={{ color: colors.secondary }} />
+                <p style={{ color: colors.onSurfaceVariant }}>Loading documents...</p>
               </div>
             </div>
           ) : filteredDocs.length === 0 ? (
             <div className="text-center py-12">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FileText className="h-8 w-8 text-gray-400" />
+              <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: colors.surfaceContainerHighest }}>
+                <FileText className="h-8 w-8" style={{ color: colors.onSurfaceVariant }} />
               </div>
-              <p className="text-gray-500 mb-2">No documents found</p>
-              <p className="text-xs text-gray-400">
+              <p className="mb-2" style={{ color: colors.onSurfaceVariant }}>No documents found</p>
+              <p className="text-xs" style={{ color: colors.outline }}>
                 {searchTerm || filterStatus !== "all" || filterType !== "all"
                   ? "Try adjusting your filters"
                   : "Upload your first document to get started"}
@@ -619,87 +733,102 @@ export default function Documents() {
               {filteredDocs.map((doc) => (
                 <div
                   key={doc._id}
-                  className="border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-lg transition-all group"
+                  className="rounded-xl transition-all duration-200 hover:shadow-md"
+                  style={{ border: `1px solid ${colors.outlineVariant}`, backgroundColor: colors.surfaceContainerLowest }}
                 >
                   <div className="p-5">
-                    {/* File Icon and Preview */}
                     <div className="flex items-start justify-between mb-4">
-                      <div className="p-3 bg-gray-50 rounded-xl group-hover:scale-110 transition-transform">
+                      <div className="p-3 rounded-xl transition-transform group-hover:scale-110" style={{ backgroundColor: colors.surfaceContainerHighest }}>
                         {getFileIcon(doc.filename)}
                       </div>
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         doc.ocrTextId
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}>
+                          ? "text-green-700"
+                          : "text-yellow-700"
+                      }`} style={{
+                        backgroundColor: doc.ocrTextId ? "#4caf5015" : `${colors.tertiary}15`
+                      }}>
                         {doc.ocrTextId ? "OCR Done" : "Pending"}
                       </span>
                     </div>
 
-                    {/* Document Info */}
-                    <h3 className="font-semibold text-gray-900 mb-1 truncate">
+                    <h3 className="font-semibold mb-1 truncate" style={{ color: colors.onSurface }}>
                       {doc.filename}
                     </h3>
                     
                     <div className="space-y-1 mb-4">
-                      <p className="text-xs text-gray-500 flex items-center">
-                        <User className="h-3 w-3 mr-1" />
+                      <p className="text-xs flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                        <User className="h-3 w-3 mr-1" style={{ color: colors.outline }} />
                         {doc.assignedUserId?.name || "Unassigned"}
                       </p>
-                      <p className="text-xs text-gray-500 flex items-center">
-                        <Calendar className="h-3 w-3 mr-1" />
+                      <p className="text-xs flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                        <Calendar className="h-3 w-3 mr-1" style={{ color: colors.outline }} />
                         {new Date(doc.createdAt).toLocaleDateString()}
                       </p>
-                      <p className="text-xs text-gray-500 flex items-center">
-                        <HardDrive className="h-3 w-3 mr-1" />
+                      <p className="text-xs flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                        <HardDrive className="h-3 w-3 mr-1" style={{ color: colors.outline }} />
                         {formatFileSize(doc.size)}
                       </p>
-                      <p className="text-xs text-gray-500 flex items-center">
-                        <Tag className="h-3 w-3 mr-1" />
+                      <p className="text-xs flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                        <Tag className="h-3 w-3 mr-1" style={{ color: colors.outline }} />
                         {getFileType(doc.filename)}
                       </p>
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                    <div className="flex items-center justify-between pt-3" style={{ borderTop: `1px solid ${colors.outlineVariant}` }}>
                       <div className="flex space-x-1">
                         <button
                           onClick={() => handlePreview(doc)}
-                          className="p-1.5 hover:bg-gray-100 rounded-lg"
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ color: colors.onSurfaceVariant }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                           title="Preview"
                         >
-                          <Eye className="h-4 w-4 text-gray-600" />
+                          <Eye className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDownload(doc)}
-                          className="p-1.5 hover:bg-gray-100 rounded-lg"
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ color: colors.onSurfaceVariant }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                           title="Download"
                         >
-                          <Download className="h-4 w-4 text-gray-600" />
+                          <Download className="h-4 w-4" />
                         </button>
                       </div>
                       <div className="flex space-x-1">
                         <button
                           onClick={() => handleRunOCR(doc._id)}
                           disabled={ocrLoading}
-                          className="p-1.5 hover:bg-purple-100 rounded-lg"
+                          className="p-1.5 rounded-lg transition-colors disabled:opacity-50"
+                          style={{ color: colors.secondary }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${colors.secondary}10`}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                           title="Run OCR"
                         >
-                          <Brain className="h-4 w-4 text-purple-600" />
+                          <Brain className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleViewOCR(doc._id)}
-                          className="p-1.5 hover:bg-blue-100 rounded-lg"
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ color: colors.onSurfaceVariant }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                           title="View OCR"
                         >
-                          <FileSearch className="h-4 w-4 text-blue-600" />
+                          <FileSearch className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(doc._id)}
-                          className="p-1.5 hover:bg-red-100 rounded-lg"
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ color: colors.error }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.errorContainer}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                           title="Delete"
                         >
-                          <Trash2 className="h-4 w-4 text-red-600" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
@@ -713,56 +842,56 @@ export default function Documents() {
               {filteredDocs.map((doc) => (
                 <div
                   key={doc._id}
-                  className="border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-lg transition-all"
+                  className="rounded-xl transition-all duration-200 hover:shadow-md"
+                  style={{ border: `1px solid ${colors.outlineVariant}`, backgroundColor: colors.surfaceContainerLowest }}
                 >
                   <div className="p-5">
                     <div className="flex flex-col md:flex-row md:items-start gap-4">
-                      {/* File Icon */}
                       <div className="flex-shrink-0">
-                        <div className="p-3 bg-gray-50 rounded-xl">
+                        <div className="p-3 rounded-xl" style={{ backgroundColor: colors.surfaceContainerHighest }}>
                           {getFileIcon(doc.filename)}
                         </div>
                       </div>
 
-                      {/* Document Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                           <div>
-                            <h3 className="text-lg font-bold text-gray-900 mb-2">
+                            <h3 className="text-lg font-bold mb-2" style={{ color: colors.onSurface }}>
                               {doc.filename}
                             </h3>
                             
                             <div className="grid grid-cols-2 md:flex md:flex-wrap gap-3 text-sm">
-                              <span className="flex items-center text-gray-600">
-                                <User className="h-4 w-4 mr-1 text-gray-400" />
+                              <span className="flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                                <User className="h-4 w-4 mr-1" style={{ color: colors.outline }} />
                                 {doc.assignedUserId?.name || "Unassigned"}
                               </span>
                               
-                              <span className="flex items-center text-gray-600">
-                                <Calendar className="h-4 w-4 mr-1 text-gray-400" />
+                              <span className="flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                                <Calendar className="h-4 w-4 mr-1" style={{ color: colors.outline }} />
                                 {new Date(doc.createdAt).toLocaleDateString()}
                               </span>
                               
                               {doc.size && (
-                                <span className="flex items-center text-gray-600">
-                                  <HardDrive className="h-4 w-4 mr-1 text-gray-400" />
+                                <span className="flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                                  <HardDrive className="h-4 w-4 mr-1" style={{ color: colors.outline }} />
                                   {formatFileSize(doc.size)}
                                 </span>
                               )}
 
-                              <span className="flex items-center text-gray-600">
-                                <Tag className="h-4 w-4 mr-1 text-gray-400" />
+                              <span className="flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                                <Tag className="h-4 w-4 mr-1" style={{ color: colors.outline }} />
                                 {getFileType(doc.filename)}
                               </span>
                             </div>
 
-                            {/* OCR Status */}
                             <div className="mt-2">
                               <span className={`inline-flex items-center px-2 py-1 text-xs rounded-lg ${
                                 doc.ocrTextId
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-yellow-100 text-yellow-700"
-                              }`}>
+                                  ? "text-green-700"
+                                  : "text-yellow-700"
+                              }`} style={{
+                                backgroundColor: doc.ocrTextId ? "#4caf5015" : `${colors.tertiary}15`
+                              }}>
                                 {doc.ocrTextId ? (
                                   <>
                                     <CheckCircle className="h-3 w-3 mr-1" />
@@ -778,11 +907,13 @@ export default function Documents() {
                             </div>
                           </div>
 
-                          {/* Action Buttons */}
                           <div className="flex flex-wrap gap-2">
                             <button
                               onClick={() => handlePreview(doc)}
-                              className="p-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                              className="p-2 rounded-lg transition-all duration-200"
+                              style={{ border: `1px solid ${colors.outlineVariant}`, color: colors.onSurfaceVariant }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                               title="View"
                             >
                               <Eye className="h-4 w-4" />
@@ -790,7 +921,10 @@ export default function Documents() {
                             
                             <button
                               onClick={() => handleDownload(doc)}
-                              className="p-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                              className="p-2 rounded-lg transition-all duration-200"
+                              style={{ border: `1px solid ${colors.outlineVariant}`, color: colors.onSurfaceVariant }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                               title="Download"
                             >
                               <Download className="h-4 w-4" />
@@ -799,7 +933,10 @@ export default function Documents() {
                             <button
                               onClick={() => handleRunOCR(doc._id)}
                               disabled={ocrLoading}
-                              className="p-2 border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50 disabled:opacity-50"
+                              className="p-2 rounded-lg transition-all duration-200 disabled:opacity-50"
+                              style={{ border: `1px solid ${colors.secondary}30`, color: colors.secondary }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${colors.secondary}10`}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                               title="Run OCR"
                             >
                               <Brain className="h-4 w-4" />
@@ -807,7 +944,10 @@ export default function Documents() {
 
                             <button
                               onClick={() => handleViewOCR(doc._id)}
-                              className="p-2 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50"
+                              className="p-2 rounded-lg transition-all duration-200"
+                              style={{ border: `1px solid ${colors.outlineVariant}`, color: colors.onSurfaceVariant }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                               title="View OCR Text"
                             >
                               <FileSearch className="h-4 w-4" />
@@ -815,7 +955,10 @@ export default function Documents() {
 
                             <button
                               onClick={() => handleDelete(doc._id)}
-                              className="p-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50"
+                              className="p-2 rounded-lg transition-all duration-200"
+                              style={{ border: `1px solid ${colors.error}30`, color: colors.error }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.errorContainer}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -832,22 +975,25 @@ export default function Documents() {
         </div>
       </div>
 
-      {/* Document Preview Modal */}
+      {/* Document Preview Modal - Glassmorphism */}
       {previewDoc && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className={`${glassCardClass} max-w-4xl w-full max-h-[90vh] overflow-hidden`} style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+            <div className="sticky top-0 p-4 flex items-center justify-between" style={{ borderBottom: `1px solid ${colors.outlineVariant}`, backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
               <div className="flex items-center space-x-2">
                 {getFileIcon(previewDoc.filename)}
-                <h3 className="text-lg font-bold text-gray-900 truncate max-w-md">
+                <h3 className="text-lg font-bold truncate max-w-md" style={{ color: colors.onSurface }}>
                   {previewDoc.filename}
                 </h3>
               </div>
               <button
                 onClick={() => setPreviewDoc(null)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 rounded-lg transition-colors"
+                style={{ color: colors.onSurfaceVariant }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                <X className="h-5 w-5 text-gray-500" />
+                <X className="h-5 w-5" />
               </button>
             </div>
             
@@ -859,17 +1005,23 @@ export default function Documents() {
               />
             </div>
             
-            <div className="border-t border-gray-200 p-4 bg-gray-50 flex justify-end space-x-3">
+            <div className="p-4 flex justify-end space-x-3" style={{ borderTop: `1px solid ${colors.outlineVariant}`, backgroundColor: colors.surfaceContainerLow }}>
               <button
                 onClick={() => handleDownload(previewDoc)}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
+                className="px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2"
+                style={{ backgroundColor: colors.secondary, color: "white" }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondaryContainer}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
               >
                 <Download className="h-4 w-4" />
                 <span>Download</span>
               </button>
               <button
                 onClick={() => setPreviewDoc(null)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 rounded-lg transition-all duration-200"
+                style={{ border: `1px solid ${colors.outlineVariant}`, color: colors.onSurfaceVariant }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
                 Close
               </button>
@@ -878,63 +1030,70 @@ export default function Documents() {
         </div>
       )}
 
-      {/* OCR Text Modal */}
+      {/* OCR Text Modal - Glassmorphism */}
       {openOCR && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={() => setOpenOCR(false)}
         >
           <div 
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl border border-gray-200"
+            className={`${glassCardClass} w-full max-w-3xl`}
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-5 border-b border-gray-200">
+            <div className="flex items-center justify-between p-5" style={{ borderBottom: `1px solid ${colors.outlineVariant}` }}>
               <div className="flex items-center space-x-2">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <FileSearch className="h-5 w-5 text-purple-600" />
+                <div className="p-2 rounded-lg" style={{ backgroundColor: `${colors.secondary}10` }}>
+                  <FileSearch className="h-5 w-5" style={{ color: colors.secondary }} />
                 </div>
-                <h2 className="text-lg font-bold text-gray-900">OCR Extracted Text</h2>
+                <h2 className="text-lg font-bold" style={{ color: colors.onSurface }}>OCR Extracted Text</h2>
               </div>
               <button
                 onClick={() => setOpenOCR(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 rounded-lg transition-colors"
+                style={{ color: colors.onSurfaceVariant }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
-                <X className="h-5 w-5 text-gray-500" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="p-5 max-h-[60vh] overflow-y-auto">
               {ocrLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 text-purple-600 animate-spin" />
-                  <span className="ml-2 text-gray-600">Loading OCR text...</span>
+                  <Loader2 className="h-6 w-6 animate-spin" style={{ color: colors.secondary }} />
+                  <span className="ml-2" style={{ color: colors.onSurfaceVariant }}>Loading OCR text...</span>
                 </div>
               ) : (
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <pre className="whitespace-pre-wrap font-mono text-sm text-gray-700">
+                <div className="rounded-xl p-4" style={{ backgroundColor: colors.surfaceContainerLow, border: `1px solid ${colors.outlineVariant}` }}>
+                  <pre className="whitespace-pre-wrap font-mono text-sm" style={{ color: colors.onSurfaceVariant }}>
                     {ocrText}
                   </pre>
                 </div>
               )}
             </div>
 
-            {/* Modal Footer */}
-            <div className="flex items-center justify-end space-x-3 p-5 border-t border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-end space-x-3 p-5" style={{ borderTop: `1px solid ${colors.outlineVariant}`, backgroundColor: colors.surfaceContainerLow }}>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(ocrText);
                   toast.success("Copied to clipboard!");
                 }}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors flex items-center space-x-2"
+                className="px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2"
+                style={{ border: `1px solid ${colors.outlineVariant}`, color: colors.onSurfaceVariant }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
                 <Copy className="h-4 w-4" />
                 <span>Copy</span>
               </button>
               <button
                 onClick={() => setOpenOCR(false)}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                className="px-4 py-2 rounded-lg transition-all duration-200"
+                style={{ backgroundColor: colors.secondary, color: "white" }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondaryContainer}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
               >
                 Close
               </button>

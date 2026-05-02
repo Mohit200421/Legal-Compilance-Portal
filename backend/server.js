@@ -26,9 +26,11 @@ const userArticleRoutes = require("./routes/userArticleRoutes");
 const masterRoutes = require("./routes/masterRoutes");
 const adminLawyerRoutes = require("./routes/adminLawyerRoutes");
 const callRoutes = require("./routes/callRoutes");
+const aiChatRoutes = require("./routes/aiChatRoutes");
+const supportRoutes = require("./routes/support");
 
 const errorHandler = require("./middleware/errorHandler");
-const aiChatRoutes = require("./routes/aiChatRoutes");
+
 // Cron jobs
 require("./cron/eventReminder");
 require("./cron/subscriptionExpiry");
@@ -39,56 +41,27 @@ const server = http.createServer(app);
 // ================= DB =================
 connectDB();
 
-// ================= CORS FIX (IMPORTANT) =================
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173",
-  "https://legal-compliance-portal.vercel.app",
-];
+// ================= ENV =================
+const isProd = process.env.NODE_ENV === "production";
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (
-      !origin ||
-      allowedOrigins.includes(origin) ||
-      origin.includes("vercel.app") // ✅ allow all vercel deployments
-    ) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-
-
-
+// ================= CORS (FIXED FOR BOTH LOCAL + PROD) =================
+app.use(
+  cors({
+    origin: isProd
+      ? ["https://legal-compliance-portal.vercel.app"] // 🔥 your frontend domain
+      : "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 // ================= SOCKET.IO =================
 const io = new Server(server, {
   cors: {
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://legal-compliance-portal.vercel.app",
-      ];
-
-      if (
-        !origin ||
-        allowedOrigins.includes(origin) ||
-        origin.includes("vercel.app")
-      ) {
-        callback(null, true);
-      } else {
-        console.log("❌ Socket blocked:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST"],   
-    credentials: true,          
+    origin: isProd
+      ? ["https://legal-compliance-portal.vercel.app"]
+      : "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -120,27 +93,30 @@ app.use("/api/user-article", userArticleRoutes);
 app.use("/api/master", masterRoutes);
 app.use("/api/call", callRoutes);
 app.use("/api/ai-chat", aiChatRoutes);
+app.use("/api/support", supportRoutes);
 
-// ================= HEALTH CHECK =================
+// ================= HEALTH CHECK
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
 
-// ================= EMAIL (RESEND) =================
+// ================= EMAIL =================
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ================= TEST MAIL =================
 app.get("/test-mail", async (req, res) => {
   try {
     const response = await resend.emails.send({
-      from: "legal@lawsetu.com",
+      from: "[legal@lawsetu.com](mailto:legal@lawsetu.com)",
       to: process.env.EMAIL_USER,
       subject: "Test Email",
       html: "<h2>Email working 🚀</h2>",
     });
 
-    console.log("EMAIL SENT:", response);
-    res.send("Email sent ✅");
+    ```
+console.log("EMAIL SENT:", response);
+res.send("Email sent ✅");
+```;
   } catch (err) {
     console.log("EMAIL ERROR:", err);
     res.send("Failed ❌");
@@ -156,7 +132,6 @@ io.on("connection", (socket) => {
 
   socket.on("joinRoom", (userId) => {
     socket.join(userId);
-    console.log("User joined:", userId);
   });
 
   socket.on("sendMessage", (data) => {

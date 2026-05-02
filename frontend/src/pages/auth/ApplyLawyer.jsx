@@ -20,10 +20,41 @@ import {
   FileCheck,
   Upload,
   Info,
+  Sparkles,
+  ArrowRight,
 } from "lucide-react";
 
 // Import the app logo
-import appLogo from "../../assets/app_logo.png";
+import appLogo from "../../assets/app_logo.svg";
+
+// Lex-Modernism Color System
+const colors = {
+  primary: "#091426",
+  primaryContainer: "#1e293b",
+  onPrimaryContainer: "#8590a6",
+  secondary: "#4648d4",
+  secondaryContainer: "#6063ee",
+  onSecondaryContainer: "#fffbff",
+  surface: "#fbf8fa",
+  surfaceDim: "#dcd9db",
+  surfaceBright: "#fbf8fa",
+  surfaceContainerLowest: "#ffffff",
+  surfaceContainerLow: "#f5f3f4",
+  surfaceContainer: "#f0edef",
+  surfaceContainerHigh: "#eae7e9",
+  surfaceContainerHighest: "#e4e2e3",
+  onSurface: "#1b1b1d",
+  onSurfaceVariant: "#45474c",
+  outline: "#75777d",
+  outlineVariant: "#c5c6cd",
+  error: "#ba1a1a",
+  errorContainer: "#ffdad6",
+  onError: "#ffffff",
+  onErrorContainer: "#93000a",
+  tertiary: "#1e1200",
+  tertiaryContainer: "#35260c",
+  onTertiaryContainer: "#a38c6a",
+};
 
 export default function ApplyLawyer() {
   const navigate = useNavigate();
@@ -42,13 +73,17 @@ export default function ApplyLawyer() {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // Clear error for this field when user starts typing
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: null });
     }
+  };
+
+  const handleBlur = (field) => {
+    setTouched({ ...touched, [field]: true });
   };
 
   const validateForm = () => {
@@ -90,6 +125,23 @@ export default function ApplyLawyer() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Glassmorphism card style
+  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+
+  const inputClass = "w-full pl-9 pr-4 py-2.5 rounded-xl text-base transition-all duration-200 focus:outline-none";
+
+  const handleInputFocus = (e) => {
+    e.currentTarget.style.borderColor = colors.secondary;
+    e.currentTarget.style.boxShadow = `0 0 0 3px ${colors.secondary}20`;
+  };
+
+  const handleInputBlur = (e, fieldName) => {
+    const hasError = errors[fieldName];
+    e.currentTarget.style.borderColor = hasError ? colors.error : colors.outlineVariant;
+    e.currentTarget.style.boxShadow = "none";
+    handleBlur(fieldName);
   };
 
   const inputFields = [
@@ -160,71 +212,109 @@ export default function ApplyLawyer() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Back Button */}
-      <div className="absolute top-6 left-6 md:top-8 md:left-8">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: colors.surface }}>
+      {/* Background decorative elements */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 10% 20%, ${colors.secondary}05, transparent 60%),
+                      radial-gradient(circle at 90% 80%, ${colors.secondary}03, transparent 50%)`
+        }}
+      />
+      
+      {/* Back Button - Glassmorphism */}
+      <div className="hidden md:block fixed top-6 left-6 md:top-8 md:left-8 z-10">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group"
+          className="flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300 group"
+          style={{ color: colors.onSurfaceVariant }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+            e.currentTarget.style.color = colors.onSurface;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = colors.onSurfaceVariant;
+          }}
         >
-          <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-medium">Back</span>
         </button>
       </div>
 
       {/* Main Content */}
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl">
-          {/* Logo with Image */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center space-x-2 mb-3">
+      <div className="w-full max-w-2xl relative z-10">
+        {/* Logo Section */}
+        <div className="text-center mb-6">
+          <div className="flex flex-col items-center justify-center space-y-3 mb-4">
+            <div className={`p-3 rounded-2xl ${glassCardClass}`}>
               <img 
                 src={appLogo} 
                 alt="LawSetu Logo" 
-                className="h-10 w-auto object-contain"
+                className="h-6 w-auto object-contain"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                LawSetu
-              </span>
             </div>
-
-            <h2 className="text-2xl font-bold text-gray-900">
-              Join Our Network of Legal Experts
-            </h2>
-            <p className="text-sm text-gray-600 mt-2 max-w-lg mx-auto">
-              Fill in your details below. Admin will verify and approve your
-              access within 24-48 hours.
-            </p>
+            <div className="flex items-center space-x-2">
+              <span className="text-xl font-bold" style={{ color: colors.onSurface }}>
+                Law<span style={{ color: colors.secondary }}>Setu</span>
+              </span>
+              <Sparkles className="h-4 w-4" style={{ color: colors.secondary }} />
+            </div>
           </div>
 
-          {/* Error Summary */}
-          {Object.keys(errors).length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-              <div className="flex items-start">
-                <AlertCircle className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700">
-                  Please fill in all required fields correctly.
-                </p>
-              </div>
-            </div>
-          )}
+          <h2 
+            className="text-2xl font-bold mb-2 leading-[1.3] tracking-[-0.01em]"
+            style={{ color: colors.onSurface }}
+          >
+            Join Our Network of Legal Experts
+          </h2>
+          <p className="text-sm max-w-lg mx-auto" style={{ color: colors.onSurfaceVariant }}>
+            Fill in your details below. Admin will verify and approve your
+            access within 24-48 hours.
+          </p>
+        </div>
 
-          {/* Application Form - No Card */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Form Grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {inputFields.map((field) => (
+        {/* Error Summary */}
+        {Object.keys(errors).length > 0 && (
+          <div 
+            className="rounded-xl p-4 mb-6"
+            style={{ 
+              backgroundColor: colors.errorContainer,
+              border: `1px solid ${colors.error}20`
+            }}
+          >
+            <div className="flex items-start">
+              <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" style={{ color: colors.onErrorContainer }} />
+              <p className="text-sm" style={{ color: colors.onErrorContainer }}>
+                Please fill in all required fields correctly.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Application Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Form Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {inputFields.map((field) => {
+              const Icon = field.icon;
+              const hasError = errors[field.name];
+              const isTouched = touched[field.name];
+              
+              return (
                 <div key={field.name} className={field.colSpan}>
-                  <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
+                  <label 
+                    className="block text-xs font-semibold uppercase tracking-wider mb-2"
+                    style={{ color: colors.onSurfaceVariant }}
+                  >
                     {field.label}
                   </label>
                   <div className="relative">
-                    <field.icon
-                      className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 ${
-                        errors[field.name]
-                          ? "text-red-500"
-                          : "text-gray-400"
+                    <Icon
+                      className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${
+                        hasError ? "text-error" : "text-outline"
                       }`}
+                      style={{ color: hasError ? colors.error : colors.outline }}
                     />
                     <input
                       type={field.type}
@@ -232,147 +322,234 @@ export default function ApplyLawyer() {
                       placeholder={field.placeholder}
                       value={form[field.name]}
                       onChange={handleChange}
-                      className={`w-full pl-9 pr-4 py-2.5 bg-transparent border-b-2 ${
-                        errors[field.name]
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } text-gray-900 focus:border-blue-600 focus:outline-none transition-colors`}
+                      className={inputClass}
+                      style={{
+                        backgroundColor: colors.surfaceContainerLowest,
+                        border: `1px solid ${hasError ? colors.error : colors.outlineVariant}`,
+                        color: colors.onSurface,
+                      }}
+                      onFocus={handleInputFocus}
+                      onBlur={(e) => handleInputBlur(e, field.name)}
                     />
                   </div>
-                  {errors[field.name] && (
-                    <p className="text-xs text-red-600 mt-1">
+                  {hasError && (
+                    <p className="text-xs mt-1" style={{ color: colors.error }}>
                       {errors[field.name]}
                     </p>
                   )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
 
-            {/* Message Textarea */}
-            <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-gray-700 mb-2">
-                Additional Message (Optional)
-              </label>
-              <div className="relative">
-                <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <textarea
-                  name="message"
-                  placeholder="Tell us why you'd like to join our platform, your areas of expertise, or any additional information..."
-                  value={form.message}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full pl-9 pr-4 py-2.5 bg-transparent border-b-2 border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-none transition-colors resize-none"
-                />
-              </div>
-            </div>
-
-            {/* Document Upload Section (Placeholder) */}
-            <div className="border border-gray-200 rounded-xl p-4">
-              <div className="flex items-center mb-3">
-                <Upload className="h-4 w-4 text-blue-600 mr-2" />
-                <h3 className="text-sm font-medium text-gray-900">
-                  Supporting Documents
-                </h3>
-                <span className="ml-2 text-xs text-gray-500">(Optional)</span>
-              </div>
-              <p className="text-xs text-gray-500 mb-3">
-                You can upload your Bar Council certificate, resume, or other
-                relevant documents after registration.
-              </p>
-              <button
-                type="button"
-                className="px-3 py-1.5 text-xs border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                onClick={() =>
-                  alert("Document upload will be available after registration")
-                }
-              >
-                Upload Documents
-              </button>
-            </div>
-
-            {/* Terms Checkbox */}
-            <div className="flex items-start">
-              <input
-                type="checkbox"
-                id="terms"
-                required
-                className="h-4 w-4 mt-0.5 border-gray-300 text-blue-600 focus:ring-blue-600"
-              />
-              <label
-                htmlFor="terms"
-                className="ml-2 text-xs text-gray-600"
-              >
-                I confirm that the information provided is true and accurate. I
-                agree to the{" "}
-                <Link
-                  to="/terms-and-conditions"
-                  className="text-blue-600 font-medium hover:underline"
-                >
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link
-                  to="/privacy-policy"
-                  className="text-blue-600 font-medium hover:underline"
-                >
-                  Privacy Policy
-                </Link>
-              </label>
-            </div>
-
-            {/* Info Note */}
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-              <div className="flex items-start">
-                <Info className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5 mr-2" />
-                <p className="text-xs text-blue-700">
-                  Your application will be reviewed by our admin team. You'll
-                  receive an email confirmation once your account is verified
-                  and activated.
-                </p>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
+          {/* Message Textarea */}
+          <div>
+            <label 
+              className="block text-xs font-semibold uppercase tracking-wider mb-2"
+              style={{ color: colors.onSurfaceVariant }}
             >
-              {loading ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
-                  <span>Submitting Application...</span>
-                </div>
-              ) : (
-                "Submit Application"
-              )}
+              Additional Message (Optional)
+            </label>
+            <div className="relative">
+              <MessageSquare 
+                className="absolute left-3 top-3 h-4 w-4" 
+                style={{ color: colors.outline }} 
+              />
+              <textarea
+                name="message"
+                placeholder="Tell us why you'd like to join our platform, your areas of expertise, or any additional information..."
+                value={form.message}
+                onChange={handleChange}
+                rows={3}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-base transition-all duration-200 focus:outline-none resize-none"
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                }}
+                onFocus={handleInputFocus}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = colors.outlineVariant;
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Document Upload Section - Glass Card */}
+          <div className={`${glassCardClass} p-4`}>
+            <div className="flex items-center mb-3">
+              <Upload className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
+              <h3 className="text-sm font-medium" style={{ color: colors.onSurface }}>
+                Supporting Documents
+              </h3>
+              <span className="ml-2 text-xs" style={{ color: colors.onSurfaceVariant }}>(Optional)</span>
+            </div>
+            <p className="text-xs mb-3" style={{ color: colors.onSurfaceVariant }}>
+              You can upload your Bar Council certificate, resume, or other
+              relevant documents after registration.
+            </p>
+            <button
+              type="button"
+              className="px-3 py-1.5 text-xs rounded-lg transition-all duration-200"
+              style={{ 
+                border: `1px solid ${colors.outlineVariant}`,
+                color: colors.onSurfaceVariant
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+                e.currentTarget.style.color = colors.onSurface;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = colors.onSurfaceVariant;
+              }}
+              onClick={() =>
+                alert("Document upload will be available after registration")
+              }
+            >
+              Upload Documents
             </button>
-          </form>
+          </div>
 
-          {/* Login Link */}
-          <div className="text-center mt-6">
-            <p className="text-xs text-gray-500">
-              Already have a lawyer account?{" "}
+          {/* Terms Checkbox */}
+          <div className="flex items-start">
+            <input
+              type="checkbox"
+              id="terms"
+              required
+              className="h-4 w-4 mt-0.5 rounded transition-all duration-200 focus:ring-2"
+              style={{ 
+                borderColor: colors.outlineVariant,
+                accentColor: colors.secondary
+              }}
+            />
+            <label
+              htmlFor="terms"
+              className="ml-2 text-xs"
+              style={{ color: colors.onSurfaceVariant }}
+            >
+              I confirm that the information provided is true and accurate. I
+              agree to the{" "}
               <Link
-                to="/login"
-                className="text-blue-600 font-medium hover:underline"
+                to="/terms-and-conditions"
+                className="font-medium transition-colors"
+                style={{ color: colors.secondary }}
+                onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
+                onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
               >
-                Sign in
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                to="/privacy-policy"
+                className="font-medium transition-colors"
+                style={{ color: colors.secondary }}
+                onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
+                onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+              >
+                Privacy Policy
               </Link>
-            </p>
+            </label>
           </div>
 
-          {/* Support Info */}
-          <div className="border-t border-gray-200 mt-6 pt-4 text-center">
-            <p className="text-xs text-gray-400">
-              Need help with your application?{" "}
-              <button className="text-blue-600 hover:underline font-medium">
-                Contact support
-              </button>
-            </p>
+          {/* Info Note - Glass Card */}
+          <div 
+            className="rounded-xl p-4"
+            style={{ 
+              backgroundColor: `${colors.secondary}08`,
+              border: `1px solid ${colors.secondary}20`
+            }}
+          >
+            <div className="flex items-start">
+              <Info className="h-4 w-4 flex-shrink-0 mt-0.5 mr-2" style={{ color: colors.secondary }} />
+              <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>
+                Your application will be reviewed by our admin team. You'll
+                receive an email confirmation once your account is verified
+                and activated.
+              </p>
+            </div>
           </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 group"
+            style={{ 
+              backgroundColor: colors.secondary,
+              color: "white",
+              boxShadow: `0 4px 12px ${colors.secondary}40`
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.currentTarget.style.backgroundColor = colors.secondaryContainer;
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow = `0 6px 16px ${colors.secondary}50`;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!loading) {
+                e.currentTarget.style.backgroundColor = colors.secondary;
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = `0 4px 12px ${colors.secondary}40`;
+              }
+            }}
+          >
+            {loading ? (
+              <div className="flex items-center space-x-2">
+                <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                <span>Submitting Application...</span>
+              </div>
+            ) : (
+              <>
+                <span>Submit Application</span>
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Login Link */}
+        <div className="text-center mt-6">
+          <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>
+            Already have a lawyer account?{" "}
+            <Link
+              to="/login"
+              className="font-medium transition-colors"
+              style={{ color: colors.secondary }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
+
+        {/* Support Info */}
+        <div className="mt-6 pt-4 text-center" style={{ borderTop: `1px solid ${colors.outlineVariant}` }}>
+          <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>
+            Need help with your application?{" "}
+            <button 
+              className="font-medium transition-colors"
+              style={{ color: colors.secondary }}
+              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
+              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+            >
+              Contact support
+            </button>
+          </p>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }

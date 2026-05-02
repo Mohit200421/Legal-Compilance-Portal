@@ -1,241 +1,349 @@
 import { Link } from "react-router-dom";
 import aboutImg from "../assets/about.jpg";
-import { Scale, Target, Eye, Heart, CheckCircle } from "lucide-react";
+import { Scale, Target, Eye, Heart, CheckCircle, Sparkles, Users, Briefcase, Award, ArrowRight } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 // Import the app logo
-import appLogo from "../assets/app_logo.png";
+import appLogo from "../assets/app_logo.svg";
+
+// Lex-Modernism Color System
+const colors = {
+  primary: "#091426",
+  primaryContainer: "#1e293b",
+  onPrimaryContainer: "#8590a6",
+  secondary: "#4648d4",
+  secondaryContainer: "#6063ee",
+  onSecondaryContainer: "#fffbff",
+  surface: "#fbf8fa",
+  surfaceDim: "#dcd9db",
+  surfaceBright: "#fbf8fa",
+  surfaceContainerLowest: "#ffffff",
+  surfaceContainerLow: "#f5f3f4",
+  surfaceContainer: "#f0edef",
+  surfaceContainerHigh: "#eae7e9",
+  surfaceContainerHighest: "#e4e2e3",
+  onSurface: "#1b1b1d",
+  onSurfaceVariant: "#45474c",
+  outline: "#75777d",
+  outlineVariant: "#c5c6cd",
+  error: "#ba1a1a",
+  errorContainer: "#ffdad6",
+  onError: "#ffffff",
+  onErrorContainer: "#93000a",
+  tertiary: "#1e1200",
+  tertiaryContainer: "#35260c",
+  onTertiaryContainer: "#a38c6a",
+};
 
 export default function About() {
+  // Glassmorphism card style
+  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+
+  const teamMembers = [
+    {
+      name: "Adv. Mohit Badgujar",
+      role: "Senior Partner — Criminal & Civil Litigation",
+      experience: "18+ years",
+      cases: "500+",
+      image: aboutImg,
+    },
+    {
+      name: "Adv. Priya Sharma",
+      role: "Partner — Family & Matrimonial Law",
+      experience: "14+ years",
+      cases: "400+",
+      image: aboutImg,
+    },
+    {
+      name: "Adv. R. Gupta",
+      role: "Corporate Counsel — Contracts & Compliance",
+      experience: "12+ years",
+      cases: "350+",
+      image: aboutImg,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: colors.surface }}>
       {/* Navbar */}
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="text-white">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                About LawSetu
+      {/* Hero Section - Updated with Lex-Modernism */}
+      <section className="relative py-20 overflow-hidden" style={{ backgroundColor: colors.primary }}>
+        {/* Background gradient overlay */}
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{ background: `radial-gradient(circle at 10% 30%, ${colors.secondary}30, transparent 70%)` }}
+        />
+        
+        {/* Decorative dots pattern */}
+        <div className="absolute inset-0 opacity-10" style={{ 
+          backgroundImage: `radial-gradient(${colors.secondary} 1px, transparent 1px)`,
+          backgroundSize: '24px 24px'
+        }} />
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              {/* Trust badge */}
+              <div 
+                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm mb-6"
+                style={{ backgroundColor: colors.surfaceContainerHighest, color: colors.secondary }}
+              >
+                <Sparkles size={14} />
+                <span className="font-medium tracking-wide">LEGAL EXCELLENCE SINCE 2010</span>
+              </div>
+              
+              <h1 
+                className="text-4xl lg:text-5xl font-bold mb-6 leading-[1.2] tracking-[-0.02em]"
+                style={{ color: "white" }}
+              >
+                About Law<span style={{ color: colors.secondary }}>Setu</span>
               </h1>
-              <p className="text-lg text-blue-100 mb-8 leading-relaxed">
+              
+              <p 
+                className="text-base lg:text-lg mb-8 leading-relaxed"
+                style={{ color: "rgba(255,255,255,0.8)", lineHeight: "1.6" }}
+              >
                 LawSetu is a full-service law firm providing expert legal
                 guidance in civil, criminal, corporate, family and cyber law. We
                 combine deep legal knowledge with real-world experience to
                 protect your rights and deliver outcomes.
               </p>
 
-              {/* KPIs */}
-              <div className="grid grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold">15+</div>
-                  <div className="text-blue-200 text-sm">Years Experience</div>
+              {/* KPIs - Glassmorphism */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className={`${glassCardClass} p-4 text-center`} style={{ backgroundColor: "rgba(255,255,255,0.1)", backdropFilter: "blur(12px)" }}>
+                  <div className="text-3xl lg:text-4xl font-bold" style={{ color: colors.secondary }}>15+</div>
+                  <div className="text-xs lg:text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Years Experience</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold">3,200+</div>
-                  <div className="text-blue-200 text-sm">Cases Handled</div>
+                <div className={`${glassCardClass} p-4 text-center`} style={{ backgroundColor: "rgba(255,255,255,0.1)", backdropFilter: "blur(12px)" }}>
+                  <div className="text-3xl lg:text-4xl font-bold" style={{ color: colors.secondary }}>3,200+</div>
+                  <div className="text-xs lg:text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Cases Handled</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold">98%</div>
-                  <div className="text-blue-200 text-sm">
-                    Client Satisfaction
-                  </div>
+                <div className={`${glassCardClass} p-4 text-center`} style={{ backgroundColor: "rgba(255,255,255,0.1)", backdropFilter: "blur(12px)" }}>
+                  <div className="text-3xl lg:text-4xl font-bold" style={{ color: colors.secondary }}>98%</div>
+                  <div className="text-xs lg:text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Satisfaction</div>
                 </div>
               </div>
             </div>
 
             <div className="relative">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src={aboutImg}
-                  alt="Law firm team"
-                  className="w-full h-full object-cover"
-                />
+              <div className={`relative rounded-xl overflow-hidden ${glassCardClass} p-2`}>
+                <div className="relative rounded-lg overflow-hidden">
+                  <img
+                    src={aboutImg}
+                    alt="Law firm team"
+                    className="w-full h-auto"
+                  />
+                  <div 
+                    className="absolute inset-0"
+                    style={{ background: `linear-gradient(135deg, ${colors.secondary}20, transparent)` }}
+                  />
+                </div>
               </div>
               {/* Decorative element */}
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-blue-500 rounded-2xl -z-10" />
+              <div 
+                className="absolute -bottom-6 -right-6 w-32 h-32 rounded-2xl -z-10"
+                style={{ backgroundColor: colors.secondary, opacity: 0.3 }}
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Mission / Vision / Values */}
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* Mission / Vision / Values - Glassmorphism Cards */}
+      <section className="py-16 md:py-24" style={{ backgroundColor: colors.surface }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-6">
             {/* Mission */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition">
-              <div className="bg-blue-100 w-14 h-14 rounded-lg flex items-center justify-center mb-4">
-                <Target className="h-7 w-7 text-blue-600" />
+            <div className={`${glassCardClass} p-6 group cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+              <div 
+                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
+                style={{ backgroundColor: `${colors.secondary}15` }}
+              >
+                <Target className="h-7 w-7" style={{ color: colors.secondary }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold mb-3" style={{ color: colors.onSurface }}>
                 Our Mission
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: colors.onSurfaceVariant, lineHeight: "1.5" }}>
                 To provide clear, ethical and result-oriented legal services
                 that protect client interests and deliver justice.
               </p>
             </div>
 
             {/* Vision */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition">
-              <div className="bg-green-100 w-14 h-14 rounded-lg flex items-center justify-center mb-4">
-                <Eye className="h-7 w-7 text-green-600" />
+            <div className={`${glassCardClass} p-6 group cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+              <div 
+                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
+                style={{ backgroundColor: `${colors.secondary}15` }}
+              >
+                <Eye className="h-7 w-7" style={{ color: colors.secondary }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold mb-3" style={{ color: colors.onSurface }}>
                 Our Vision
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="leading-relaxed" style={{ color: colors.onSurfaceVariant, lineHeight: "1.5" }}>
                 To be the most trusted legal partner — respected for our
                 integrity, professionalism and client-first approach.
               </p>
             </div>
 
             {/* Values */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition">
-              <div className="bg-purple-100 w-14 h-14 rounded-lg flex items-center justify-center mb-4">
-                <Heart className="h-7 w-7 text-purple-600" />
+            <div className={`${glassCardClass} p-6 group cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+              <div 
+                className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
+                style={{ backgroundColor: `${colors.secondary}15` }}
+              >
+                <Heart className="h-7 w-7" style={{ color: colors.secondary }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold mb-3" style={{ color: colors.onSurface }}>
                 Our Values
               </h3>
-              <div className="text-gray-600 space-y-2">
-                <div className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  <span>Integrity</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  <span>Excellence</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  <span>Transparency</span>
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                  <span>Client-First</span>
-                </div>
+              <div className="space-y-2">
+                {["Integrity", "Excellence", "Transparency", "Client-First"].map((value, idx) => (
+                  <div key={idx} className="flex items-center">
+                    <CheckCircle className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
+                    <span className="text-sm" style={{ color: colors.onSurfaceVariant }}>{value}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Team Members */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* Team Members Section */}
+      <section className="py-16 md:py-24" style={{ backgroundColor: colors.surfaceContainerLow }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <div 
+              className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm mb-4"
+              style={{ backgroundColor: colors.surfaceContainerHighest, color: colors.secondary }}
+            >
+              <Users size={14} />
+              <span className="font-medium tracking-wide">OUR EXPERTS</span>
+            </div>
+            <h2 
+              className="text-3xl md:text-4xl font-bold mb-4 leading-[1.3] tracking-[-0.01em]"
+              style={{ color: colors.onSurface }}
+            >
               Meet Our Team
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p 
+              className="max-w-2xl mx-auto"
+              style={{ color: colors.onSurfaceVariant, lineHeight: "1.6" }}
+            >
               Our experienced team of lawyers is dedicated to providing you with
               the best legal solutions.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Team Member 1 */}
-            <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition">
-              <div className="aspect-[4/3]">
-                <img
-                  src={aboutImg}
-                  alt="Adv. Mohit Badgujar"
-                  className="w-full h-full object-cover"
-                />
+          <div className="grid md:grid-cols-3 gap-6">
+            {teamMembers.map((member, index) => (
+              <div
+                key={index}
+                className={`${glassCardClass} overflow-hidden group transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: `linear-gradient(to top, ${colors.primary}CC, transparent)` }}
+                  />
+                </div>
+                <div className="p-6">
+                  <h4 className="text-lg font-bold mb-1" style={{ color: colors.onSurface }}>
+                    {member.name}
+                  </h4>
+                  <p className="text-sm font-medium mb-3" style={{ color: colors.secondary }}>
+                    {member.role}
+                  </p>
+                  <div className="flex justify-between pt-3 border-t" style={{ borderTopColor: colors.outlineVariant }}>
+                    <div>
+                      <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Experience</span>
+                      <p className="text-sm font-semibold" style={{ color: colors.onSurface }}>{member.experience}</p>
+                    </div>
+                    <div>
+                      <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Cases Won</span>
+                      <p className="text-sm font-semibold" style={{ color: colors.onSurface }}>{member.cases}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="p-6">
-                <h4 className="text-lg font-bold text-gray-900">
-                  Adv. Mohit Badgujar
-                </h4>
-                <p className="text-blue-600 font-medium">
-                  Senior Partner — Criminal & Civil Litigation
-                </p>
-              </div>
-            </div>
-
-            {/* Team Member 2 */}
-            <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition">
-              <div className="aspect-[4/3]">
-                <img
-                  src={aboutImg}
-                  alt="Adv. Priya Sharma"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h4 className="text-lg font-bold text-gray-900">
-                  Adv. Priya Sharma
-                </h4>
-                <p className="text-blue-600 font-medium">
-                  Partner — Family & Matrimonial Law
-                </p>
-              </div>
-            </div>
-
-            {/* Team Member 3 */}
-            <div className="bg-white rounded-xl overflow-hidden hover:shadow-lg transition">
-              <div className="aspect-[4/3]">
-                <img
-                  src={aboutImg}
-                  alt="Adv. R. Gupta"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h4 className="text-lg font-bold text-gray-900">
-                  Adv. R. Gupta
-                </h4>
-                <p className="text-blue-600 font-medium">
-                  Corporate Counsel — Contracts & Compliance
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-blue-600">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+      <section className="py-16 md:py-24 relative overflow-hidden" style={{ backgroundColor: colors.secondary }}>
+        {/* Glass overlay effect */}
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
+        <div className="absolute inset-0 opacity-20" style={{ 
+          backgroundImage: `radial-gradient(circle at 20% 40%, white 1px, transparent 1px)`,
+          backgroundSize: '32px 32px'
+        }} />
+        
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-[1.3] tracking-[-0.01em]" style={{ color: "white" }}>
             Need legal help today?
           </h2>
-          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-lg mb-8" style={{ color: "rgba(255,255,255,0.9)", lineHeight: "1.6" }}>
             Book a consultation with our experts. We provide practical guidance
             and strategic legal solutions.
           </p>
           <Link
             to="/login"
-            className="inline-block bg-white text-blue-700 px-8 py-3 rounded-lg font-bold hover:bg-blue-50 transition shadow-lg"
+            className="inline-flex items-center space-x-2 px-8 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-xl group"
+            style={{ 
+              backgroundColor: colors.surface,
+              color: colors.secondary,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.backgroundColor = colors.surfaceBright;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.backgroundColor = colors.surface;
+            }}
           >
-            Book Consultation
+            <span>Book Consultation</span>
+            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+      {/* Footer - Updated with Lex-Modernism */}
+      <footer className="py-12" style={{ backgroundColor: colors.primary, borderTop: `1px solid ${colors.primaryContainer}` }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <img 
               src={appLogo} 
               alt="LawSetu Logo" 
-              className="h-8 w-auto object-contain brightness-0 invert"
+              className="h-6 w-auto object-contain brightness-0 invert"
             />
             <span className="text-xl font-bold text-white">
-              LawSetu
+              Law<span style={{ color: colors.secondary }}>Setu</span>
             </span>
           </div>
-          <p className="text-slate-400 mb-4">
-            Providing clarity, compliance and professional legal support across
-            sectors.
+          <p className="mb-4" style={{ color: colors.onPrimaryContainer, lineHeight: "1.5" }}>
+            Providing clarity, compliance and professional legal support across sectors.
           </p>
-          <div className="border-t border-slate-800 pt-8 text-slate-500">
-            © 2025 LawSetu. All Rights Reserved.
+          <div className="flex justify-center space-x-6 mb-8">
+            <a href="#" className="text-sm transition-colors" style={{ color: colors.onPrimaryContainer }}>Privacy Policy</a>
+            <a href="#" className="text-sm transition-colors" style={{ color: colors.onPrimaryContainer }}>Terms of Service</a>
+            <a href="#" className="text-sm transition-colors" style={{ color: colors.onPrimaryContainer }}>Contact</a>
+          </div>
+          <div className="pt-8 text-sm" style={{ borderTop: `1px solid ${colors.primaryContainer}`, color: colors.onPrimaryContainer }}>
+            © 2025 LawSetu Legal Tech. All Rights Reserved.
           </div>
         </div>
       </footer>

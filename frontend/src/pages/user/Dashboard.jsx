@@ -36,6 +36,35 @@ import {
   Home
 } from "lucide-react";
 
+// Lex-Modernism Color System
+const colors = {
+  primary: "#091426",
+  primaryContainer: "#1e293b",
+  onPrimaryContainer: "#8590a6",
+  secondary: "#4648d4",
+  secondaryContainer: "#6063ee",
+  onSecondaryContainer: "#fffbff",
+  surface: "#fbf8fa",
+  surfaceDim: "#dcd9db",
+  surfaceBright: "#fbf8fa",
+  surfaceContainerLowest: "#ffffff",
+  surfaceContainerLow: "#f5f3f4",
+  surfaceContainer: "#f0edef",
+  surfaceContainerHigh: "#eae7e9",
+  surfaceContainerHighest: "#e4e2e3",
+  onSurface: "#1b1b1d",
+  onSurfaceVariant: "#45474c",
+  outline: "#75777d",
+  outlineVariant: "#c5c6cd",
+  error: "#ba1a1a",
+  errorContainer: "#ffdad6",
+  onError: "#ffffff",
+  onErrorContainer: "#93000a",
+  tertiary: "#1e1200",
+  tertiaryContainer: "#35260c",
+  onTertiaryContainer: "#a38c6a",
+};
+
 export default function UserDashboard() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({
@@ -46,6 +75,9 @@ export default function UserDashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [recentActivity, setRecentActivity] = useState([]);
+
+  // Glassmorphism card style
+  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -59,12 +91,11 @@ export default function UserDashboard() {
         const res = await API.get("/user/dashboard-stats");
         setStats(res.data);
         
-        // Mock recent activity - replace with actual API data when available
         setRecentActivity([
-          { id: 1, type: "request", message: "Legal consultation request submitted", time: "2 hours ago", status: "pending", icon: FileText, color: "blue" },
-          { id: 2, type: "article", message: "New article: 'Understanding IP Rights'", time: "5 hours ago", status: "read", icon: BookOpen, color: "purple" },
-          { id: 3, type: "message", message: "Lawyer responded to your query", time: "1 day ago", status: "unread", icon: MessageSquare, color: "green" },
-          { id: 4, type: "document", message: "Document uploaded: Case File", time: "2 days ago", status: "read", icon: FolderOpen, color: "orange" },
+          { id: 1, type: "request", message: "Legal consultation request submitted", time: "2 hours ago", status: "pending", icon: FileText, color: colors.secondary },
+          { id: 2, type: "article", message: "New article: 'Understanding IP Rights'", time: "5 hours ago", status: "read", icon: BookOpen, color: colors.tertiary },
+          { id: 3, type: "message", message: "Lawyer responded to your query", time: "1 day ago", status: "unread", icon: MessageSquare, color: "#4caf50" },
+          { id: 4, type: "document", message: "Document uploaded: Case File", time: "2 days ago", status: "read", icon: FolderOpen, color: colors.error },
         ]);
       } catch (err) {
         console.log("Dashboard stats API not ready yet");
@@ -82,60 +113,42 @@ export default function UserDashboard() {
       icon: Search,
       label: "Search Lawyer",
       desc: "Find lawyers by specialization & city",
-      color: "blue",
-      gradient: "from-blue-500 to-blue-600",
-      lightBg: "bg-blue-50",
-      iconColor: "text-blue-600"
+      color: colors.secondary,
     },
     {
       to: "/user/talk-to-lawyer",
       icon: MessageSquare,
       label: "Talk to Lawyer",
       desc: "Start a consultation request",
-      color: "green",
-      gradient: "from-green-500 to-green-600",
-      lightBg: "bg-green-50",
-      iconColor: "text-green-600"
+      color: "#4caf50",
     },
     {
       to: "/user/articles",
       icon: BookOpen,
       label: "Legal Articles",
       desc: "Latest legal articles & updates",
-      color: "purple",
-      gradient: "from-purple-500 to-purple-600",
-      lightBg: "bg-purple-50",
-      iconColor: "text-purple-600"
+      color: colors.tertiary,
     },
     {
       to: "/user/events",
       icon: Calendar,
       label: "Events",
       desc: "Legal events & seminars",
-      color: "orange",
-      gradient: "from-orange-500 to-orange-600",
-      lightBg: "bg-orange-50",
-      iconColor: "text-orange-600"
+      color: colors.error,
     },
     {
       to: "/user/jobs",
       icon: Briefcase,
       label: "Jobs",
       desc: "Explore law internships & jobs",
-      color: "teal",
-      gradient: "from-teal-500 to-teal-600",
-      lightBg: "bg-teal-50",
-      iconColor: "text-teal-600"
+      color: colors.secondary,
     },
     {
       to: "/user/documents",
       icon: FolderOpen,
       label: "Documents",
       desc: "View uploaded legal documents",
-      color: "indigo",
-      gradient: "from-indigo-500 to-indigo-600",
-      lightBg: "bg-indigo-50",
-      iconColor: "text-indigo-600"
+      color: colors.onSurfaceVariant,
     },
   ];
 
@@ -144,94 +157,65 @@ export default function UserDashboard() {
       label: "Total Requests", 
       value: stats.totalRequests, 
       icon: FileText, 
-      color: "blue",
-      gradient: "from-blue-500 to-blue-600",
-      lightBg: "bg-blue-50",
-      iconColor: "text-blue-600",
+      color: colors.secondary,
       trend: "+12%"
     },
     { 
       label: "Pending", 
       value: stats.pendingRequests, 
       icon: Clock, 
-      color: "yellow",
-      gradient: "from-yellow-500 to-yellow-600",
-      lightBg: "bg-yellow-50",
-      iconColor: "text-yellow-600",
+      color: colors.tertiary,
       trend: "0%"
     },
     { 
       label: "Accepted", 
       value: stats.acceptedRequests, 
       icon: CheckCircle, 
-      color: "green",
-      gradient: "from-green-500 to-green-600",
-      lightBg: "bg-green-50",
-      iconColor: "text-green-600",
+      color: "#4caf50",
       trend: "+8%"
     },
     { 
       label: "Articles", 
       value: stats.totalArticles, 
       icon: BookOpen, 
-      color: "purple",
-      gradient: "from-purple-500 to-purple-600",
-      lightBg: "bg-purple-50",
-      iconColor: "text-purple-600",
+      color: colors.secondary,
       trend: "+5%"
     },
   ];
 
-  const getActivityIcon = (type) => {
-    switch(type) {
-      case "request": return FileText;
-      case "article": return BookOpen;
-      case "message": return MessageSquare;
-      case "document": return FolderOpen;
-      default: return Activity;
-    }
-  };
-
-  const getActivityColor = (type) => {
-    switch(type) {
-      case "request": return "blue";
-      case "article": return "purple";
-      case "message": return "green";
-      case "document": return "orange";
-      default: return "gray";
-    }
-  };
-
-  const formatTimeAgo = (dateString) => {
-    // This is a mock function - implement actual time ago logic
-    return dateString;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen p-4 md:p-6" style={{ backgroundColor: colors.surface }}>
       {/* Welcome Header */}
       <div className="mb-6 md:mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg mb-3">
-              <Scale className="h-4 w-4 text-blue-600 mr-2" />
-              <span className="text-xs font-semibold text-blue-600 tracking-wider">USER DASHBOARD</span>
+            <div 
+              className="inline-flex items-center px-3 py-1.5 rounded-lg mb-3"
+              style={{ backgroundColor: `${colors.secondary}10`, border: `1px solid ${colors.secondary}20` }}
+            >
+              <Scale className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
+              <span className="text-xs font-semibold tracking-wider" style={{ color: colors.secondary }}>
+                USER DASHBOARD
+              </span>
             </div>
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
-              Welcome back, <span className="text-blue-600">{user?.name?.split(' ')[0] || "User"}</span>
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.2] tracking-[-0.02em]" style={{ color: colors.onSurface }}>
+              Welcome back, <span style={{ color: colors.secondary }}>{user?.name?.split(' ')[0] || "User"}</span>
             </h1>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">
+            <p className="text-xs md:text-sm mt-1" style={{ color: colors.onSurfaceVariant }}>
               Manage your legal requests, read articles, and explore services.
             </p>
           </div>
           
-          {/* User Quick Info */}
+          {/* User Quick Info - Desktop */}
           <div className="hidden md:flex items-center space-x-3">
             <div className="text-right">
-              <p className="text-xs font-semibold text-gray-900">{user?.name || "User"}</p>
-              <p className="text-[10px] text-gray-500">{user?.email || "No email"}</p>
+              <p className="text-xs font-semibold" style={{ color: colors.onSurface }}>{user?.name || "User"}</p>
+              <p className="text-[10px]" style={{ color: colors.onSurfaceVariant }}>{user?.email || "No email"}</p>
             </div>
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+            <div 
+              className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
+              style={{ background: `linear-gradient(135deg, ${colors.secondary}, ${colors.secondaryContainer})` }}
+            >
               <span className="text-sm font-bold text-white">
                 {user?.name?.charAt(0)?.toUpperCase() || "U"}
               </span>
@@ -240,35 +224,45 @@ export default function UserDashboard() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Glass Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <div
               key={index}
-              className="bg-white rounded-xl border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-all duration-300 group"
+              className={`${glassCardClass} p-4 md:p-5 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)] group`}
             >
               <div className="flex items-center justify-between mb-3">
-                <div className={`p-2.5 ${stat.lightBg} rounded-lg group-hover:scale-110 transition-transform`}>
-                  <Icon className={`h-4 w-4 md:h-5 md:w-5 ${stat.iconColor}`} />
+                <div 
+                  className="p-2.5 rounded-lg group-hover:scale-110 transition-transform"
+                  style={{ backgroundColor: `${stat.color}15` }}
+                >
+                  <Icon className="h-4 w-4 md:h-5 md:w-5" style={{ color: stat.color }} />
                 </div>
                 {stat.trend && (
-                  <span className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
-                    stat.trend.includes('+') ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                  }`}>
+                  <span 
+                    className="text-xs font-medium px-1.5 py-0.5 rounded-full"
+                    style={{
+                      backgroundColor: stat.trend.includes('+') ? "#4caf5015" : `${colors.error}15`,
+                      color: stat.trend.includes('+') ? "#4caf50" : colors.error,
+                    }}
+                  >
                     {stat.trend}
                   </span>
                 )}
               </div>
-              <p className="text-xs md:text-sm text-gray-500 mb-1">{stat.label}</p>
+              <p className="text-xs md:text-sm mb-1" style={{ color: colors.onSurfaceVariant }}>{stat.label}</p>
               {loading ? (
-                <div className="h-7 w-16 bg-gray-200 animate-pulse rounded"></div>
+                <div className="h-7 w-16 rounded animate-pulse" style={{ backgroundColor: colors.surfaceContainerHighest }}></div>
               ) : (
-                <p className="text-xl md:text-2xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-xl md:text-2xl font-bold" style={{ color: colors.onSurface }}>{stat.value}</p>
               )}
-              <div className="mt-2 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
-                <div className={`h-full bg-gradient-to-r ${stat.gradient} rounded-full`} style={{ width: '70%' }}></div>
+              <div className="mt-2 h-1 w-full rounded-full overflow-hidden" style={{ backgroundColor: colors.surfaceContainerHighest }}>
+                <div 
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{ width: '70%', backgroundColor: stat.color }}
+                />
               </div>
             </div>
           );
@@ -279,14 +273,14 @@ export default function UserDashboard() {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Left Column - Quick Actions & Activity */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Quick Actions Grid */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 md:p-6 hover:shadow-lg transition-shadow">
+          {/* Quick Actions Grid - Glass Card */}
+          <div className={`${glassCardClass} p-5 md:p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                <Zap className="h-5 w-5 text-yellow-500 mr-2" />
+              <h2 className="text-lg font-bold flex items-center" style={{ color: colors.onSurface }}>
+                <Zap className="h-5 w-5 mr-2" style={{ color: colors.tertiary }} />
                 Quick Actions
               </h2>
-              <span className="text-xs text-gray-400">Frequently used</span>
+              <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Frequently used</span>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -296,19 +290,29 @@ export default function UserDashboard() {
                   <Link
                     key={index}
                     to={action.to}
-                    className="group bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 hover:shadow-md transition-all border border-gray-200 hover:border-blue-300"
+                    className="group rounded-xl p-4 transition-all duration-300 hover:shadow-md"
+                    style={{ 
+                      backgroundColor: colors.surfaceContainerLow,
+                      border: `1px solid ${colors.outlineVariant}`,
+                    }}
                   >
                     <div className="flex items-start space-x-3">
-                      <div className={`p-2.5 ${action.lightBg} rounded-lg group-hover:scale-110 transition-transform`}>
-                        <Icon className={`h-4 w-4 ${action.iconColor}`} />
+                      <div 
+                        className="p-2.5 rounded-lg group-hover:scale-110 transition-transform"
+                        style={{ backgroundColor: `${action.color}15` }}
+                      >
+                        <Icon className="h-4 w-4" style={{ color: action.color }} />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition">
+                        <h3 className="text-sm font-bold transition-colors group-hover:text-secondary" style={{ color: colors.onSurface }}>
                           {action.label}
                         </h3>
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{action.desc}</p>
+                        <p className="text-xs mt-1 line-clamp-2" style={{ color: colors.onSurfaceVariant }}>{action.desc}</p>
                       </div>
-                      <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                      <ArrowRight 
+                        className="h-4 w-4 transition-all group-hover:translate-x-1" 
+                        style={{ color: colors.outline }}
+                      />
                     </div>
                   </Link>
                 );
@@ -316,14 +320,14 @@ export default function UserDashboard() {
             </div>
           </div>
 
-          {/* Recent Activity */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 md:p-6 hover:shadow-lg transition-shadow">
+          {/* Recent Activity - Glass Card */}
+          <div className={`${glassCardClass} p-5 md:p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                <Activity className="h-5 w-5 text-blue-600 mr-2" />
+              <h2 className="text-lg font-bold flex items-center" style={{ color: colors.onSurface }}>
+                <Activity className="h-5 w-5 mr-2" style={{ color: colors.secondary }} />
                 Recent Activity
               </h2>
-              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center">
+              <button className="text-sm font-medium flex items-center transition-colors" style={{ color: colors.secondary }}>
                 View All
                 <ChevronRight className="h-4 w-4 ml-1" />
               </button>
@@ -332,20 +336,25 @@ export default function UserDashboard() {
             <div className="space-y-3">
               {recentActivity.map((activity) => {
                 const Icon = activity.icon;
-                const color = activity.color;
                 return (
-                  <div key={activity.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                  <div 
+                    key={activity.id} 
+                    className="flex items-center justify-between p-3 rounded-lg transition-colors hover:bg-surfaceContainerLow"
+                    style={{ backgroundColor: "transparent" }}
+                  >
                     <div className="flex items-center space-x-3">
-                      <div className={`p-2 bg-${color}-100 rounded-lg`}>
-                        <Icon className={`h-4 w-4 text-${color}-600`} />
+                      <div className="p-2 rounded-lg" style={{ backgroundColor: `${activity.color}15` }}>
+                        <Icon className="h-4 w-4" style={{ color: activity.color }} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{activity.message}</p>
-                        <p className="text-xs text-gray-500">{activity.time}</p>
+                        <p className="text-sm font-medium" style={{ color: colors.onSurface }}>{activity.message}</p>
+                        <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>{activity.time}</p>
                       </div>
                     </div>
                     {activity.status === 'unread' && (
-                      <span className="text-[10px] bg-blue-600 text-white px-2 py-1 rounded-full">New</span>
+                      <span className="text-[10px] px-2 py-1 rounded-full" style={{ backgroundColor: colors.secondary, color: "white" }}>
+                        New
+                      </span>
                     )}
                   </div>
                 );
@@ -356,26 +365,29 @@ export default function UserDashboard() {
 
         {/* Right Column - Profile & Tips */}
         <div className="space-y-6">
-          {/* Account Info Card */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 md:p-6 hover:shadow-lg transition-shadow">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-              <User className="h-5 w-5 text-purple-600 mr-2" />
+          {/* Account Info Card - Glass Card */}
+          <div className={`${glassCardClass} p-5 md:p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+            <h2 className="text-lg font-bold mb-4 flex items-center" style={{ color: colors.onSurface }}>
+              <User className="h-5 w-5 mr-2" style={{ color: colors.secondary }} />
               Account Information
             </h2>
             
             <div className="space-y-4">
-              <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+              <div className="flex items-center space-x-3 pb-4" style={{ borderBottom: `1px solid ${colors.outlineVariant}` }}>
+                <div 
+                  className="w-14 h-14 rounded-xl flex items-center justify-center shadow-md"
+                  style={{ background: `linear-gradient(135deg, ${colors.secondary}, ${colors.secondaryContainer})` }}
+                >
                   <span className="text-xl font-bold text-white">
                     {user?.name?.charAt(0)?.toUpperCase() || "U"}
                   </span>
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900">{user?.name || "User"}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Member since 2024</p>
+                  <p className="font-bold" style={{ color: colors.onSurface }}>{user?.name || "User"}</p>
+                  <p className="text-xs mt-0.5" style={{ color: colors.onSurfaceVariant }}>Member since 2024</p>
                   <div className="flex items-center mt-1.5">
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-green-100 text-green-800">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1"></span>
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium" style={{ backgroundColor: "#4caf5015", color: "#4caf50" }}>
+                      <span className="w-1.5 h-1.5 rounded-full mr-1" style={{ backgroundColor: "#4caf50" }} />
                       Online
                     </span>
                   </div>
@@ -384,78 +396,81 @@ export default function UserDashboard() {
               
               <div className="space-y-2">
                 <div className="flex items-center text-sm">
-                  <Mail className="h-4 w-4 text-gray-400 mr-3" />
-                  <span className="text-xs text-gray-600">{user?.email || "No email"}</span>
+                  <Mail className="h-4 w-4 mr-3" style={{ color: colors.outline }} />
+                  <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>{user?.email || "No email"}</span>
                 </div>
                 <div className="flex items-center text-sm">
-                  <Shield className="h-4 w-4 text-gray-400 mr-3" />
-                  <span className="text-xs text-gray-600">
-                    Role: <span className="font-medium capitalize text-blue-600">{user?.role || "user"}</span>
+                  <Shield className="h-4 w-4 mr-3" style={{ color: colors.outline }} />
+                  <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>
+                    Role: <span className="font-medium capitalize" style={{ color: colors.secondary }}>{user?.role || "user"}</span>
                   </span>
                 </div>
                 <div className="flex items-center text-sm">
-                  <Award className="h-4 w-4 text-gray-400 mr-3" />
-                  <span className="text-xs text-gray-600">Verified Account</span>
+                  <Award className="h-4 w-4 mr-3" style={{ color: colors.outline }} />
+                  <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Verified Account</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Tip Card */}
-          <div className="bg-blue-50 border-l-4 border-blue-600 rounded-xl p-5">
+          <div className="rounded-xl p-5" style={{ backgroundColor: `${colors.secondary}10`, borderLeft: `4px solid ${colors.secondary}` }}>
             <div className="flex items-start space-x-3">
-              <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: colors.secondary }} />
               <div>
-                <h3 className="text-sm font-bold text-blue-900 mb-2">Pro Tip</h3>
-                <p className="text-xs text-blue-700 leading-relaxed">
+                <h3 className="text-sm font-bold mb-2" style={{ color: colors.onSurface }}>Pro Tip</h3>
+                <p className="text-xs leading-relaxed" style={{ color: colors.onSurfaceVariant }}>
                   Keep your request details clear and specific. Include relevant documents and deadlines to help lawyers respond faster.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Quick Stats */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 md:p-6 hover:shadow-lg transition-shadow">
-            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-              <Target className="h-4 w-4 text-green-600 mr-2" />
+          {/* Quick Stats - Glass Card */}
+          <div className={`${glassCardClass} p-5 md:p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+            <h3 className="text-sm font-bold mb-3 flex items-center" style={{ color: colors.onSurface }}>
+              <Target className="h-4 w-4 mr-2" style={{ color: "#4caf50" }} />
               This Month
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">Requests</span>
-                <span className="text-sm font-bold text-gray-900">{stats.totalRequests || 0}</span>
+                <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Requests</span>
+                <span className="text-sm font-bold" style={{ color: colors.onSurface }}>{stats.totalRequests || 0}</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+              <div className="w-full rounded-full h-1.5 overflow-hidden" style={{ backgroundColor: colors.surfaceContainerHighest }}>
                 <div 
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 h-1.5 rounded-full" 
-                  style={{ width: `${Math.min((stats.acceptedRequests / (stats.totalRequests || 1)) * 100, 100)}%` }}
-                ></div>
+                  className="h-1.5 rounded-full transition-all duration-500"
+                  style={{ 
+                    width: `${Math.min((stats.acceptedRequests / (stats.totalRequests || 1)) * 100, 100)}%`,
+                    background: `linear-gradient(90deg, ${colors.secondary}, ${colors.secondaryContainer})`
+                  }}
+                />
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-500">Accepted: <span className="font-medium text-gray-900">{stats.acceptedRequests || 0}</span></span>
-                <span className="text-gray-500">Pending: <span className="font-medium text-gray-900">{stats.pendingRequests || 0}</span></span>
+                <span style={{ color: colors.onSurfaceVariant }}>Accepted: <span className="font-medium" style={{ color: colors.onSurface }}>{stats.acceptedRequests || 0}</span></span>
+                <span style={{ color: colors.onSurfaceVariant }}>Pending: <span className="font-medium" style={{ color: colors.onSurface }}>{stats.pendingRequests || 0}</span></span>
               </div>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 md:p-6 hover:shadow-lg transition-shadow">
-            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-              <Sparkles className="h-4 w-4 text-yellow-500 mr-2" />
+          {/* Popular Articles - Glass Card */}
+          <div className={`${glassCardClass} p-5 md:p-6 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+            <h3 className="text-sm font-bold mb-3 flex items-center" style={{ color: colors.onSurface }}>
+              <Sparkles className="h-4 w-4 mr-2" style={{ color: colors.tertiary }} />
               Popular Articles
             </h3>
             <div className="space-y-2">
-              <Link to="/user/articles/1" className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                <span className="text-xs text-gray-600">Understanding IP Rights</span>
-                <ChevronRight className="h-3 w-3 text-gray-400" />
+              <Link to="/user/articles/1" className="flex items-center justify-between p-2 rounded-lg transition-colors hover:bg-surfaceContainerLow">
+                <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Understanding IP Rights</span>
+                <ChevronRight className="h-3 w-3" style={{ color: colors.outline }} />
               </Link>
-              <Link to="/user/articles/2" className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                <span className="text-xs text-gray-600">Rent Agreement Guide</span>
-                <ChevronRight className="h-3 w-3 text-gray-400" />
+              <Link to="/user/articles/2" className="flex items-center justify-between p-2 rounded-lg transition-colors hover:bg-surfaceContainerLow">
+                <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Rent Agreement Guide</span>
+                <ChevronRight className="h-3 w-3" style={{ color: colors.outline }} />
               </Link>
-              <Link to="/user/articles/3" className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                <span className="text-xs text-gray-600">Will & Testament Basics</span>
-                <ChevronRight className="h-3 w-3 text-gray-400" />
+              <Link to="/user/articles/3" className="flex items-center justify-between p-2 rounded-lg transition-colors hover:bg-surfaceContainerLow">
+                <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Will & Testament Basics</span>
+                <ChevronRight className="h-3 w-3" style={{ color: colors.outline }} />
               </Link>
             </div>
           </div>

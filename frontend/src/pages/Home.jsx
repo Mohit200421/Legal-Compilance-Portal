@@ -2,45 +2,68 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-  Scale,
   Menu,
   X,
   ArrowRight,
   Sparkles,
-  Zap,
-  Shield,
   Star,
-  PlayCircle,
+  Shield,
+  Lock,
+  Bell,
+  DollarSign,
+  Users,
   Briefcase,
-  FileText,
-  Users2,
-  ShieldCheck,
-  Globe,
-  MessageCircle,
-  Database,
-  BarChart3,
-  Mail,
+  Heart,
+  Building2,
+  Gavel,
+  Landmark,
+  Lightbulb,
+  Scale,
+  CheckCircle2,
+  ChevronRight,
   Phone,
-  Quote,
-  ChevronLeft,
-  ChevronRight as ChevronRightIcon,
-  Brain,
+  Mail,
+  MapPin,
+  Send,
 } from "lucide-react";
 
-// Import the app logo
-import appLogo from "../assets/app_logo.png";
+import appLogo from "../assets/app_logo.svg";
+
+// Lex-Modernism Color System
+const colors = {
+  primary: "#091426",
+  primaryContainer: "#1e293b",
+  onPrimaryContainer: "#8590a6",
+  secondary: "#4648d4",
+  secondaryContainer: "#6063ee",
+  onSecondaryContainer: "#fffbff",
+  tertiary: "#1e1200",
+  tertiaryContainer: "#35260c",
+  onTertiaryContainer: "#a38c6a",
+  surface: "#fbf8fa",
+  surfaceDim: "#dcd9db",
+  surfaceBright: "#fbf8fa",
+  surfaceContainerLowest: "#ffffff",
+  surfaceContainerLow: "#f5f3f4",
+  surfaceContainer: "#f0edef",
+  surfaceContainerHigh: "#eae7e9",
+  surfaceContainerHighest: "#e4e2e3",
+  onSurface: "#1b1b1d",
+  onSurfaceVariant: "#45474c",
+  outline: "#75777d",
+  outlineVariant: "#c5c6cd",
+  surfaceTint: "#545f73",
+  error: "#ba1a1a",
+  errorContainer: "#ffdad6",
+  onError: "#ffffff",
+  onErrorContainer: "#93000a",
+};
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [counts, setCounts] = useState({
-    cases: 0,
-    clients: 0,
-    lawyers: 0,
-    satisfaction: 0,
-  });
+  const [email, setEmail] = useState("");
 
   const navigate = useNavigate();
   const menuRef = useRef(null);
@@ -72,7 +95,6 @@ const Home = () => {
       }
     };
 
-    // Add event listener with capture to handle clicks properly
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("touchstart", handleClickOutside);
     
@@ -82,7 +104,7 @@ const Home = () => {
     };
   }, [isMenuOpen]);
 
-  // Handle escape key to close menu
+  // Handle escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape" && isMenuOpen) {
@@ -94,51 +116,12 @@ const Home = () => {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isMenuOpen]);
 
-  // Counter animation
-  useEffect(() => {
-    const targets = {
-      cases: 5000,
-      clients: 2500,
-      lawyers: 150,
-      satisfaction: 98,
-    };
-
-    const duration = 2000;
-    const steps = 50;
-    let step = 0;
-
-    const timer = setInterval(() => {
-      step++;
-      const progress = step / steps;
-
-      setCounts({
-        cases: Math.floor(targets.cases * progress),
-        clients: Math.floor(targets.clients * progress),
-        lawyers: Math.floor(targets.lawyers * progress),
-        satisfaction: Math.floor(targets.satisfaction * progress),
-      });
-
-      if (step >= steps) {
-        clearInterval(timer);
-        setCounts(targets);
-      }
-    }, duration / steps);
-
-    return () => clearInterval(timer);
-  }, []);
-
   // Scroll handler
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-
-      const sections = [
-        "hero",
-        "features",
-        "services",
-        "showcase",
-        "testimonials",
-      ];
+      
+      const sections = ["hero", "how-it-works", "practice-areas", "why-choose", "testimonials"];
       for (const section of [...sections].reverse()) {
         const element = document.getElementById(section);
         if (element && window.scrollY >= element.offsetTop - 200) {
@@ -152,183 +135,121 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Auto-rotate carousel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % showcaseItems.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const features = [
+  const practiceAreas = [
     {
-      icon: Brain,
-      title: "Smart Case Management",
-      description:
-        "AI-powered organization and tracking of all your cases in one central hub.",
-      color: "blue",
-      stats: "50% faster case resolution",
+      icon: Heart,
+      title: "Family Law",
+      description: "Compassionate guidance for divorce, child custody, and domestic matters.",
+      color: "#e91e63",
     },
     {
-      icon: ShieldCheck,
-      title: "Enterprise Security",
-      description:
-        "Bank-grade encryption ensures your sensitive legal data stays protected.",
-      color: "purple",
-      stats: "99.99% uptime",
+      icon: Building2,
+      title: "Corporate Law",
+      description: "Structuring, compliance, and dispute resolution for businesses of all sizes.",
+      color: "#2196f3",
     },
     {
-      icon: Zap,
-      title: "Lightning Fast",
-      description:
-        "Process documents and access information in seconds, not hours.",
-      color: "orange",
-      stats: "3x faster processing",
+      icon: Gavel,
+      title: "Criminal Defense",
+      description: "Aggressive representation to protect your rights and freedom in court.",
+      color: "#f44336",
     },
     {
-      icon: Globe,
-      title: "Cloud Access",
-      description:
-        "Work from anywhere, anytime with our secure cloud infrastructure.",
-      color: "green",
-      stats: "100% remote ready",
+      icon: Landmark,
+      title: "Real Estate",
+      description: "Property transactions, leasing disputes, and zoning legal counsel.",
+      color: "#4caf50",
     },
     {
-      icon: MessageCircle,
-      title: "Client Portal",
-      description:
-        "Secure messaging and document sharing with real-time updates.",
-      color: "pink",
-      stats: "98% client satisfaction",
+      icon: Lightbulb,
+      title: "Intellectual Property",
+      description: "Protecting your inventions, brands, and creative works globally.",
+      color: "#ff9800",
     },
     {
-      icon: Database,
-      title: "Legal Research",
-      description:
-        "Comprehensive database with AI-powered search and recommendations.",
-      color: "indigo",
-      stats: "1M+ legal documents",
+      icon: Scale,
+      title: "Civil Litigation",
+      description: "Resolving non-criminal disputes through mediation or court proceedings.",
+      color: "#9c27b0",
     },
   ];
 
-  const services = [
+  const whyChooseItems = [
     {
-      title: "Case Management",
-      description:
-        "End-to-end case tracking with automated workflows and deadline management.",
-      icon: Briefcase,
-      image:
-        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      icon: Users,
+      title: "Verified Professionals",
+      description: "Every lawyer on our platform undergoes a rigorous 5-step background and expertise verification.",
     },
     {
-      title: "Document Automation",
-      description:
-        "Generate legal documents instantly with smart templates and e-signatures.",
-      icon: FileText,
-      image:
-        "https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      icon: Lock,
+      title: "Secure & Confidential",
+      description: "Your data is protected with bank-grade encryption. Attorney-client privilege is our cornerstone.",
     },
     {
-      title: "Client Collaboration",
-      description:
-        "Real-time collaboration tools for seamless client communication.",
-      icon: Users2,
-      image:
-        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+      icon: Bell,
+      title: "Real-time Updates",
+      description: "Track your case progress 24/7 through our interactive dashboard with instant notifications.",
     },
     {
-      title: "Analytics & Reports",
-      description:
-        "Data-driven insights to optimize your practice performance.",
-      icon: BarChart3,
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-  ];
-
-  const showcaseItems = [
-    {
-      title: "Intelligent Case Analytics",
-      description:
-        "Predict outcomes and identify patterns with advanced AI algorithms.",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
-    },
-    {
-      title: "Seamless Collaboration",
-      description: "Work together with your team and clients in real-time.",
-      image:
-        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
-    },
-    {
-      title: "Document Intelligence",
-      description: "Extract, analyze, and organize documents automatically.",
-      image:
-        "https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
+      icon: DollarSign,
+      title: "Transparent & Affordable",
+      description: "No surprise bills. Get upfront quotes and flexible payment plans for all legal services.",
     },
   ];
 
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      role: "Managing Partner",
-      firm: "Johnson & Associates",
-      content:
-        "This platform transformed how we manage cases. We've seen a 40% increase in efficiency and our clients love the portal.",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+      name: "Mark Stevens",
+      role: "CEO, Stevens Logistics",
+      content: "Finding a reliable corporate lawyer was difficult until I used LawSetu. The interface is intuitive, and the expert I connected with was incredibly professional.",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
     },
     {
-      name: "Michael Chen",
-      role: "Senior Attorney",
-      firm: "Chen Legal Group",
-      content:
-        "The document automation feature alone saved our firm hundreds of hours. Worth every penny.",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+      name: "Elena Rodriguez",
+      role: "Homeowner",
+      content: "The document review service is exceptional. I had a complex real estate contract checked and explained to me within 24 hours. Highly recommend!",
+      rating: 5,
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
     },
     {
-      name: "Emily Rodriguez",
-      role: "Legal Director",
-      firm: "Rodriguez Law",
-      content:
-        "Finally, a platform that understands what lawyers actually need. The client portal has improved our communication dramatically.",
-      avatar:
-        "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+      name: "David Chen",
+      role: "Freelance Designer",
+      content: "I was worried about legal costs, but LawSetu offered a fixed-fee consultation that was very affordable. The lawyer was extremely helpful and cleared all my doubts.",
+      rating: 4,
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+    },
+  ];
+
+  const steps = [
+    {
+      number: "01",
+      title: "Share Case",
+      description: "Upload your documents and describe your situation securely in our portal.",
+    },
+    {
+      number: "02",
+      title: "Connect",
+      description: "Get matched with specialized lawyers and pick the one that fits your needs.",
+    },
+    {
+      number: "03",
+      title: "Resolve",
+      description: "Receive legal advice, file papers, and get your issues resolved effectively.",
     },
   ];
 
   const navigation = [
     { name: "Home", href: "#hero" },
-    { name: "Features", href: "#features" },
-    { name: "Services", href: "#services" },
-    { name: "Showcase", href: "#showcase" },
+    { name: "How It Works", href: "#how-it-works" },
+    { name: "Practice Areas", href: "#practice-areas" },
+    { name: "Why Choose Us", href: "#why-choose" },
     { name: "Testimonials", href: "#testimonials" },
   ];
 
-  const getColorClasses = (color) => {
-    const colors = {
-      blue: "from-blue-500 to-blue-600",
-      purple: "from-purple-500 to-purple-600",
-      orange: "from-orange-500 to-orange-600",
-      green: "from-green-500 to-green-600",
-      pink: "from-pink-500 to-pink-600",
-      indigo: "from-indigo-500 to-indigo-600",
-    };
-    return colors[color] || colors.blue;
-  };
+  const closeMenu = () => setIsMenuOpen(false);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  // Close menu function
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-
-  // Toggle menu function
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  // Handle navigation click
   const handleNavClick = (href) => {
     closeMenu();
     const element = document.querySelector(href);
@@ -337,19 +258,28 @@ const Home = () => {
     }
   };
 
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    // Handle newsletter subscription
+    console.log("Subscribe:", email);
+    setEmail("");
+  };
+
+  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
+    <div className="min-h-screen" style={{ backgroundColor: colors.surface, color: colors.onSurface }}>
+      {/* Navigation - Glass Container */}
       <nav
         className={`fixed w-full z-40 transition-all duration-300 ${
           scrolled
-            ? "bg-white/90 backdrop-blur-md shadow-sm py-3"
+            ? "bg-white/80 backdrop-blur-md border-b border-white/50 shadow-[0_4px_20px_rgba(30,41,59,0.05)] py-3"
             : "bg-transparent py-5"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            {/* Logo with image */}
+            {/* Logo */}
             <div
               className="flex items-center cursor-pointer z-50"
               onClick={() => navigate("/")}
@@ -357,10 +287,10 @@ const Home = () => {
               <img 
                 src={appLogo} 
                 alt="LawSetu Logo" 
-                className="h-10 w-auto object-contain"
+                className="h-6 w-auto object-contain"
               />
-              <span className="ml-2 text-xl font-semibold text-gray-900">
-                Law<span className="text-blue-600">Setu</span>
+              <span className="ml-2 text-xl font-semibold" style={{ color: colors.onSurface }}>
+                Law<span style={{ color: colors.secondary }}>Setu</span>
               </span>
             </div>
 
@@ -374,11 +304,12 @@ const Home = () => {
                     e.preventDefault();
                     handleNavClick(item.href);
                   }}
-                  className={`text-sm font-medium transition-colors ${
-                    activeSection === item.name.toLowerCase()
-                      ? "text-blue-600"
-                      : "text-gray-600 hover:text-blue-600"
-                  }`}
+                  className="text-sm font-medium transition-colors duration-200 cursor-pointer"
+                  style={{
+                    color: activeSection === item.href.slice(1) ? colors.secondary : colors.onSurfaceVariant,
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = colors.secondary}
+                  onMouseLeave={(e) => e.currentTarget.style.color = activeSection === item.href.slice(1) ? colors.secondary : colors.onSurfaceVariant}
                 >
                   {item.name}
                 </a>
@@ -389,20 +320,37 @@ const Home = () => {
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => navigate("/login")}
-                className="hidden md:block px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                className="hidden md:block px-4 py-2 text-sm font-medium transition-all duration-200 rounded-xl border"
+                style={{
+                  color: colors.secondary,
+                  borderColor: colors.outlineVariant,
+                  backgroundColor: "transparent",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.surfaceContainerLow;
+                  e.currentTarget.style.borderColor = colors.secondary;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = colors.outlineVariant;
+                }}
               >
                 Sign In
               </button>
               <button
                 onClick={() => navigate("/register")}
-                className="hidden md:block px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                className="hidden md:block px-4 py-2 text-sm font-medium text-white transition-all duration-200 rounded-xl"
+                style={{ backgroundColor: colors.secondary }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondaryContainer}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
               >
                 Get Started
               </button>
               <button
                 ref={menuButtonRef}
                 onClick={toggleMenu}
-                className="md:hidden p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors z-50"
+                className="md:hidden p-2 rounded-xl transition-colors"
+                style={{ backgroundColor: colors.surfaceContainerHighest, color: colors.onSurfaceVariant }}
                 aria-label="Toggle menu"
               >
                 {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -423,37 +371,29 @@ const Home = () => {
         {/* Mobile Menu */}
         <div
           ref={menuRef}
-          id="mobile-menu"
-          className={`fixed top-0 right-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-out md:hidden ${
+          className={`fixed top-0 right-0 h-full w-80 z-50 transform transition-transform duration-300 ease-out md:hidden ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
-          style={{ pointerEvents: "auto" }}
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(20px)",
+            boxShadow: "0 10px 40px rgba(30, 41, 59, 0.15)",
+            borderLeft: "1px solid rgba(255, 255, 255, 0.5)",
+          }}
         >
           <div className="flex flex-col h-full">
-            {/* Menu Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between p-6" style={{ borderBottom: `1px solid ${colors.outlineVariant}` }}>
               <div className="flex items-center">
-                <img 
-                  src={appLogo} 
-                  alt="LawSetu Logo" 
-                  className="h-8 w-auto object-contain"
-                />
-                <span className="ml-2 text-xl font-semibold text-gray-900">
-                  Law<span className="text-blue-600">Setu</span>
+                <img src={appLogo} alt="LawSetu Logo" className="h-8 w-auto object-contain" />
+                <span className="ml-2 text-xl font-semibold" style={{ color: colors.onSurface }}>
+                  Law<span style={{ color: colors.secondary }}>Setu</span>
                 </span>
               </div>
-              <button
-                onClick={closeMenu}
-                className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-                aria-label="Close menu"
-              >
+              <button onClick={closeMenu} className="p-2 rounded-xl" style={{ backgroundColor: colors.surfaceContainerHighest }}>
                 <X size={20} />
               </button>
             </div>
-
-            {/* Menu Content */}
             <div className="flex-1 overflow-y-auto py-6">
-              {/* Navigation Links */}
               <div className="px-6 space-y-1">
                 {navigation.map((item) => (
                   <a
@@ -463,28 +403,22 @@ const Home = () => {
                       e.preventDefault();
                       handleNavClick(item.href);
                     }}
-                    className={`block py-3 text-base font-medium transition-colors ${
-                      activeSection === item.name.toLowerCase()
-                        ? "text-blue-600"
-                        : "text-gray-600 hover:text-blue-600"
-                    }`}
+                    className="block py-3 text-base font-medium"
+                    style={{ color: colors.onSurfaceVariant }}
                   >
                     {item.name}
                   </a>
                 ))}
               </div>
-
-              {/* Divider */}
-              <div className="border-t border-gray-200 my-6 mx-6" />
-
-              {/* Auth Buttons */}
+              <div style={{ borderTop: `1px solid ${colors.outlineVariant}`, margin: "24px 24px" }} />
               <div className="px-6 space-y-3">
                 <button
                   onClick={() => {
                     navigate("/login");
                     closeMenu();
                   }}
-                  className="w-full px-4 py-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                  className="w-full px-4 py-3 font-medium rounded-xl border"
+                  style={{ color: colors.secondary, borderColor: colors.outlineVariant }}
                 >
                   Sign In
                 </button>
@@ -493,182 +427,211 @@ const Home = () => {
                     navigate("/register");
                     closeMenu();
                   }}
-                  className="w-full px-4 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="w-full px-4 py-3 font-medium text-white rounded-xl"
+                  style={{ backgroundColor: colors.secondary }}
                 >
                   Get Started
                 </button>
               </div>
-            </div>
-
-            {/* Menu Footer */}
-            <div className="p-6 border-t border-gray-200">
-              <p className="text-xs text-center text-gray-500">
-                &copy; 2026 LawSetu. All rights reserved.
-              </p>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section
-        id="hero"
-        className="relative min-h-screen flex items-center pt-24 pb-16"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="hero" className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+        {/* Background gradient */}
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{ background: `radial-gradient(circle at 20% 50%, ${colors.secondary}20, transparent 70%)` }}
+        />
+        
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm mb-6">
+              <div 
+                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm mb-6"
+                style={{ backgroundColor: colors.surfaceContainerHighest, color: colors.secondary }}
+              >
                 <Sparkles size={14} />
-                <span>AI-Powered Legal Platform</span>
+                <span className="font-medium tracking-wide">TRUSTED BY 10,000+ CLIENTS</span>
               </div>
 
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Modern Legal Practice
+              <h1 
+                className="text-5xl lg:text-6xl font-bold mb-6 leading-[1.2] tracking-[-0.02em]"
+                style={{ color: colors.onSurface }}
+              >
+                Expert Legal Guidance,
                 <br />
-                <span className="text-blue-600">Made Simple</span>
+                <span style={{ color: colors.secondary }}>Just a Click Away.</span>
               </h1>
 
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                Streamline your law firm with intelligent case management,
-                automated document processing, and seamless client
-                collaboration.
+              <p 
+                className="text-lg mb-8 leading-relaxed"
+                style={{ color: colors.onSurfaceVariant, lineHeight: "1.6" }}
+              >
+                LawSetu bridges the gap between individuals and top-tier legal professionals. 
+                Get instant consultations, secure document reviews, and transparent pricing.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
                 <button
                   onClick={() => navigate("/register")}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center group"
+                  className="px-6 py-3 text-white font-semibold transition-all duration-200 rounded-xl flex items-center justify-center group"
+                  style={{ backgroundColor: colors.secondary }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondaryContainer}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
                 >
-                  Start Free Trial
-                  <ArrowRight
-                    className="ml-2 group-hover:translate-x-1 transition-transform"
-                    size={18}
-                  />
+                  Get Started Now
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
                 </button>
                 <button
-                  onClick={() => window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank")}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-colors font-medium flex items-center justify-center"
+                  onClick={() => handleNavClick("#practice-areas")}
+                  className="px-6 py-3 font-semibold transition-all duration-200 rounded-xl border-2 flex items-center justify-center"
+                  style={{ borderColor: colors.secondary, color: colors.secondary }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = colors.secondary;
+                    e.currentTarget.style.color = "white";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = colors.secondary;
+                  }}
                 >
-                  <PlayCircle className="mr-2" size={18} />
-                  Watch Demo
+                  Browse Lawyers
+                  <ChevronRight size={18} className="ml-1" />
                 </button>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-12 pt-8 border-t border-gray-200">
+              <div className="grid grid-cols-3 gap-8">
                 <div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {counts.cases.toLocaleString()}+
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Cases Won
-                  </div>
+                  <div className="text-3xl font-bold" style={{ color: colors.secondary }}>500+</div>
+                  <div className="text-sm" style={{ color: colors.onSurfaceVariant }}>Verified Lawyers</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {counts.clients.toLocaleString()}+
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Happy Clients
-                  </div>
+                  <div className="text-3xl font-bold" style={{ color: colors.secondary }}>15k+</div>
+                  <div className="text-sm" style={{ color: colors.onSurfaceVariant }}>Cases Solved</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {counts.lawyers}+
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Expert Lawyers
-                  </div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {counts.satisfaction}%
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Success Rate
-                  </div>
-                </div>
-              </div>
-
-              {/* Trust Badge */}
-              <div className="mt-8 flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="flex -space-x-1">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"
-                      />
-                    ))}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Trusted by <span className="font-semibold">2,500+</span> firms
-                  </div>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <span className="text-sm text-gray-600 ml-1">
+                  <div className="text-3xl font-bold flex items-center gap-1" style={{ color: colors.secondary }}>
                     4.9/5
-                  </span>
+                    <Star className="h-4 w-4 fill-current" style={{ color: colors.tertiary }} />
+                  </div>
+                  <div className="text-sm" style={{ color: colors.onSurfaceVariant }}>Client Ratings</div>
                 </div>
               </div>
             </div>
 
             <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                  alt="Legal Professional"
-                  className="w-full h-auto"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-purple-600/20" />
+              <div className={`${glassCardClass} p-2 rounded-2xl`}>
+                <div className="relative rounded-xl overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                    alt="Legal Professional"
+                    className="w-full h-auto"
+                  />
+                  <div 
+                    className="absolute inset-0"
+                    style={{ background: `linear-gradient(135deg, ${colors.secondary}20, transparent)` }}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20" style={{ backgroundColor: colors.surfaceContainerLow }}>
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Everything you need to run your practice
+            <h2 
+              className="text-3xl md:text-4xl font-bold mb-4 leading-[1.3] tracking-[-0.01em]"
+              style={{ color: colors.onSurface }}
+            >
+              How It Works
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Comprehensive tools designed for modern law firms
+            <p 
+              className="text-lg max-w-2xl mx-auto"
+              style={{ color: colors.onSurfaceVariant, lineHeight: "1.6" }}
+            >
+              Simplified legal support in three easy steps. No jargon, no hidden fees, just results.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
+          <div className="grid md:grid-cols-3 gap-8">
+            {steps.map((step, index) => (
+              <div key={index} className="text-center">
+                <div 
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-bold"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${colors.secondary}, ${colors.secondaryContainer})`,
+                    color: "white"
+                  }}
+                >
+                  {step.number}
+                </div>
+                <h3 className="text-xl font-bold mb-3" style={{ color: colors.onSurface }}>
+                  {step.title}
+                </h3>
+                <p className="leading-relaxed" style={{ color: colors.onSurfaceVariant, lineHeight: "1.5" }}>
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Practice Areas Section */}
+      <section id="practice-areas" className="py-20">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-[1.3] tracking-[-0.01em]" style={{ color: colors.onSurface }}>
+              Practice Areas
+            </h2>
+            <p className="text-lg mb-4" style={{ color: colors.onSurfaceVariant, lineHeight: "1.6" }}>
+              Our multidisciplinary team of legal experts covers a wide spectrum of legal needs, ensuring you always have the right representation.
+            </p>
+            <button 
+              onClick={() => handleNavClick("#practice-areas")}
+              className="inline-flex items-center text-sm font-semibold transition-colors"
+              style={{ color: colors.secondary }}
+            >
+              View All Categories
+              <ChevronRight size={16} className="ml-1" />
+            </button>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            {practiceAreas.map((area, index) => {
+              const Icon = area.icon;
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+                  className={`${glassCardClass} p-6 group cursor-pointer transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}
+                  onClick={() => console.log(`Navigate to ${area.title}`)}
                 >
-                  <div
-                    className={`w-12 h-12 bg-gradient-to-r ${getColorClasses(
-                      feature.color
-                    )} rounded-lg flex items-center justify-center mb-4`}
+                  <div 
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
+                    style={{ backgroundColor: `${area.color}15` }}
                   >
-                    <Icon className="h-6 w-6 text-white" />
+                    <Icon className="h-6 w-6" style={{ color: area.color }} />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    {feature.title}
+                  <h3 className="text-xl font-semibold mb-2" style={{ color: colors.onSurface }}>
+                    {area.title}
                   </h3>
-                  <p className="text-gray-600 mb-3">
-                    {feature.description}
+                  <p className="mb-4 leading-relaxed" style={{ color: colors.onSurfaceVariant, lineHeight: "1.5" }}>
+                    {area.description}
                   </p>
-                  <div className="text-sm font-medium text-blue-600">
-                    {feature.stats}
-                  </div>
+                  <button 
+                    className="inline-flex items-center text-sm font-medium transition-colors"
+                    style={{ color: colors.secondary }}
+                  >
+                    Learn More
+                    <ChevronRight size={14} className="ml-1" />
+                  </button>
                 </div>
               );
             })}
@@ -676,144 +639,64 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Why Choose Us Section */}
+      <section id="why-choose" className="py-20" style={{ backgroundColor: colors.surfaceContainerLow }}>
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Our Core Services
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-[1.3] tracking-[-0.01em]" style={{ color: colors.onSurface }}>
+              Why Choose LawSetu?
             </h2>
-            <p className="text-lg text-gray-600">
-              Specialized solutions for every aspect of your practice
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all"
-              >
-                <div className="h-48 overflow-hidden">
-                  <img
-                    src={service.image}
-                    alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <service.icon className="h-5 w-5 text-blue-600" />
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      {service.title}
-                    </h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {whyChooseItems.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div key={index} className="text-center">
+                  <div 
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                    style={{ backgroundColor: `${colors.secondary}10` }}
+                  >
+                    <Icon className="h-8 w-8" style={{ color: colors.secondary }} />
                   </div>
-                  <p className="text-gray-600">
-                    {service.description}
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: colors.onSurface }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed" style={{ color: colors.onSurfaceVariant, lineHeight: "1.5" }}>
+                    {item.description}
                   </p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Showcase Section */}
-      <section id="showcase" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              See it in action
-            </h2>
-            <p className="text-lg text-gray-600">
-              Experience the power of modern legal technology
-            </p>
-          </div>
-
-          <div className="relative">
-            <div className="overflow-hidden rounded-xl">
-              <div
-                className="flex transition-transform duration-500"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {showcaseItems.map((item, index) => (
-                  <div key={index} className="w-full flex-shrink-0">
-                    <div className="relative h-96 rounded-xl overflow-hidden">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                        <h3 className="text-2xl font-bold mb-2">
-                          {item.title}
-                        </h3>
-                        <p className="text-white/90">{item.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={() =>
-                setCurrentSlide(
-                  (prev) =>
-                    (prev - 1 + showcaseItems.length) % showcaseItems.length
-                )
-              }
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full shadow-lg hover:bg-white transition-colors"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={() =>
-                setCurrentSlide((prev) => (prev + 1) % showcaseItems.length)
-              }
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/90 rounded-full shadow-lg hover:bg-white transition-colors"
-            >
-              <ChevronRightIcon size={20} />
-            </button>
-
-            <div className="flex justify-center mt-6 space-x-2">
-              {showcaseItems.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentSlide
-                      ? "w-6 bg-blue-600"
-                      : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section id="testimonials" className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Trusted by legal professionals
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-[1.3] tracking-[-0.01em]" style={{ color: colors.onSurface }}>
+              Trusted by Thousands
             </h2>
-            <p className="text-lg text-gray-600">
-              See what our clients have to say
+            <p className="text-lg" style={{ color: colors.onSurfaceVariant, lineHeight: "1.6" }}>
+              Hear from clients who found justice and clarity through our network.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl p-6 shadow-sm"
-              >
-                <Quote className="h-8 w-8 text-blue-600 mb-4" />
-                <p className="text-gray-600 mb-6 leading-relaxed">
+              <div key={index} className={`${glassCardClass} p-6`}>
+                <div className="flex items-center space-x-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${i < testimonial.rating ? "fill-current" : ""}`}
+                      style={{ color: i < testimonial.rating ? colors.tertiary : colors.outlineVariant }}
+                    />
+                  ))}
+                </div>
+                <p className="mb-6 leading-relaxed" style={{ color: colors.onSurfaceVariant, lineHeight: "1.6" }}>
                   "{testimonial.content}"
                 </p>
                 <div className="flex items-center space-x-3">
@@ -823,11 +706,11 @@ const Home = () => {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
-                    <h4 className="font-semibold text-gray-900">
+                    <h4 className="font-semibold text-sm" style={{ color: colors.onSurface }}>
                       {testimonial.name}
                     </h4>
-                    <p className="text-sm text-gray-500">
-                      {testimonial.role}, {testimonial.firm}
+                    <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>
+                      {testimonial.role}
                     </p>
                   </div>
                 </div>
@@ -838,113 +721,116 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Ready to transform your practice?
+      <section className="py-20 relative overflow-hidden" style={{ backgroundColor: colors.primary }}>
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
+        <div className="max-w-4xl mx-auto text-center px-6 lg:px-8 relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white leading-[1.3] tracking-[-0.01em]">
+            Ready to Resolve Your Case?
           </h2>
-          <p className="text-lg text-blue-100 mb-8">
-            Join thousands of law firms already using LawSetu
+          <p className="text-lg mb-8 text-white/90">
+            Join thousands of satisfied clients who found their legal solution with LawSetu. 
+            Your first consultation is just a click away.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => navigate("/register")}
-              className="px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+              className="px-6 py-3 font-semibold transition-all duration-200 rounded-xl"
+              style={{ backgroundColor: colors.surface, color: colors.primary }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.surfaceBright}
             >
-              Start Free Trial
+              Get Started Now
             </button>
             <button
-              onClick={() => navigate("/contact")}
-              className="px-6 py-3 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-colors font-medium"
+              onClick={() => handleNavClick("#practice-areas")}
+              className="px-6 py-3 font-semibold text-white transition-all duration-200 rounded-xl border-2 border-white/80 hover:bg-white/10"
             >
-              Contact Sales
+              Talk to an Expert
             </button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 py-12 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="py-12" style={{ backgroundColor: colors.surfaceContainerLow, borderTop: `1px solid ${colors.outlineVariant}` }}>
+        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
+            {/* Brand Column */}
             <div>
               <div className="flex items-center mb-4">
-                <img 
-                  src={appLogo} 
-                  alt="LawSetu Logo" 
-                  className="h-8 w-auto object-contain"
-                />
-                <span className="ml-2 font-semibold text-gray-900">
-                  LawSetu
+                <img src={appLogo} alt="LawSetu Logo" className="h-8 w-auto object-contain" />
+                <span className="ml-2 text-lg font-semibold" style={{ color: colors.onSurface }}>
+                  Law<span style={{ color: colors.secondary }}>Setu</span>
                 </span>
               </div>
-              <p className="text-sm text-gray-600">
-                Modern legal practice management platform for forward-thinking
-                law firms.
+              <p className="text-sm mb-4" style={{ color: colors.onSurfaceVariant, lineHeight: "1.5" }}>
+                Democratizing access to high-end legal services through technology and transparency.
               </p>
+              <div className="flex space-x-4">
+                <button className="p-2 rounded-lg transition-colors" style={{ backgroundColor: colors.surfaceContainerHighest }}>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+                </button>
+                <button className="p-2 rounded-lg transition-colors" style={{ backgroundColor: colors.surfaceContainerHighest }}>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0021.083-3.428c.967-1.71 1.495-3.616 1.495-5.58 0-.313-.02-.627-.058-.94.965-.695 1.82-1.557 2.53-2.539z"/></svg>
+                </button>
+                <button className="p-2 rounded-lg transition-colors" style={{ backgroundColor: colors.surfaceContainerHighest }}>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </button>
+              </div>
             </div>
+
+            {/* Quick Links */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">
-                Product
-              </h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <a href="#" className="hover:text-blue-600">
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-600">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-600">
-                    Security
-                  </a>
-                </li>
+              <h4 className="font-semibold mb-4" style={{ color: colors.onSurface }}>Quick Links</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Home</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Privacy Policy</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Terms of Service</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Cookie Policy</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Disclaimers</a></li>
               </ul>
             </div>
+
+            {/* Legal */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">
-                Company
-              </h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <a href="#" className="hover:text-blue-600">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-600">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-600">
-                    Contact
-                  </a>
-                </li>
+              <h4 className="font-semibold mb-4" style={{ color: colors.onSurface }}>Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Legal Notice</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Privacy Policy</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Terms of Service</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Cookie Policy</a></li>
+                <li><a href="#" className="hover:underline" style={{ color: colors.onSurfaceVariant }}>Disclaimers</a></li>
               </ul>
             </div>
+
+            {/* Newsletter */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">
-                Contact
-              </h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-center space-x-2">
-                  <Mail size={14} />
-                  <span>hello@lawsetu.com</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <Phone size={14} />
-                  <span>+1 (555) 123-4567</span>
-                </li>
-              </ul>
+              <h4 className="font-semibold mb-4" style={{ color: colors.onSurface }}>Newsletter</h4>
+              <p className="text-sm mb-4" style={{ color: colors.onSurfaceVariant }}>
+                Stay updated with the latest legal news and platform updates.
+              </p>
+              <form onSubmit={handleSubscribe} className="flex">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email"
+                  className="flex-1 px-4 py-2 text-sm rounded-l-xl focus:outline-none"
+                  style={{ backgroundColor: colors.surface, border: `1px solid ${colors.outlineVariant}` }}
+                  required
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-r-xl text-white transition-colors"
+                  style={{ backgroundColor: colors.secondary }}
+                >
+                  <Send size={16} />
+                </button>
+              </form>
             </div>
           </div>
-          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
-            <p>&copy; 2026 LawSetu. All rights reserved.</p>
+
+          <div className="mt-8 pt-8 text-center text-sm" style={{ borderTop: `1px solid ${colors.outlineVariant}`, color: colors.onSurfaceVariant }}>
+            <p>&copy; 2024 LawSetu Legal Tech. All rights reserved.</p>
           </div>
         </div>
       </footer>

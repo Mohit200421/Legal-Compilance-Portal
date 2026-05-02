@@ -22,7 +22,37 @@ import {
   Users,
   Phone,
   Video,
+  Sparkles,
 } from "lucide-react";
+
+// Lex-Modernism Color System
+const colors = {
+  primary: "#091426",
+  primaryContainer: "#1e293b",
+  onPrimaryContainer: "#8590a6",
+  secondary: "#4648d4",
+  secondaryContainer: "#6063ee",
+  onSecondaryContainer: "#fffbff",
+  surface: "#fbf8fa",
+  surfaceDim: "#dcd9db",
+  surfaceBright: "#fbf8fa",
+  surfaceContainerLowest: "#ffffff",
+  surfaceContainerLow: "#f5f3f4",
+  surfaceContainer: "#f0edef",
+  surfaceContainerHigh: "#eae7e9",
+  surfaceContainerHighest: "#e4e2e3",
+  onSurface: "#1b1b1d",
+  onSurfaceVariant: "#45474c",
+  outline: "#75777d",
+  outlineVariant: "#c5c6cd",
+  error: "#ba1a1a",
+  errorContainer: "#ffdad6",
+  onError: "#ffffff",
+  onErrorContainer: "#93000a",
+  tertiary: "#1e1200",
+  tertiaryContainer: "#35260c",
+  onTertiaryContainer: "#a38c6a",
+};
 
 export default function Requests() {
   const navigate = useNavigate();
@@ -33,6 +63,20 @@ export default function Requests() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Glassmorphism card style
+  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+  const inputClass = "w-full px-4 py-2.5 rounded-xl text-sm transition-all duration-200 focus:outline-none";
+
+  const handleInputFocus = (e) => {
+    e.currentTarget.style.borderColor = colors.secondary;
+    e.currentTarget.style.boxShadow = `0 0 0 3px ${colors.secondary}20`;
+  };
+
+  const handleInputBlur = (e) => {
+    e.currentTarget.style.borderColor = colors.outlineVariant;
+    e.currentTarget.style.boxShadow = "none";
+  };
 
   const fetchRequests = async () => {
     try {
@@ -113,11 +157,11 @@ export default function Requests() {
   const getStatusBadge = (status) => {
     switch(status) {
       case "Accepted":
-        return { icon: CheckCircle, text: "Accepted", bg: "bg-green-100", textColor: "text-green-700" };
+        return { icon: CheckCircle, text: "Accepted", bg: "#4caf5015", textColor: "#4caf50" };
       case "Rejected":
-        return { icon: XCircle, text: "Rejected", bg: "bg-red-100", textColor: "text-red-700" };
+        return { icon: XCircle, text: "Rejected", bg: `${colors.error}15`, textColor: colors.error };
       default:
-        return { icon: Clock, text: "Pending", bg: "bg-yellow-100", textColor: "text-yellow-700" };
+        return { icon: Clock, text: "Pending", bg: `${colors.tertiary}15`, textColor: colors.tertiary };
     }
   };
 
@@ -131,84 +175,98 @@ export default function Requests() {
   const counts = getStatusCounts();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
-      {/* Header */}
+    <div className="min-h-screen p-4 md:p-6" style={{ backgroundColor: colors.surface }}>
+      {/* Header Section */}
       <div className="mb-6 md:mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg mb-3">
-              <Users className="h-4 w-4 text-blue-600 mr-2" />
-              <span className="text-xs font-semibold text-blue-600 tracking-wider">CLIENT REQUESTS</span>
+            <div 
+              className="inline-flex items-center px-3 py-1.5 rounded-lg mb-3"
+              style={{ backgroundColor: `${colors.secondary}10`, border: `1px solid ${colors.secondary}20` }}
+            >
+              <Users className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
+              <span className="text-xs font-semibold tracking-wider" style={{ color: colors.secondary }}>
+                CLIENT REQUESTS
+              </span>
             </div>
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.2] tracking-[-0.02em]" style={{ color: colors.onSurface }}>
               Client Requests
             </h1>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">
+            <p className="text-xs md:text-sm mt-1" style={{ color: colors.onSurfaceVariant }}>
               Manage and respond to client consultation requests
             </p>
           </div>
           
           <button
             onClick={fetchRequests}
-            className="flex items-center space-x-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm"
+            className={`flex items-center space-x-2 px-4 py-2.5 ${glassCardClass} transition-all duration-200 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}
           >
-            <RefreshCw className="h-4 w-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-700">Refresh</span>
+            <RefreshCw className="h-4 w-4" style={{ color: colors.onSurfaceVariant }} />
+            <span className="text-sm font-medium" style={{ color: colors.onSurfaceVariant }}>Refresh</span>
           </button>
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Glass Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
-        <div className="bg-white rounded-xl border-l-4 border-blue-600 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-all">
-          <p className="text-xs text-gray-500 mb-1">Total</p>
-          <p className="text-xl md:text-2xl font-bold text-gray-900">{counts.total}</p>
-          <p className="text-xs text-gray-400 mt-1">All requests</p>
+        <div className={`${glassCardClass} p-4 md:p-5 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+          <p className="text-xs mb-1" style={{ color: colors.onSurfaceVariant }}>Total</p>
+          <p className="text-xl md:text-2xl font-bold" style={{ color: colors.onSurface }}>{counts.total}</p>
+          <p className="text-xs mt-1" style={{ color: colors.onSurfaceVariant }}>All requests</p>
         </div>
-        <div className="bg-white rounded-xl border-l-4 border-yellow-500 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-all">
-          <p className="text-xs text-gray-500 mb-1">Pending</p>
-          <p className="text-xl md:text-2xl font-bold text-yellow-600">{counts.pending}</p>
-          <p className="text-xs text-gray-400 mt-1">Awaiting response</p>
+        <div className={`${glassCardClass} p-4 md:p-5 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+          <p className="text-xs mb-1" style={{ color: colors.onSurfaceVariant }}>Pending</p>
+          <p className="text-xl md:text-2xl font-bold" style={{ color: colors.tertiary }}>{counts.pending}</p>
+          <p className="text-xs mt-1" style={{ color: colors.onSurfaceVariant }}>Awaiting response</p>
         </div>
-        <div className="bg-white rounded-xl border-l-4 border-green-500 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-all">
-          <p className="text-xs text-gray-500 mb-1">Accepted</p>
-          <p className="text-xl md:text-2xl font-bold text-green-600">{counts.accepted}</p>
-          <p className="text-xs text-gray-400 mt-1">Ready to chat</p>
+        <div className={`${glassCardClass} p-4 md:p-5 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+          <p className="text-xs mb-1" style={{ color: colors.onSurfaceVariant }}>Accepted</p>
+          <p className="text-xl md:text-2xl font-bold" style={{ color: "#4caf50" }}>{counts.accepted}</p>
+          <p className="text-xs mt-1" style={{ color: colors.onSurfaceVariant }}>Ready to chat</p>
         </div>
-        <div className="bg-white rounded-xl border-l-4 border-red-500 border border-gray-200 p-4 md:p-5 hover:shadow-lg transition-all">
-          <p className="text-xs text-gray-500 mb-1">Rejected</p>
-          <p className="text-xl md:text-2xl font-bold text-red-600">{counts.rejected}</p>
-          <p className="text-xs text-gray-400 mt-1">Declined</p>
+        <div className={`${glassCardClass} p-4 md:p-5 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}>
+          <p className="text-xs mb-1" style={{ color: colors.onSurfaceVariant }}>Rejected</p>
+          <p className="text-xl md:text-2xl font-bold" style={{ color: colors.error }}>{counts.rejected}</p>
+          <p className="text-xs mt-1" style={{ color: colors.onSurfaceVariant }}>Declined</p>
         </div>
       </div>
 
-      {/* Search and Filter Bar */}
-      <div className="bg-white rounded-xl border border-gray-200 mb-6 p-4">
+      {/* Search and Filter Bar - Glass Card */}
+      <div className={`${glassCardClass} mb-6 p-4`}>
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: colors.outline }} />
               <input
                 type="text"
                 placeholder="Search by subject, message, or client name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-10 py-2.5 border border-gray-300 bg-white rounded-xl text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition-all"
+                className={inputClass}
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                  paddingLeft: "2.25rem"
+                }}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
                 >
-                  <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                  <X className="h-4 w-4" style={{ color: colors.outline }} />
                 </button>
               )}
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden p-2.5 bg-gray-100 rounded-xl"
+              className="md:hidden p-2.5 rounded-xl"
+              style={{ backgroundColor: colors.surfaceContainerHighest }}
             >
-              <Filter className="h-5 w-5 text-gray-600" />
+              <Filter className="h-5 w-5" style={{ color: colors.onSurfaceVariant }} />
             </button>
           </div>
 
@@ -216,7 +274,14 @@ export default function Requests() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2 rounded-lg text-sm transition-all duration-200 focus:outline-none"
+              style={{
+                backgroundColor: colors.surfaceContainerLowest,
+                border: `1px solid ${colors.outlineVariant}`,
+                color: colors.onSurface,
+              }}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
             >
               <option value="all">All Status</option>
               <option value="Pending">Pending</option>
@@ -226,13 +291,20 @@ export default function Requests() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2 rounded-lg text-sm transition-all duration-200 focus:outline-none"
+              style={{
+                backgroundColor: colors.surfaceContainerLowest,
+                border: `1px solid ${colors.outlineVariant}`,
+                color: colors.onSurface,
+              }}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
             </select>
-            <span className="text-sm text-gray-500 ml-auto">
-              Showing {filteredRequests.length} of {requests.length} requests
+            <span className="text-sm ml-auto" style={{ color: colors.onSurfaceVariant }}>
+              Showing <span className="font-medium" style={{ color: colors.onSurface }}>{filteredRequests.length}</span> of {requests.length} requests
             </span>
           </div>
 
@@ -241,7 +313,12 @@ export default function Requests() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm"
+                className="w-full px-3 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                }}
               >
                 <option value="all">All Status</option>
                 <option value="Pending">Pending</option>
@@ -251,7 +328,12 @@ export default function Requests() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 bg-white rounded-lg text-sm"
+                className="w-full px-3 py-2 rounded-lg text-sm"
+                style={{
+                  backgroundColor: colors.surfaceContainerLowest,
+                  border: `1px solid ${colors.outlineVariant}`,
+                  color: colors.onSurface,
+                }}
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -263,22 +345,22 @@ export default function Requests() {
 
       {/* Loading State */}
       {loading && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <div className={`${glassCardClass} p-12 text-center`}>
           <div className="inline-flex flex-col items-center space-y-3">
-            <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent animate-spin rounded-full"></div>
-            <p className="text-gray-600">Loading requests...</p>
+            <div className="w-10 h-10 border-3 rounded-full animate-spin" style={{ borderColor: colors.secondary, borderTopColor: "transparent" }}></div>
+            <p style={{ color: colors.onSurfaceVariant }}>Loading requests...</p>
           </div>
         </div>
       )}
 
       {/* Empty State */}
       {!loading && filteredRequests.length === 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Users className="h-8 w-8 text-gray-400" />
+        <div className={`${glassCardClass} p-12 text-center`}>
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: colors.surfaceContainerHighest }}>
+            <Users className="h-8 w-8" style={{ color: colors.onSurfaceVariant }} />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No requests found</h3>
-          <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">
+          <h3 className="text-lg font-medium mb-2" style={{ color: colors.onSurface }}>No requests found</h3>
+          <p className="text-sm mb-6 max-w-md mx-auto" style={{ color: colors.onSurfaceVariant }}>
             {searchTerm || statusFilter !== "all" 
               ? "Try adjusting your search or filters" 
               : "No client requests yet. They will appear here when clients contact you."}
@@ -296,27 +378,30 @@ export default function Requests() {
             return (
               <div
                 key={req._id}
-                className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all overflow-hidden"
+                className={`${glassCardClass} overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgba(30,41,59,0.1)]`}
               >
                 {/* Request Header */}
-                <div className="border-b border-gray-100 p-5">
+                <div className="p-5" style={{ borderBottom: `1px solid ${colors.outlineVariant}` }}>
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center flex-wrap gap-2 mb-2">
-                        <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${statusBadge.bg} ${statusBadge.textColor}`}>
+                        <span 
+                          className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full"
+                          style={{ backgroundColor: statusBadge.bg, color: statusBadge.textColor }}
+                        >
                           <StatusIcon className="h-3 w-3 mr-1" />
                           {statusBadge.text}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>
                           ID: {req._id.slice(-8)}
                         </span>
                       </div>
                       
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">
+                      <h3 className="text-lg font-bold mb-2" style={{ color: colors.onSurface }}>
                         {req.subject}
                       </h3>
                       
-                      <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                      <p className="text-sm mb-3 leading-relaxed" style={{ color: colors.onSurfaceVariant, lineHeight: "1.6" }}>
                         {req.message}
                       </p>
                     </div>
@@ -324,24 +409,24 @@ export default function Requests() {
                 </div>
 
                 {/* Request Details */}
-                <div className="p-5 bg-gray-50">
+                <div className="p-5" style={{ backgroundColor: colors.surfaceContainerLow }}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     {/* Client Info */}
-                    <div className="bg-white rounded-lg border border-gray-200 p-4">
-                      <p className="text-xs font-semibold text-gray-700 mb-3 flex items-center">
-                        <User className="h-4 w-4 text-blue-600 mr-2" />
+                    <div className={`${glassCardClass} p-4`}>
+                      <p className="text-xs font-semibold mb-3 flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                        <User className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
                         Client Details
                       </p>
                       <div className="space-y-2">
                         <div className="flex items-center text-sm">
-                          <User className="h-4 w-4 text-gray-400 mr-2" />
-                          <span className="font-medium text-gray-900">
+                          <User className="h-4 w-4 mr-2" style={{ color: colors.outline }} />
+                          <span className="font-medium" style={{ color: colors.onSurface }}>
                             {req.userId?.name || "N/A"}
                           </span>
                         </div>
                         <div className="flex items-center text-sm">
-                          <Mail className="h-4 w-4 text-gray-400 mr-2" />
-                          <span className="text-gray-600">
+                          <Mail className="h-4 w-4 mr-2" style={{ color: colors.outline }} />
+                          <span style={{ color: colors.onSurfaceVariant }}>
                             {req.userId?.email || "N/A"}
                           </span>
                         </div>
@@ -349,15 +434,15 @@ export default function Requests() {
                     </div>
 
                     {/* Request Metadata */}
-                    <div className="bg-white rounded-lg border border-gray-200 p-4">
-                      <p className="text-xs font-semibold text-gray-700 mb-3 flex items-center">
-                        <Clock className="h-4 w-4 text-blue-600 mr-2" />
+                    <div className={`${glassCardClass} p-4`}>
+                      <p className="text-xs font-semibold mb-3 flex items-center" style={{ color: colors.onSurfaceVariant }}>
+                        <Clock className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
                         Request Info
                       </p>
                       <div className="space-y-2">
                         <div className="flex items-center text-sm">
-                          <Calendar className="h-4 w-4 text-gray-400 mr-2" />
-                          <span className="text-gray-600">
+                          <Calendar className="h-4 w-4 mr-2" style={{ color: colors.outline }} />
+                          <span style={{ color: colors.onSurfaceVariant }}>
                             {new Date(req.createdAt).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -376,7 +461,10 @@ export default function Requests() {
                     {req.status === "Accepted" && (
                       <button
                         onClick={() => handleOpenChat(req.userId)}
-                        className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-all shadow-md"
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md"
+                        style={{ backgroundColor: colors.secondary, color: "white" }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.secondaryContainer}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
                       >
                         <MessageSquare className="h-4 w-4" />
                         <span>Chat with Client</span>
@@ -386,7 +474,10 @@ export default function Requests() {
                     {req.status !== "Accepted" && (
                       <button
                         onClick={() => updateStatus(req._id, "Accepted")}
-                        className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-all shadow-md"
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md"
+                        style={{ backgroundColor: "#4caf50", color: "white" }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#45a049"}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#4caf50"}
                       >
                         <CheckCircle className="h-4 w-4" />
                         <span>Accept Request</span>
@@ -396,7 +487,10 @@ export default function Requests() {
                     {req.status !== "Rejected" && req.status !== "Accepted" && (
                       <button
                         onClick={() => updateStatus(req._id, "Rejected")}
-                        className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-all shadow-md"
+                        className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-md"
+                        style={{ backgroundColor: colors.error, color: "white" }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.errorContainer}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.error}
                       >
                         <XCircle className="h-4 w-4" />
                         <span>Reject Request</span>

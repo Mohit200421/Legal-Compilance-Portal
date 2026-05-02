@@ -61,10 +61,6 @@ exports.getAllLawyers = async (req, res) => {
   }
 };
 
-
-
-
-
 /* ================= CITY =================== */
 
 exports.addCity = async (req, res) => {
@@ -154,7 +150,6 @@ exports.getPendingLawyerUsers = async (req, res) => {
   }
 };
 
-
 exports.approveLawyerUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -177,28 +172,40 @@ exports.approveLawyerUser = async (req, res) => {
     await user.save();
 
     //  SEND EMAIL WITH LOGIN CREDENTIALS
-    await sendEmail(
-      user.email,
-      "Lawyer Application Approved 🎉",
-      `
-        <h2>Congratulations ${user.name}!</h2>
-        <p>Your lawyer application has been <b>approved</b> ✅</p>
+    const clientUrl =
+      process.env.CLIENT_URL || "https://legal-compilance-portal.vercel.app";
 
-        <p><b>Email:</b> ${user.email}</p>
-        <p><b>Password:</b> ${tempPassword}</p>
+    try {
+      const emailResult = await sendEmail(
+        user.email,
+        "Lawyer Application Approved 🎉",
+        `
+          <h2>Congratulations ${user.name}!</h2>
+          <p>Your lawyer application has been <b>approved</b> ✅</p>
 
-        <p>Please login and change your password immediately.</p>
+          <p><b>Email:</b> ${user.email}</p>
+          <p><b>Password:</b> ${tempPassword}</p>
 
-        <a href="${process.env.CLIENT_URL}/login">
-          Login Now
-        </a>
+          <p>Please login and change your password immediately.</p>
 
-        <p>Thank you for joining us!</p>
-      `
-    );
+          <a href="${clientUrl}/login" style="display:inline-block; background-color:#1e3a5f; color:#ffffff; padding:12px 24px; text-decoration:none; border-radius:5px; margin:10px 0;">
+            Login Now
+          </a>
+
+          <p>Thank you for joining us!</p>
+        `
+      );
+
+      if (!emailResult.success) {
+        console.error("❌ Failed to send approval email:", emailResult.error);
+      } else {
+        console.log("✅ Approval email sent to:", user.email);
+      }
+    } catch (emailErr) {
+      console.error("❌ Email error:", emailErr.message);
+    }
 
     res.json({ msg: "Lawyer approved & credentials sent ✅", user });
-
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Server error" });
@@ -225,9 +232,6 @@ exports.rejectLawyerUser = async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 };
-
-
-
 
 // ✅ Admin approves payment (optional override)
 exports.approvePayment = async (req, res) => {

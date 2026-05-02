@@ -5,7 +5,6 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const { Resend } = require("resend");
 
 const connectDB = require("./config/db");
 
@@ -28,6 +27,7 @@ const adminLawyerRoutes = require("./routes/adminLawyerRoutes");
 const callRoutes = require("./routes/callRoutes");
 const aiChatRoutes = require("./routes/aiChatRoutes");
 const supportRoutes = require("./routes/support");
+const emailRoutes = require("./routes/emailRoutes");
 
 const errorHandler = require("./middleware/errorHandler");
 
@@ -114,6 +114,7 @@ app.use("/api/master", masterRoutes);
 app.use("/api/call", callRoutes);
 app.use("/api/ai-chat", aiChatRoutes);
 app.use("/api/support", supportRoutes);
+app.use("/api", emailRoutes);
 
 // ================= HEALTH CHECK
 app.get("/api/health", (req, res) => {

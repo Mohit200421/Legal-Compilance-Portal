@@ -1,7 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { sendEmail } = require("../utils/emailService");
+const {
+  sendEmail,
+  getOTPEmailTemplate,
+  getWelcomeEmailTemplate,
+} = require("../utils/emailService");
 
 // Helper: Generate 6 digit OTP
 const generateOTP = () =>
@@ -18,8 +22,8 @@ const generateToken = (user) => {
 const setTokenCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, 
-    sameSite: "Lax",    
+    secure: false,
+    sameSite: "Lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -62,15 +66,18 @@ exports.register = async (req, res) => {
       otpExpiresAt,
     });
 
-    await sendEmail(
+    // Send OTP email with HTML template
+    const otpHtml = getOTPEmailTemplate(otp, "verification");
+    const emailResult = await sendEmail(
       email,
       "Verify your email (OTP)",
-      `
-        <h2>Email Verification</h2>
-        <p>Your OTP is: <b style="font-size:18px">${otp}</b></p>
-        <p>This OTP will expire in <b>10 minutes</b>.</p>
-      `
+      otpHtml
     );
+
+    // Log email result but don't fail registration if email fails
+    if (!emailResult.success) {
+      console.error("❌ Failed to send OTP email:", emailResult.error);
+    }
 
     if (role === "lawyer") {
       return res.json({
@@ -281,7 +288,9 @@ exports.resetPassword = async (req, res) => {
     }
 
     if (new Date() > user.resetOtpExpiresAt) {
-      return res.status(400).json({ msg: "OTP expired. Please request again." });
+      return res
+        .status(400)
+        .json({ msg: "OTP expired. Please request again." });
     }
 
     const isMatch = await bcrypt.compare(otp, user.resetOtpHash);
@@ -369,7 +378,9 @@ exports.applyLawyer = async (req, res) => {
     user.lawyerApprovalStatus = "pending";
     await user.save();
 
-    res.json({ msg: "Request submitted successfully ✅ Admin will approve soon." });
+    res.json({
+      msg: "Request submitted successfully ✅ Admin will approve soon.",
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: err.message });

@@ -68,15 +68,24 @@ exports.register = async (req, res) => {
 
     // Send OTP email with HTML template
     const otpHtml = getOTPEmailTemplate(otp, "verification");
+
+    console.log("📧 Sending OTP to:", email);
+
     const emailResult = await sendEmail(
       email,
       "Verify your email (OTP)",
       otpHtml
     );
 
-    // Log email result but don't fail registration if email fails
-    if (!emailResult.success) {
-      console.error("❌ Failed to send OTP email:", emailResult.error);
+    console.log("📧 Email result:", emailResult);
+
+    // Return error if email fails
+    if (!emailResult || !emailResult.success) {
+      console.error("❌ Email failed:", emailResult?.error);
+
+      return res.status(500).json({
+        msg: "Registration failed: Unable to send OTP email",
+      });
     }
 
     if (role === "lawyer") {

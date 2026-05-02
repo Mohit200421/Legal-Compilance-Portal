@@ -24,6 +24,10 @@
 
 ```
 RESEND_API_KEY=re_xxxxxxxxxxxxx
+
+# Optional - Customize sender name and email
+EMAIL_FROM_NAME=Legal Portal
+EMAIL_FROM=yourverifiedemail@gmail.com  # Your verified email
 ```
 
 No additional setup needed!

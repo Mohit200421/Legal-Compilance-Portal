@@ -29,8 +29,15 @@ exports.sendEmail = async (to, subject, html, text = null) => {
       const { Resend } = require("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
 
+      // Use verified email or default from env
+      const fromEmail =
+        process.env.EMAIL_FROM ||
+        process.env.EMAIL_USER ||
+        "onboarding@resend.dev";
+      const fromName = process.env.EMAIL_FROM_NAME || "Legal Portal";
+
       const response = await resend.emails.send({
-        from: "Legal Portal <onboarding@resend.dev>",
+        from: `${fromName} <${fromEmail}>`,
         to: to,
         subject: subject,
         html: html,

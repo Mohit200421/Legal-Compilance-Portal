@@ -45,37 +45,39 @@ connectDB();
 const isProd = process.env.NODE_ENV === "production";
 
 // ================= CORS (FIXED FOR BOTH LOCAL + PROD) =================
-// Allow multiple origins for flexibility
-const corsOrigins = isProd
-  ? [
-      "https://legal-compilance-portal.vercel.app",
-      "https://legal-compliance-portal.vercel.app",
-      "https://legal-compilance-portal.onrender.com",
-    ]
+const allowedOrigins = isProd
+  ? "https://legal-compliance-portal.vercel.app"
   : ["http://localhost:5173", "http://localhost:3000"];
 
+// Configure CORS with all required headers and methods
 app.use(
   cors({
-    origin: corsOrigins,
+    origin: allowedOrigins,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
+  })
+);
+
+// Handle preflight OPTIONS requests
+app.options(
+  "*",
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
   })
 );
 
 // ================= SOCKET.IO =================
-// Use same origins as Express CORS
-const socketOrigins = isProd
-  ? [
-      "https://legal-compilance-portal.vercel.app",
-      "https://legal-compliance-portal.vercel.app",
-      "https://legal-compilance-portal.onrender.com",
-    ]
+const socketAllowedOrigins = isProd
+  ? "https://legal-compliance-portal.vercel.app"
   : ["http://localhost:5173", "http://localhost:3000"];
 
 const io = new Server(server, {
   cors: {
-    origin: socketOrigins,
+    origin: socketAllowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },

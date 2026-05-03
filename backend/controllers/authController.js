@@ -86,12 +86,11 @@ exports.register = async (req, res) => {
 
     // Safe email check
     if (!emailResult || !emailResult.success) {
-      console.error("Email sending failed:", emailResult);
-
+      console.error("Email failed:", emailResult);
       await User.deleteOne({ _id: user._id });
-
       return res.status(500).json({
-        msg: "Failed to send OTP email. Please try again.",
+        msg: "Failed to send OTP email",
+        debug: emailResult?.error || "Unknown error",
       });
     }
 

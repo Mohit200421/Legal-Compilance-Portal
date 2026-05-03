@@ -15,43 +15,23 @@ const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 // ============================================
 exports.sendEmail = async (to, subject, html, text = null) => {
   try {
-    const sendSmtpEmail = {
+    const response = await emailApi.sendTransacEmail({
       sender: {
         email: process.env.EMAIL_USER,
         name: "Legal Portal",
       },
       to: [{ email: to }],
-      subject: subject,
+      subject,
       htmlContent: html,
-    };
-
-    const response = await emailApi.sendTransacEmail(sendSmtpEmail);
-
-    console.log("✅ Email sent via Brevo:", {
-      to: to,
-      subject: subject,
-      messageId: response.messageId,
-      messageUuid: response.messageUuid,
     });
 
-    return {
-      success: true,
-      messageId: response.messageId,
-      provider: "brevo",
-    };
-  } catch (err) {
-    console.error("❌ Brevo email failed:", {
-      to: to,
-      subject: subject,
-      error: err.message,
-      response: err.response ? err.response.body : null,
-    });
+    console.log("✅ Email sent:", response);
 
-    return {
-      success: false,
-      error: err.message,
-      provider: "brevo",
-    };
+    return { success: true };
+  } catch (error) {
+    console.error("❌ Brevo ERROR FULL:", error?.response?.body || error);
+
+    return { success: false, error };
   }
 };
 

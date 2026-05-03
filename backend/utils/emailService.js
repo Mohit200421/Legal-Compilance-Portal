@@ -1,107 +1,54 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 
-// Debug env vars (temporary)
-console.log("EMAIL USER:", process.env.EMAIL_USER ? "SET" : "undefined");
-console.log("EMAIL PASS:", process.env.EMAIL_PASS ? "SET" : "undefined");
+// Setup Brevo client
+const client = SibApiV3Sdk.ApiClient.instance;
+const apiKey = client.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
-// ============================================
-// Email Provider Detection - Gmail Only
-// ============================================
-const getEmailProvider = () => {
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    return "nodemailer";
-  }
-  return "none";
-};
+const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 // ============================================
-// Send Email - Gmail Only
+// Send Email - Brevo Only
 // ============================================
 exports.sendEmail = async (to, subject, html, text = null) => {
-  const provider = getEmailProvider();
-
   try {
-    if (provider === "nodemailer") {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      await transporter.verify();
-      console.log("✅ Gmail transporter verified");
-
-      const info = await transporter.sendMail({
-        from: `"Legal Portal" <${process.env.EMAIL_USER}>`,
-        to: to,
-        subject: subject,
-        html: html,
-        text: text || `Please enable HTML to view this email.`,
-      });
-
-      console.log("✅ Email sent via Nodemailer:", {
-        to: to,
-        subject: subject,
-        messageId: info.messageId,
-      });
-
-      return {
-        success: true,
-        messageId: info.messageId,
-        provider: "nodemailer",
-      };
-    }
-
-    // No Provider
-    console.error("❌ No Gmail credentials configured");
-    return {
-      success: false,
-      error: "Add EMAIL_USER and EMAIL_PASS to .env",
+    const sendSmtpEmail = {
+      sender: {
+        email: process.env.EMAIL_USER,
+        name: "Legal Portal",
+      },
+      to: [{ email: to }],
+      subject: subject,
+      htmlContent: html,
     };
-  } catch (err) {
-    console.error("❌ Email failed:", {
+
+    const response = await emailApi.sendTransacEmail(sendSmtpEmail);
+
+    console.log("✅ Email sent via Brevo:", {
       to: to,
       subject: subject,
-      provider: provider,
-      error: err.message,
+      messageId: response.messageId,
+      messageUuid: response.messageUuid,
     });
-    return { success: false, error: err.message, provider: provider };
-  }
-};
 
-// ============================================
-// Verify Email Configuration
-// ============================================
-exports.verifyEmailConfig = async () => {
-  try {
-    const provider = getEmailProvider();
-
-    if (provider === "nodemailer") {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      await transporter.verify();
-      return {
-        success: true,
-        provider: "Nodemailer (Gmail)",
-        configured: true,
-      };
-    }
+    return {
+      success: true,
+      messageId: response.messageId,
+      provider: "brevo",
+    };
+  } catch (err) {
+    console.error("❌ Brevo email failed:", {
+      to: to,
+      subject: subject,
+      error: err.message,
+      response: err.response ? err.response.body : null,
+    });
 
     return {
       success: false,
-      error:
-        "No Gmail credentials configured. Add EMAIL_USER and EMAIL_PASS to .env.",
+      error: err.message,
+      provider: "brevo",
     };
-  } catch (err) {
-    return { success: false, error: err.message };
   }
 };
 
@@ -194,9 +141,6 @@ exports.getContactSupportEmailTemplate = (userName, userEmail, message) => {
 };
 
 // Log on startup
-console.log("📧 Email Service initialized - Gmail Only:", {
-  provider: getEmailProvider(),
-  hasGmail: !!process.env.EMAIL_USER && !!process.env.EMAIL_PASS,
-});
+console.log("📧 Brevo Email Service initialized");
 
 module.exports = exports;

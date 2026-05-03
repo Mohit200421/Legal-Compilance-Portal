@@ -1,44 +1,40 @@
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 
-// Debug Brevo key (temporary)
-console.log("BREVO KEY:", process.env.BREVO_API_KEY ? "SET" : "MISSING");
-
-// Setup Brevo client
 const client = SibApiV3Sdk.ApiClient.instance;
 const apiKey = client.authentications["api-key"];
 apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
-// ============================================
-// Send Email - Brevo Only
-// ============================================
-exports.sendEmail = async (to, subject, html, text = null) => {
+exports.sendEmail = async (to, subject, html) => {
   try {
     const response = await emailApi.sendTransacEmail({
       sender: {
         email: process.env.EMAIL_USER,
-        name: "Legal Portal",
+        name: "Legal Compliance Portal",
       },
       to: [{ email: to }],
-      subject,
+      subject: subject,
       htmlContent: html,
     });
 
-    console.log("✅ Email sent:", response);
+    console.log("Email sent via Brevo:", response.messageId);
 
-    return { success: true };
+    return {
+      success: true,
+      messageId: response.messageId,
+    };
   } catch (error) {
-    console.error("❌ Brevo ERROR FULL:", error?.response?.body || error);
+    console.error("Brevo email error:", error?.response?.body || error);
 
-    return { success: false, error };
+    return {
+      success: false,
+      error: error?.response?.body || error.message,
+    };
   }
 };
 
-// ============================================
-// Email Templates
-// ============================================
-
+// Email Templates (keep existing)
 exports.getWelcomeEmailTemplate = (name) => {
   return `
     <!DOCTYPE html>
@@ -122,8 +118,5 @@ exports.getContactSupportEmailTemplate = (userName, userEmail, message) => {
     </html>
   `;
 };
-
-// Log on startup
-console.log("📧 Brevo Email Service initialized");
 
 module.exports = exports;

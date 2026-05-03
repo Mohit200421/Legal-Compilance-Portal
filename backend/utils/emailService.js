@@ -3,10 +3,9 @@ const nodemailer = require("nodemailer");
 // Debug env vars (temporary)
 console.log("EMAIL USER:", process.env.EMAIL_USER ? "SET" : "undefined");
 console.log("EMAIL PASS:", process.env.EMAIL_PASS ? "SET" : "undefined");
-console.log("RESEND API:", process.env.RESEND_API_KEY ? "SET" : "undefined");
 
 // ============================================
-// Email Provider Detection
+// Email Provider Detection - Gmail Only
 // ============================================
 const getEmailProvider = () => {
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
@@ -16,13 +15,12 @@ const getEmailProvider = () => {
 };
 
 // ============================================
-// Send Email (Supports Both Resend & Nodemailer)
+// Send Email - Gmail Only
 // ============================================
 exports.sendEmail = async (to, subject, html, text = null) => {
   const provider = getEmailProvider();
 
   try {
-    // ========== Option 2: NODEMAILER (Gmail) ==========
     if (provider === "nodemailer") {
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -36,7 +34,7 @@ exports.sendEmail = async (to, subject, html, text = null) => {
       console.log("✅ Gmail transporter verified");
 
       const info = await transporter.sendMail({
-        from: `"LawSetu" <${process.env.EMAIL_USER}>`,
+        from: `"Legal Portal" <${process.env.EMAIL_USER}>`,
         to: to,
         subject: subject,
         html: html,
@@ -56,12 +54,11 @@ exports.sendEmail = async (to, subject, html, text = null) => {
       };
     }
 
-    // ========== No Provider ==========
-    console.error("❌ No email provider configured");
+    // No Provider
+    console.error("❌ No Gmail credentials configured");
     return {
       success: false,
-      error:
-        "No email provider configured. Add RESEND_API_KEY or EMAIL_USER/EMAIL_PASS",
+      error: "Add EMAIL_USER and EMAIL_PASS to .env",
     };
   } catch (err) {
     console.error("❌ Email failed:", {
@@ -80,10 +77,6 @@ exports.sendEmail = async (to, subject, html, text = null) => {
 exports.verifyEmailConfig = async () => {
   try {
     const provider = getEmailProvider();
-
-    if (provider === "resend") {
-      return { success: true, provider: "Resend", configured: true };
-    }
 
     if (provider === "nodemailer") {
       const transporter = nodemailer.createTransport({
@@ -105,7 +98,7 @@ exports.verifyEmailConfig = async () => {
     return {
       success: false,
       error:
-        "No email provider configured. Add RESEND_API_KEY or EMAIL_USER/EMAIL_PASS in environment variables.",
+        "No Gmail credentials configured. Add EMAIL_USER and EMAIL_PASS to .env.",
     };
   } catch (err) {
     return { success: false, error: err.message };
@@ -201,9 +194,8 @@ exports.getContactSupportEmailTemplate = (userName, userEmail, message) => {
 };
 
 // Log on startup
-console.log("📧 Email Service initialized:", {
+console.log("📧 Email Service initialized - Gmail Only:", {
   provider: getEmailProvider(),
-  hasResend: !!process.env.RESEND_API_KEY,
   hasGmail: !!process.env.EMAIL_USER && !!process.env.EMAIL_PASS,
 });
 

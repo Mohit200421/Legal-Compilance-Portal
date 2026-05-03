@@ -84,6 +84,17 @@ exports.register = async (req, res) => {
 
     console.log("📧 Email result:", emailResult);
 
+    // Safe email check
+    if (!emailResult || !emailResult.success) {
+      console.error("Email sending failed:", emailResult);
+
+      await User.deleteOne({ _id: user._id });
+
+      return res.status(500).json({
+        msg: "Failed to send OTP email. Please try again.",
+      });
+    }
+
     // Return error if email fails
     if (!emailResult || !emailResult.success) {
       console.error("❌ Email failed:", emailResult?.error);
@@ -245,8 +256,12 @@ exports.resendOtp = async (req, res) => {
       `
     );
 
-    if (!result.success) {
-      return res.status(500).json({ msg: "Failed to send OTP" });
+    // Safe email check
+    if (!result || !result.success) {
+      console.error("Email sending failed:", result);
+      return res
+        .status(500)
+        .json({ msg: "Failed to send OTP. Please try again." });
     }
 
     res.json({ msg: "New OTP sent to email ✅" });
@@ -286,8 +301,12 @@ exports.forgotPassword = async (req, res) => {
       `
     );
 
-    if (!result.success) {
-      return res.status(500).json({ msg: "Failed to send email" });
+    // Safe email check
+    if (!result || !result.success) {
+      console.error("Email sending failed:", result);
+      return res
+        .status(500)
+        .json({ msg: "Failed to send reset email. Please try again." });
     }
 
     res.json({ msg: "Reset OTP sent to email ✅" });

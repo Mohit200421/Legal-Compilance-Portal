@@ -1,5 +1,8 @@
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 
+// Debug Brevo key (temporary)
+console.log("BREVO KEY:", process.env.BREVO_API_KEY ? "SET" : "MISSING");
+
 // Setup Brevo client
 const client = SibApiV3Sdk.ApiClient.instance;
 const apiKey = client.authentications["api-key"];

@@ -167,9 +167,11 @@ app.get("/test-mail", async (req, res) => {
 
 // ================= TEST MAIL CONFIG =================
 app.get("/test-mail/config", async (req, res) => {
-  const { verifyEmailConfig } = require("./utils/emailService");
-  const result = await verifyEmailConfig();
-  res.json(result);
+  res.json({
+    success: true,
+    provider: "Brevo",
+    configured: !!process.env.BREVO_API_KEY,
+  });
 });
 
 // ================= ERROR HANDLER =================

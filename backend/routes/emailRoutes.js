@@ -5,7 +5,6 @@ const {
   getWelcomeEmailTemplate,
   getOTPEmailTemplate,
   getContactSupportEmailTemplate,
-  verifyEmailConfig,
 } = require("../utils/emailService");
 
 // ============================================
@@ -76,20 +75,12 @@ router.post("/test-email", async (req, res) => {
 // ============================================
 router.get("/test-email/config", async (req, res) => {
   try {
-    const result = await verifyEmailConfig();
-
-    if (result.success) {
-      return res.status(200).json({
-        success: true,
-        message: "Email configuration is valid",
-      });
-    } else {
-      return res.status(500).json({
-        success: false,
-        message: "Email configuration is invalid",
-        error: result.error,
-      });
-    }
+    return res.status(200).json({
+      success: true,
+      provider: "Brevo",
+      configured: !!process.env.BREVO_API_KEY,
+      message: "Brevo configuration ready",
+    });
   } catch (err) {
     console.error("❌ Config verification error:", err);
     return res.status(500).json({

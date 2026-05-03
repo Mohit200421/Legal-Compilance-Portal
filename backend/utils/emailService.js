@@ -36,7 +36,7 @@ exports.sendEmail = async (to, subject, html, text = null) => {
       console.log("✅ Gmail transporter verified");
 
       const info = await transporter.sendMail({
-        from: `"Legal Portal" <${process.env.EMAIL_USER}>`,
+        from: `"LawSetu" <${process.env.EMAIL_USER}>`,
         to: to,
         subject: subject,
         html: html,

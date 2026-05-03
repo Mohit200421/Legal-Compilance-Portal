@@ -1,5 +1,8 @@
 const SibApiV3Sdk = require("sib-api-v3-sdk");
 
+console.log("Brevo init - Key present:", !!process.env.BREVO_API_KEY);
+console.log("Brevo init - EMAIL_USER:", !!process.env.EMAIL_USER);
+
 const client = SibApiV3Sdk.ApiClient.instance;
 const apiKey = client.authentications["api-key"];
 apiKey.apiKey = process.env.BREVO_API_KEY;
@@ -8,6 +11,11 @@ const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 exports.sendEmail = async (to, subject, html) => {
   try {
+    console.log("Sending to Brevo:", {
+      to,
+      subject: subject.substring(0, 50) + "...",
+    });
+
     const response = await emailApi.sendTransacEmail({
       sender: {
         email: process.env.EMAIL_USER,
@@ -25,7 +33,12 @@ exports.sendEmail = async (to, subject, html) => {
       messageId: response.messageId,
     };
   } catch (error) {
-    console.error("Brevo email error:", error?.response?.body || error);
+    console.error("Brevo email error FULL:", {
+      status: error.status,
+      response: error.response?.body,
+      message: error.message,
+      stack: error.stack,
+    });
 
     return {
       success: false,

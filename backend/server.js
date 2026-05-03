@@ -47,13 +47,23 @@ const isProd = process.env.NODE_ENV === "production";
 // ================= CORS (FIXED FOR BOTH LOCAL + PROD) =================
 // Frontend uses "legal-compilance" (typo - missing 'l'), match it for production
 const allowedOrigins = isProd
-  ? "https://legal-compilance-portal.vercel.app"
+  ? ["https://legal-compilance-portal.vercel.app"]
   : ["http://localhost:5173", "http://localhost:3000"];
 
 // Configure CORS with all required headers and methods
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      console.log("CORS origin:", origin);
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin?.includes("legal-compilance-portal")
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS blocked"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
@@ -64,7 +74,17 @@ app.use(
 app.options(
   "*",
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      console.log("CORS origin:", origin);
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin?.includes("legal-compilance-portal")
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS blocked"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
@@ -74,7 +94,7 @@ app.options(
 // ================= SOCKET.IO =================
 // Frontend uses "legal-compilance" (typo - missing 'l'), match it for production
 const socketAllowedOrigins = isProd
-  ? "https://legal-compilance-portal.vercel.app"
+  ? ["https://legal-compilance-portal.vercel.app"]
   : ["http://localhost:5173", "http://localhost:3000"];
 
 const io = new Server(server, {
@@ -121,85 +141,35 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Server is running" });
 });
 
-// ================= EMAIL =================
-// Safely initialize Resend (only if API key exists)
-let resend = null;
-if (process.env.RESEND_API_KEY) {
-  try {
-    // Dynamic import for ES module
-    const Resend = require("resend").Resend;
-    resend = new Resend(process.env.RESEND_API_KEY);
-    console.log("✅ Resend email service initialized");
-  } catch (err) {
-    console.error("❌ Failed to initialize Resend:", err.message);
-  }
-} else {
-  console.log("⚠️ RESEND_API_KEY not found - using Nodemailer fallback");
-}
-
 // ================= TEST MAIL =================
 app.get("/test-mail", async (req, res) => {
   try {
-    // Try Resend first if available
-    if (resend && process.env.RESEND_API_KEY) {
-      const response = await resend.emails.send({
-        from: "legal@lawsetu.com",
-        to: process.env.EMAIL_USER,
-        subject: "Test Email - Resend",
-        html: "<h2>Email working via Resend 🚀</h2>",
-      });
-      console.log("EMAIL SENT via Resend:", response);
-      return res.send("Email sent via Resend ✅");
-    }
-
-    // Fallback to Nodemailer
     const { sendEmail } = require("./utils/emailService");
+
     const result = await sendEmail(
       process.env.EMAIL_USER,
-      "Test Email - Nodemailer",
-      "<h2>Email working via Nodemailer ✅</h2>"
+      "Test Email",
+      "<h2>Email working ✅</h2>"
     );
 
     if (result.success) {
-      console.log("EMAIL SENT via Nodemailer:", result.messageId);
-      return res.send("Email sent via Nodemailer ✅");
+      console.log("EMAIL SENT:", result.messageId);
+      return res.send("Email sent successfully ✅");
     } else {
       console.log("EMAIL ERROR:", result.error);
-      return res.status(500).send("Failed: " + result.error);
+      return res.status(500).send(result.error);
     }
   } catch (err) {
     console.log("EMAIL ERROR:", err);
-    res.status(500).send("Failed ❌: " + err.message);
+    res.status(500).send(err.message);
   }
 });
 
 // ================= TEST MAIL CONFIG =================
 app.get("/test-mail/config", async (req, res) => {
-  try {
-    // Check Resend
-    if (process.env.RESEND_API_KEY) {
-      return res.json({
-        success: true,
-        provider: "Resend",
-        configured: true,
-        apiKeyPresent: true,
-      });
-    }
-
-    // Check Nodemailer
-    const { verifyEmailConfig } = require("./utils/emailService");
-    const result = await verifyEmailConfig();
-
-    return res.json({
-      success: result.success,
-      provider: "Nodemailer (Gmail SMTP)",
-      configured: result.success,
-      error: result.error || null,
-    });
-  } catch (err) {
-    console.log("CONFIG ERROR:", err);
-    res.status(500).json({ success: false, error: err.message });
-  }
+  const { verifyEmailConfig } = require("./utils/emailService");
+  const result = await verifyEmailConfig();
+  res.json(result);
 });
 
 // ================= ERROR HANDLER =================

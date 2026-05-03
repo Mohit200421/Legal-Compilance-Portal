@@ -20,10 +20,11 @@ const generateToken = (user) => {
 
 // Helper: set cookie (LOCALHOST FIX)
 const setTokenCookie = (res, token) => {
+  const isProd = process.env.NODE_ENV === "production";
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false,
-    sameSite: "Lax",
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -35,6 +36,10 @@ exports.register = async (req, res) => {
 
     if (!name || !username || !email || !password || !role) {
       return res.status(400).json({ msg: "All fields required" });
+    }
+
+    if (!email.includes("@")) {
+      return res.status(400).json({ msg: "Invalid email" });
     }
 
     const existingEmail = await User.findOne({ email });
@@ -54,7 +59,7 @@ exports.register = async (req, res) => {
 
     const lawyerApprovalStatus = role === "lawyer" ? "pending" : "none";
 
-    await User.create({
+    const user = await User.create({
       name,
       username,
       email,
@@ -83,6 +88,8 @@ exports.register = async (req, res) => {
     if (!emailResult || !emailResult.success) {
       console.error("❌ Email failed:", emailResult?.error);
 
+      await User.deleteOne({ _id: user._id });
+
       return res.status(500).json({
         msg: "Registration failed: Unable to send OTP email",
       });
@@ -96,6 +103,7 @@ exports.register = async (req, res) => {
 
     res.json({ msg: "Registered successfully! OTP sent to email." });
   } catch (err) {
+    console.error("REGISTER ERROR:", err);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -180,7 +188,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
+    console.error("ERROR:", err);
     res.status(500).json({ msg: "Server Error" });
   }
 };
@@ -188,14 +196,17 @@ exports.login = async (req, res) => {
 // ================= LOGOUT (CLEAR COOKIE) ===================
 exports.logout = async (req, res) => {
   try {
+    const isProd = process.env.NODE_ENV === "production";
+
     res.clearCookie("token", {
       httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
+      secure: isProd,
+      sameSite: isProd ? "None" : "Lax",
     });
 
     res.json({ msg: "Logged out successfully ✅" });
   } catch (err) {
+    console.error("LOGOUT ERROR:", err);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -222,7 +233,7 @@ exports.resendOtp = async (req, res) => {
     user.otpExpiresAt = otpExpiresAt;
     await user.save();
 
-    await sendEmail(
+    const result = await sendEmail(
       email,
       "Resend OTP - Legal Compliance Portal",
       `
@@ -234,8 +245,13 @@ exports.resendOtp = async (req, res) => {
       `
     );
 
+    if (!result.success) {
+      return res.status(500).json({ msg: "Failed to send OTP" });
+    }
+
     res.json({ msg: "New OTP sent to email ✅" });
   } catch (err) {
+    console.error("ERROR:", err);
     res.status(500).json({ msg: err.message });
   }
 };
@@ -258,7 +274,7 @@ exports.forgotPassword = async (req, res) => {
     user.resetOtpExpiresAt = resetOtpExpiresAt;
     await user.save();
 
-    await sendEmail(
+    const result = await sendEmail(
       email,
       "Reset Password OTP - Legal Compliance Portal",
       `
@@ -270,8 +286,13 @@ exports.forgotPassword = async (req, res) => {
       `
     );
 
+    if (!result.success) {
+      return res.status(500).json({ msg: "Failed to send email" });
+    }
+
     res.json({ msg: "Reset OTP sent to email ✅" });
   } catch (err) {
+    console.error("ERROR:", err);
     res.status(500).json({ msg: err.message });
   }
 };

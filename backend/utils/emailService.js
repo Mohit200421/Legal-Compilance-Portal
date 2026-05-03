@@ -1,19 +1,17 @@
 const nodemailer = require("nodemailer");
 
+// Debug env vars (temporary)
+console.log("EMAIL USER:", process.env.EMAIL_USER ? "SET" : "undefined");
+console.log("EMAIL PASS:", process.env.EMAIL_PASS ? "SET" : "undefined");
+console.log("RESEND API:", process.env.RESEND_API_KEY ? "SET" : "undefined");
+
 // ============================================
 // Email Provider Detection
 // ============================================
 const getEmailProvider = () => {
-  // Priority 1: Resend (if API key exists)
-  if (process.env.RESEND_API_KEY) {
-    return "resend";
-  }
-
-  // Priority 2: Nodemailer with Gmail (if credentials exist)
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     return "nodemailer";
   }
-
   return "none";
 };
 
@@ -24,52 +22,18 @@ exports.sendEmail = async (to, subject, html, text = null) => {
   const provider = getEmailProvider();
 
   try {
-    // ========== Option 1: RESEND ==========
-    if (provider === "resend") {
-      const { Resend } = require("resend");
-      const resend = new Resend(process.env.RESEND_API_KEY);
-
-      // Use verified email or default from env
-      const fromEmail =
-        process.env.EMAIL_FROM ||
-        process.env.EMAIL_USER ||
-        "onboarding@resend.dev";
-      const fromName = process.env.EMAIL_FROM_NAME || "Legal Portal";
-
-      const response = await resend.emails.send({
-        from: `${fromName} <${fromEmail}>`,
-        to: to,
-        subject: subject,
-        html: html,
-      });
-
-      console.log("✅ Email sent via Resend:", {
-        to: to,
-        subject: subject,
-        id: response.data?.id,
-      });
-
-      return {
-        success: true,
-        messageId: response.data?.id,
-        provider: "resend",
-      };
-    }
-
     // ========== Option 2: NODEMAILER (Gmail) ==========
     if (provider === "nodemailer") {
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || "smtp.gmail.com",
-        port: process.env.SMTP_PORT || 587,
-        secure: false,
+        service: "gmail",
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,
         },
-        tls: {
-          rejectUnauthorized: false,
-        },
       });
+
+      await transporter.verify();
+      console.log("✅ Gmail transporter verified");
 
       const info = await transporter.sendMail({
         from: `"Legal Portal" <${process.env.EMAIL_USER}>`,
@@ -123,9 +87,7 @@ exports.verifyEmailConfig = async () => {
 
     if (provider === "nodemailer") {
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || "smtp.gmail.com",
-        port: process.env.SMTP_PORT || 587,
-        secure: false,
+        service: "gmail",
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,

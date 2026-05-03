@@ -1,26 +1,11 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL:
-    (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-      /\/$/,
-      ""
-    ) + "/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   withCredentials: true,
 });
 
-// Request interceptor
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return req;
-});
-
-// Response interceptor
+// Response interceptor - Clean localStorage on 401 (future-proof)
 API.interceptors.response.use(
   (response) => response,
   (error) => {

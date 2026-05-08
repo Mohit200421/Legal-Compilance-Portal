@@ -199,26 +199,32 @@ const Home = () => {
 
   const testimonials = [
     {
-      name: "Mark Stevens",
-      role: "CEO, Stevens Logistics",
-      content: "Finding a reliable corporate lawyer was difficult until I used LawSetu. The interface is intuitive, and the expert I connected with was incredibly professional.",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
-    },
-    {
-      name: "Elena Rodriguez",
-      role: "Homeowner",
-      content: "The document review service is exceptional. I had a complex real estate contract checked and explained to me within 24 hours. Highly recommend!",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
-    },
-    {
-      name: "David Chen",
-      role: "Freelance Designer",
-      content: "I was worried about legal costs, but LawSetu offered a fixed-fee consultation that was very affordable. The lawyer was extremely helpful and cleared all my doubts.",
-      rating: 4,
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
-    },
+  name: "Rahul Sharma",
+  role: "Founder, Sharma Logistics Pvt. Ltd.",
+  content:
+    "Finding a trustworthy corporate lawyer in India was difficult until I discovered LawSetu. The platform is easy to use, and the legal expert guided us professionally throughout the process.",
+  rating: 5,
+  avatar:
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+},
+{
+  name: "Priya Deshmukh",
+  role: "Homeowner, Pune",
+  content:
+    "The document verification service was extremely helpful. My property agreement was reviewed quickly, and every clause was explained clearly in simple language.",
+  rating: 5,
+  avatar:
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+},
+{
+  name: "Amit Verma",
+  role: "Freelance Graphic Designer",
+  content:
+    "I was concerned about high legal consultation fees, but LawSetu provided an affordable fixed-price consultation. The lawyer patiently answered all my questions.",
+  rating: 4,
+  avatar:
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+},
   ];
 
   const steps = [

@@ -179,6 +179,15 @@ function App() {
           />
 
           <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+
+          <Route
             path="/about"
             element={
               <PublicRoute>

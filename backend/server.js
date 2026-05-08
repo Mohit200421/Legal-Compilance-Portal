@@ -144,20 +144,42 @@ app.get("/api/health", (req, res) => {
 // ================= TEST MAIL =================
 app.get("/test-mail", async (req, res) => {
   try {
-    const { sendEmail } = require("./utils/emailService");
+    const { sendEmail, getEmailConfigStatus } = require("./utils/emailService");
+    const config = getEmailConfigStatus();
+    const recipient =
+      req.query.to || process.env.EMAIL_FROM || process.env.EMAIL_USER;
+
+    if (!recipient) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "No test recipient configured. Set EMAIL_FROM or EMAIL_USER, or call /test-mail?to=email@example.com",
+        config,
+      });
+    }
 
     const result = await sendEmail(
-      process.env.EMAIL_USER,
+      recipient,
       "Test Email",
       "<h2>Email working ✅</h2>"
     );
 
     if (result.success) {
       console.log("EMAIL SENT:", result.messageId);
-      return res.send("Email sent successfully ✅");
+      return res.json({
+        success: true,
+        message: "Email sent successfully",
+        provider: result.provider,
+        messageId: result.messageId,
+      });
     } else {
       console.log("EMAIL ERROR:", result.error);
-      return res.status(500).send(result.error);
+      return res.status(500).json({
+        success: false,
+        message: "Email failed",
+        provider: result.provider,
+        error: result.error,
+      });
     }
   } catch (err) {
     console.log("EMAIL ERROR:", err);
@@ -167,10 +189,12 @@ app.get("/test-mail", async (req, res) => {
 
 // ================= TEST MAIL CONFIG =================
 app.get("/test-mail/config", async (req, res) => {
+  const { getEmailConfigStatus } = require("./utils/emailService");
+  const config = getEmailConfigStatus();
+
   res.json({
     success: true,
-    provider: "Brevo",
-    configured: !!process.env.BREVO_API_KEY,
+    ...config,
   });
 });
 

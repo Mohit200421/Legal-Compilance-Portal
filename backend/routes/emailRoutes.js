@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
   sendEmail,
+  getEmailConfigStatus,
   getWelcomeEmailTemplate,
   getOTPEmailTemplate,
   getContactSupportEmailTemplate,
@@ -75,11 +76,14 @@ router.post("/test-email", async (req, res) => {
 // ============================================
 router.get("/test-email/config", async (req, res) => {
   try {
+    const config = getEmailConfigStatus();
+
     return res.status(200).json({
       success: true,
-      provider: "Brevo",
-      configured: !!process.env.BREVO_API_KEY,
-      message: "Brevo configuration ready",
+      ...config,
+      message: config.configured
+        ? `${config.provider} configuration ready`
+        : "Email provider is not fully configured",
     });
   } catch (err) {
     console.error("❌ Config verification error:", err);

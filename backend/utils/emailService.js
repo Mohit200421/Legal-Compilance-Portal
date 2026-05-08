@@ -1,53 +1,86 @@
-const SibApiV3Sdk = require("sib-api-v3-sdk");
+const nodemailer = require("nodemailer");
 
-console.log("Brevo init - Key present:", !!process.env.BREVO_API_KEY);
-console.log("Brevo init - EMAIL_USER:", !!process.env.EMAIL_USER);
+const DEFAULT_FROM_NAME = "Legal Compliance Portal";
 
-const client = SibApiV3Sdk.ApiClient.instance;
-const apiKey = client.authentications["api-key"];
-apiKey.apiKey = process.env.BREVO_API_KEY;
+const getSender = () => ({
+  name: process.env.EMAIL_FROM_NAME || DEFAULT_FROM_NAME,
+  email: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+});
 
-const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
+const getEmailConfigStatus = () => {
+  const sender = getSender();
+
+  const hasHost = !!process.env.EMAIL_HOST;
+  const hasPort = !!process.env.EMAIL_PORT;
+  const hasUser = !!process.env.EMAIL_USER;
+  const hasPass = !!process.env.EMAIL_PASS;
+
+  const missing = [];
+  if (!hasHost) missing.push("EMAIL_HOST");
+  if (!hasPort) missing.push("EMAIL_PORT");
+  if (!hasUser) missing.push("EMAIL_USER");
+  if (!hasPass) missing.push("EMAIL_PASS");
+
+  return {
+    configured: hasHost && hasPort && hasUser && hasPass && !!sender.email,
+    provider: "nodemailer",
+    missing,
+    senderConfigured: !!sender.email,
+  };
+};
+
+exports.getEmailConfigStatus = getEmailConfigStatus;
 
 exports.sendEmail = async (to, subject, html) => {
+  const config = getEmailConfigStatus();
+  const sender = getSender();
+
   try {
-    console.log("Sending to Brevo:", {
-      to,
-      subject: subject.substring(0, 50) + "...",
-    });
+    if (!config.configured) {
+      throw new Error(
+        `Email provider not configured: ${config.missing.join(", ")}`,
+      );
+    }
 
-    const response = await emailApi.sendTransacEmail({
-      sender: {
-        email: process.env.EMAIL_USER,
-        name: "Legal Compliance Portal",
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: Number(process.env.EMAIL_PORT) === 465,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
-      to: [{ email: to }],
-      subject: subject,
-      htmlContent: html,
     });
 
-    console.log("Email sent via Brevo:", response.messageId);
+    const info = await transporter.sendMail({
+      from: `${sender.name} <${sender.email}>`,
+      to,
+      subject,
+      html,
+    });
 
     return {
       success: true,
-      messageId: response.messageId,
+      provider: process.env.EMAIL_HOST.includes("brevo")
+  ? "brevo"
+  : "gmail",
+      messageId: info.messageId,
     };
   } catch (error) {
-    console.error("Brevo email error FULL:", {
-      status: error.status,
-      response: error.response?.body,
-      message: error.message,
-      stack: error.stack,
+    console.error("Email send error:", {
+      provider: "nodemailer",
+      to,
+      details: error.message,
     });
 
     return {
       success: false,
-      error: error?.response?.body || error.message,
+      provider: "nodemailer",
+      error: error.message,
     };
   }
 };
 
-// Email Templates (keep existing)
 exports.getWelcomeEmailTemplate = (name) => {
   return `
     <!DOCTYPE html>
@@ -81,8 +114,8 @@ exports.getOTPEmailTemplate = (otp, purpose = "verification") => {
     purpose === "verification"
       ? "verify your email"
       : purpose === "reset"
-      ? "reset your password"
-      : "verify your identity";
+        ? "reset your password"
+        : "verify your identity";
 
   return `
     <!DOCTYPE html>

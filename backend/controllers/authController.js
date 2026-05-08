@@ -5,6 +5,7 @@ const {
   sendEmail,
   getOTPEmailTemplate,
   getWelcomeEmailTemplate,
+  getEmailConfigStatus,
 } = require("../utils/emailService");
 
 // Helper: Generate 6 digit OTP
@@ -51,6 +52,7 @@ exports.register = async (req, res) => {
       return res.status(400).json({ msg: "Username already exists" });
 
     const salt = await bcrypt.genSalt(10);
+
     const passwordHash = await bcrypt.hash(password, salt);
 
     const otp = generateOTP();
@@ -67,6 +69,7 @@ exports.register = async (req, res) => {
       role,
       lawyerApprovalStatus,
       isEmailVerified: false,
+
       otpCodeHash,
       otpExpiresAt,
     });
@@ -79,7 +82,7 @@ exports.register = async (req, res) => {
     const emailResult = await sendEmail(
       email,
       "Verify your email (OTP)",
-      otpHtml
+      otpHtml,
     );
 
     console.log("📧 Email result:", emailResult);
@@ -87,21 +90,12 @@ exports.register = async (req, res) => {
     // Safe email check
     if (!emailResult || !emailResult.success) {
       console.error("Email failed:", emailResult);
-      await User.deleteOne({ _id: user._id });
-      return res.status(500).json({
-        msg: "Failed to send OTP email",
+
+      // Don't fail registration if email sending is misconfigured.
+      // User is created with OTP hash; they can retry OTP via /resend-otp.
+      return res.status(200).json({
+        msg: "Registered successfully ✅",
         debug: emailResult?.error || "Unknown error",
-      });
-    }
-
-    // Return error if email fails
-    if (!emailResult || !emailResult.success) {
-      console.error("❌ Email failed:", emailResult?.error);
-
-      await User.deleteOne({ _id: user._id });
-
-      return res.status(500).json({
-        msg: "Registration failed: Unable to send OTP email",
       });
     }
 
@@ -111,7 +105,10 @@ exports.register = async (req, res) => {
       });
     }
 
-    res.json({ msg: "Registered successfully! OTP sent to email." });
+    // Tell frontend to redirect to OTP verification
+    return res
+      .status(200)
+      .json({ msg: "Registered successfully! OTP sent to email.", email });
   } catch (err) {
     console.error("REGISTER ERROR:", err);
     res.status(500).json({ msg: err.message });
@@ -167,10 +164,11 @@ exports.login = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "Invalid credentials" });
-
     if (!user.isEmailVerified) {
-      return res.status(403).json({ msg: "Please verify your email first" });
-    }
+  return res.status(403).json({
+    msg: "Please verify your email first",
+  });
+}
 
     if (user.role === "lawyer" && user.lawyerApprovalStatus !== "approved") {
       return res.status(403).json({
@@ -252,7 +250,7 @@ exports.resendOtp = async (req, res) => {
           <p><b style="font-size:22px">${otp}</b></p>
           <p>Valid for 10 minutes.</p>
         </div>
-      `
+      `,
     );
 
     // Safe email check
@@ -297,7 +295,7 @@ exports.forgotPassword = async (req, res) => {
           <p>Your OTP is: <b style="font-size:22px">${otp}</b></p>
           <p>This OTP will expire in 10 minutes.</p>
         </div>
-      `
+      `,
     );
 
     // Safe email check

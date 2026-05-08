@@ -1,41 +1,78 @@
-# Email Setup COMPLETE ✅ (Final Update)
+# TODO - Authentication + Lawyer Application System
 
-## All Steps Done
+## Step 0: Repo understanding (done)
 
-### 1. [x] Reset Configuration
+- Reviewed existing auth + lawyer apply flow (older simplified apply-lawyer).
+- Identified gaps vs requested spec (LawyerApplication collection, OTP activation, forced password reset, admin endpoints).
 
-- ✅ RESEND_API_KEY + EMAIL_FROM in .env
-- ✅ server.js patched (domain fix)
+## Step 1: Create new Mongoose model
 
-### 2. [x] Verify Dependencies ✓
+- [x] Add `backend/models/LawyerApplication.js` with required fields + enums.
 
-### 3. [x] Server & Tests
+## Step 2: Update User model
 
-```
-✅ Email sent via Resend: {to: 'mohitbadgujar16@gmail.com', subject: 'Verify...', provider: 'resend'}
-```
+- [ ] Add fields needed for activation + forced password reset on first login.
 
-### 4. [x] End-to-End (OTP registration confirmed)
+## Step 3: Fix normal user registration OTP flow
 
-### 5. [ ] Deploy
+- [ ] Update `POST /api/auth/register` to remove role field requirement and default role="user".
+- [ ] Ensure registration sets OTP + `isActivated=false` (or equivalent).
+- [ ] Ensure `verifyOtp` sets activation flag.
+- [ ] Ensure login blocks until activated.
 
-- Copy env vars to Render/Vercel
-- Test prod: /test-mail/config
+## Step 4: Implement new lawyer application endpoints
 
-## Final Status
+- [ ] Create controller for `POST /api/lawyer/apply`:
+  - [ ] Parse text fields + uploads (profilePhoto + documents)
+  - [ ] Store in LawyerApplication collection with status="pending".
+- [ ] Create routes for `/api/lawyer/apply`.
 
-**Full email setup rebuilt from zero & LIVE** 🚀
+## Step 5: Implement admin lawyer application management endpoints
 
-- **Resend working** (OTP, welcome, reset emails)
-- **Test endpoints**: /test-mail, /test-mail/config, /api/test-email
-- **Production ready**: Sync env vars to deployment
+- [ ] Create controller functions:
+  - [ ] GET all applications
+  - [ ] GET application by id
+  - [ ] PATCH approve (create User lawyer account, secure random password, hash, role="lawyer", isVerified=true/activated)
+  - [ ] PATCH reject (set rejectionReason, send rejection email)
+- [ ] Create routes under `/api/admin/lawyer-applications`.
 
-**Usage**:
+## Step 6: Update server routing
 
-```
-Frontend register → OTP to inbox → Verify → Login
-```
+- [ ] Mount new routers in `backend/server.js`.
 
-**Logs confirm**: Emails sending successfully via Resend.
+## Step 7: Email templates + notifications
 
-**Delete this TODO.md when deploying.**
+- [x] Refactor email system to Nodemailer-only (remove Resend).
+- [ ] Add email sending logic for:
+  - [ ] Lawyer application received
+  - [ ] Lawyer approved (temporary password + login URL)
+  - [ ] Lawyer rejected (reason + reapply instructions)
+
+## Step 8: Upload system (Multer + Cloudinary)
+
+- [ ] Add Multer+Cloudinary handling for profilePhoto and documents.
+- [ ] Validate file types/sizes.
+
+## Step 9: Frontend lawyer application UI
+
+- [ ] Update `frontend/src/pages/auth/ApplyLawyer.jsx` to match multi-step form + uploads + validations + preview.
+
+## Step 10: Frontend admin pages
+
+- [ ] Create:
+  - [ ] `frontend/src/pages/admin/LawyerApplicationsPage.tsx`
+  - [ ] `frontend/src/pages/admin/LawyerApplicationDetailsPage.tsx`
+- [ ] Wire into `frontend/src/App.jsx` admin routes.
+
+## Step 11: Frontend auth/OTP correctness
+
+- [ ] Ensure OTP verification page works with updated backend activation flag.
+- [ ] Ensure lawyer/admin routing respects role checks and forced password reset.
+
+## Step 12: Testing
+
+- [ ] Run backend server and verify end-to-end flows:
+  - [ ] User registration → OTP verify → activated → login works
+  - [ ] Lawyer application submission → stored as pending
+  - [ ] Admin approve → user created + email sent + lawyer first-login forces password reset
+  - [ ] Admin reject → email sent + status updated

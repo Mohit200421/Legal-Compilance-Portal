@@ -169,21 +169,11 @@ function App() {
               </PublicRoute>
             }
           />
-
           <Route
             path="/verify-otp"
             element={
               <PublicRoute>
                 <VerifyOtp />
-              </PublicRoute>
-            }
-          />
-
-          <Route
-            path="/forgot-password"
-            element={
-              <PublicRoute>
-                <ForgotPassword />
               </PublicRoute>
             }
           />

@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import API from "../../api/axios";
-import { 
-  Scale, 
-  Mail, 
-  Lock, 
-  Shield, 
-  Clock, 
+import {
+  Scale,
+  Mail,
+  Lock,
+  Shield,
+  Clock,
   ArrowLeft,
   KeyRound,
   CheckCircle2,
   AlertCircle,
   Sparkles,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 
 // Import the app logo
@@ -76,7 +76,7 @@ export default function VerifyOtp() {
 
   const handleOtpChange = (index, value) => {
     if (value.length > 1) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -104,11 +104,11 @@ export default function VerifyOtp() {
     setMsg({ type: "", text: "" });
 
     const otpString = otp.join("");
-    
+
     if (!email || otpString.length !== 6) {
-      return setMsg({ 
-        type: "error", 
-        text: "Email and valid 6-digit OTP are required" 
+      return setMsg({
+        type: "error",
+        text: "Email and valid 6-digit OTP are required",
       });
     }
 
@@ -116,18 +116,18 @@ export default function VerifyOtp() {
       setLoading(true);
       const res = await API.post("/auth/verify-otp", { email, otp: otpString });
 
-      setMsg({ 
-        type: "success", 
-        text: res.data?.msg || "Email verified successfully!" 
+      setMsg({
+        type: "success",
+        text: res.data?.msg || "Email verified successfully!",
       });
 
       setTimeout(() => {
         navigate("/login");
       }, 1500);
     } catch (err) {
-      setMsg({ 
-        type: "error", 
-        text: err.response?.data?.msg || "OTP verification failed" 
+      setMsg({
+        type: "error",
+        text: err.response?.data?.msg || "OTP verification failed",
       });
     } finally {
       setLoading(false);
@@ -138,26 +138,26 @@ export default function VerifyOtp() {
     setMsg({ type: "", text: "" });
 
     if (!email) {
-      return setMsg({ 
-        type: "error", 
-        text: "Please enter your email first" 
+      return setMsg({
+        type: "error",
+        text: "Please enter your email first",
       });
     }
 
     try {
       setResending(true);
       const res = await API.post("/auth/resend-otp", { email });
-      setMsg({ 
-        type: "success", 
-        text: res.data?.msg || "New OTP sent successfully!" 
+      setMsg({
+        type: "success",
+        text: res.data?.msg || "New OTP sent successfully!",
       });
       setTimer(60);
       setCanResend(false);
       setOtp(["", "", "", "", "", ""]);
     } catch (err) {
-      setMsg({ 
-        type: "error", 
-        text: err.response?.data?.msg || "Failed to resend OTP" 
+      setMsg({
+        type: "error",
+        text: err.response?.data?.msg || "Failed to resend OTP",
       });
     } finally {
       setResending(false);
@@ -165,9 +165,11 @@ export default function VerifyOtp() {
   };
 
   // Glassmorphism card style
-  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
-  
-  const inputClass = "w-full pl-10 pr-4 py-3 rounded-xl text-base transition-all duration-200 focus:outline-none";
+  const glassCardClass =
+    "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+
+  const inputClass =
+    "w-full pl-10 pr-4 py-3 rounded-xl text-base transition-all duration-200 focus:outline-none";
 
   const handleInputFocus = (e) => {
     e.currentTarget.style.borderColor = colors.secondary;
@@ -176,29 +178,36 @@ export default function VerifyOtp() {
 
   const handleInputBlur = (e, fieldName) => {
     const hasError = fieldName === "email" && touched[fieldName] && !email;
-    e.currentTarget.style.borderColor = hasError ? colors.error : colors.outlineVariant;
+    e.currentTarget.style.borderColor = hasError
+      ? colors.error
+      : colors.outlineVariant;
     e.currentTarget.style.boxShadow = "none";
   };
 
   // Combined handler for email blur
   const handleEmailBlur = (e) => {
     const hasError = touched.email && !email;
-    e.currentTarget.style.borderColor = hasError ? colors.error : colors.outlineVariant;
+    e.currentTarget.style.borderColor = hasError
+      ? colors.error
+      : colors.outlineVariant;
     e.currentTarget.style.boxShadow = "none";
     handleBlur("email");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: colors.surface }}>
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor: colors.surface }}
+    >
       {/* Background decorative elements */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `radial-gradient(circle at 20% 30%, ${colors.secondary}05, transparent 60%),
-                      radial-gradient(circle at 80% 70%, ${colors.secondary}03, transparent 50%)`
+                      radial-gradient(circle at 80% 70%, ${colors.secondary}03, transparent 50%)`,
         }}
       />
-      
+
       {/* Back Button - Glassmorphism */}
       <div className="hidden md:block fixed top-6 left-6 md:top-8 md:left-8 z-10">
         <button
@@ -206,7 +215,8 @@ export default function VerifyOtp() {
           className="flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300 group"
           style={{ color: colors.onSurfaceVariant }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+            e.currentTarget.style.backgroundColor =
+              colors.surfaceContainerHighest;
             e.currentTarget.style.color = colors.onSurface;
           }}
           onMouseLeave={(e) => {
@@ -225,21 +235,27 @@ export default function VerifyOtp() {
         <div className="text-center mb-8">
           <div className="flex flex-col items-center justify-center space-y-3 mb-4">
             <div className={`p-3 rounded-2xl ${glassCardClass}`}>
-              <img 
-                src={appLogo} 
-                alt="LawSetu Logo" 
+              <img
+                src={appLogo}
+                alt="LegalSetu Logo"
                 className="h-6 w-auto object-contain"
               />
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold" style={{ color: colors.onSurface }}>
-                Law<span style={{ color: colors.secondary }}>Setu</span>
+              <span
+                className="text-xl font-bold"
+                style={{ color: colors.onSurface }}
+              >
+                Legal<span style={{ color: colors.secondary }}>Setu</span>
               </span>
-              <Sparkles className="h-4 w-4" style={{ color: colors.secondary }} />
+              <Sparkles
+                className="h-4 w-4"
+                style={{ color: colors.secondary }}
+              />
             </div>
           </div>
-          
-          <h2 
+
+          <h2
             className="text-2xl font-bold mb-2 leading-[1.3] tracking-[-0.01em]"
             style={{ color: colors.onSurface }}
           >
@@ -248,29 +264,44 @@ export default function VerifyOtp() {
           <p className="text-sm" style={{ color: colors.onSurfaceVariant }}>
             We've sent a 6-digit verification code to
           </p>
-          <p className="text-base font-medium mt-1" style={{ color: colors.secondary }}>
+          <p
+            className="text-base font-medium mt-1"
+            style={{ color: colors.secondary }}
+          >
             {email || "your email"}
           </p>
         </div>
 
         {/* Message Alert */}
         {msg.text && (
-          <div 
+          <div
             className="rounded-xl p-4 mb-6"
-            style={{ 
-              backgroundColor: msg.type === "success" ? "#e8f5e9" : colors.errorContainer,
-              border: `1px solid ${msg.type === "success" ? "#4caf50" : colors.error}20`
+            style={{
+              backgroundColor:
+                msg.type === "success" ? "#e8f5e9" : colors.errorContainer,
+              border: `1px solid ${msg.type === "success" ? "#4caf50" : colors.error}20`,
             }}
           >
             <div className="flex items-center">
               {msg.type === "success" ? (
-                <CheckCircle2 className="h-5 w-5 mr-2 flex-shrink-0" style={{ color: "#4caf50" }} />
+                <CheckCircle2
+                  className="h-5 w-5 mr-2 flex-shrink-0"
+                  style={{ color: "#4caf50" }}
+                />
               ) : (
-                <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" style={{ color: colors.onErrorContainer }} />
+                <AlertCircle
+                  className="h-5 w-5 mr-2 flex-shrink-0"
+                  style={{ color: colors.onErrorContainer }}
+                />
               )}
-              <p 
+              <p
                 className="text-sm"
-                style={{ color: msg.type === "success" ? "#2e7d32" : colors.onErrorContainer }}
+                style={{
+                  color:
+                    msg.type === "success"
+                      ? "#2e7d32"
+                      : colors.onErrorContainer,
+                }}
               >
                 {msg.text}
               </p>
@@ -282,16 +313,16 @@ export default function VerifyOtp() {
         <form onSubmit={handleVerify} className="space-y-6">
           {/* Email Input */}
           <div>
-            <label 
+            <label
               className="block text-xs font-semibold uppercase tracking-wider mb-2"
               style={{ color: colors.onSurfaceVariant }}
             >
               Email Address
             </label>
             <div className="relative">
-              <Mail 
-                className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" 
-                style={{ color: colors.outline }} 
+              <Mail
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5"
+                style={{ color: colors.outline }}
               />
               <input
                 type="email"
@@ -314,20 +345,26 @@ export default function VerifyOtp() {
           {/* OTP Input */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label 
+              <label
                 className="block text-xs font-semibold uppercase tracking-wider"
                 style={{ color: colors.onSurfaceVariant }}
               >
                 Verification Code
               </label>
               {!canResend && timer > 0 && (
-                <div className="flex items-center text-xs" style={{ color: colors.onSurfaceVariant }}>
+                <div
+                  className="flex items-center text-xs"
+                  style={{ color: colors.onSurfaceVariant }}
+                >
                   <Clock className="h-3 w-3 mr-1" />
-                  <span>{String(Math.floor(timer / 60)).padStart(2, '0')}:{String(timer % 60).padStart(2, '0')}</span>
+                  <span>
+                    {String(Math.floor(timer / 60)).padStart(2, "0")}:
+                    {String(timer % 60).padStart(2, "0")}
+                  </span>
                 </div>
               )}
             </div>
-            
+
             <div className="flex gap-3 justify-center">
               {otp.map((digit, index) => (
                 <input
@@ -356,7 +393,10 @@ export default function VerifyOtp() {
                 />
               ))}
             </div>
-            <p className="text-xs text-center mt-3" style={{ color: colors.onSurfaceVariant }}>
+            <p
+              className="text-xs text-center mt-3"
+              style={{ color: colors.onSurfaceVariant }}
+            >
               Enter the 6-digit code sent to your email
             </p>
           </div>
@@ -366,14 +406,15 @@ export default function VerifyOtp() {
             type="submit"
             disabled={loading || otp.join("").length !== 6}
             className="w-full py-3 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 group mt-8"
-            style={{ 
+            style={{
               backgroundColor: colors.secondary,
               color: "white",
-              boxShadow: `0 4px 12px ${colors.secondary}40`
+              boxShadow: `0 4px 12px ${colors.secondary}40`,
             }}
             onMouseEnter={(e) => {
               if (!loading && otp.join("").length === 6) {
-                e.currentTarget.style.backgroundColor = colors.secondaryContainer;
+                e.currentTarget.style.backgroundColor =
+                  colors.secondaryContainer;
                 e.currentTarget.style.transform = "translateY(-1px)";
                 e.currentTarget.style.boxShadow = `0 6px 16px ${colors.secondary}50`;
               }
@@ -402,7 +443,10 @@ export default function VerifyOtp() {
 
         {/* Resend Section */}
         <div className="mt-6 text-center">
-          <p className="text-sm mb-2" style={{ color: colors.onSurfaceVariant }}>
+          <p
+            className="text-sm mb-2"
+            style={{ color: colors.onSurfaceVariant }}
+          >
             Didn't receive the code?
           </p>
           <button
@@ -423,7 +467,13 @@ export default function VerifyOtp() {
           >
             {resending ? (
               <span className="flex items-center justify-center space-x-1">
-                <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: colors.secondary, borderTopColor: "transparent" }} />
+                <div
+                  className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"
+                  style={{
+                    borderColor: colors.secondary,
+                    borderTopColor: "transparent",
+                  }}
+                />
                 <span>Sending...</span>
               </span>
             ) : (
@@ -440,8 +490,12 @@ export default function VerifyOtp() {
               to="/login"
               className="font-medium transition-colors"
               style={{ color: colors.secondary }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = colors.secondaryContainer)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = colors.secondary)
+              }
             >
               Sign in
             </Link>
@@ -449,13 +503,20 @@ export default function VerifyOtp() {
         </div>
 
         {/* Help Text */}
-        <p className="text-center text-xs mt-6" style={{ color: colors.onSurfaceVariant }}>
+        <p
+          className="text-center text-xs mt-6"
+          style={{ color: colors.onSurfaceVariant }}
+        >
           Having trouble?{" "}
-          <button 
+          <button
             className="font-medium transition-colors"
             style={{ color: colors.secondary }}
-            onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-            onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = colors.secondaryContainer)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = colors.secondary)
+            }
           >
             Contact support
           </button>

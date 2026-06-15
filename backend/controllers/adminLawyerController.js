@@ -42,7 +42,7 @@ exports.updateLawyerApprovalStatus = async (req, res) => {
         `Lawyer Account ${status.toUpperCase()} 🎉`,
         `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #2563eb;">LawSetu Lawyer Account</h2>
+            <h2 style="color: #2563eb;">LegalSetu Lawyer Account</h2>
             <p>Hello <b>${lawyer.name}</b>,</p>
             <p>Your lawyer account request has been <b style="color: ${
               status === "approved" ? "#10b981" : "#ef4444"
@@ -60,11 +60,11 @@ exports.updateLawyerApprovalStatus = async (req, res) => {
             `
             }
             
-            <p>Thank you for choosing LawSetu!</p>
+            <p>Thank you for choosing LegalSetu!</p>
             <hr style="margin-top: 30px;">
             <p style="color: #6b7280; font-size: 12px;">This is an automated email. Please do not reply.</p>
           </div>
-        `
+        `,
       );
 
       console.log("✅ Lawyer approval email sent successfully");

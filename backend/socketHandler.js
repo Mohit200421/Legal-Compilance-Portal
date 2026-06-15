@@ -1,5 +1,3 @@
-const CallHistory = require("./models/CallHistory");
-
 // Socket.io handler for call signaling
 const socketHandler = (io) => {
   io.on("connection", (socket) => {
@@ -36,25 +34,6 @@ const socketHandler = (io) => {
     socket.on("ice-candidate", ({ to, candidate }) => {
       io.to(to).emit("ice-candidate", { candidate });
     });
-
-    // Save call history
-    socket.on(
-      "save-call-history",
-      async ({ callerId, calleeId, callType, duration, status }) => {
-        try {
-          const callHistory = new CallHistory({
-            callerId,
-            calleeId,
-            callType,
-            duration,
-            status,
-          });
-          await callHistory.save();
-        } catch (error) {
-          console.error("Error saving call history:", error);
-        }
-      }
-    );
 
     // 🔥 REQUEST STATUS UPDATES - Lawyer Accept → User Notification
     socket.on("requestStatusUpdated", (data) => {

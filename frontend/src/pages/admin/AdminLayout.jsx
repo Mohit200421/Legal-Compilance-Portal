@@ -169,7 +169,7 @@ const AdminLayout = () => {
         <div className="flex items-center space-x-2">
           <img
             src={appLogo}
-            alt="LawSetu Logo"
+            alt="LegalSetu Logo"
             className="h-6 w-auto object-contain"
           />
           <span
@@ -234,7 +234,7 @@ const AdminLayout = () => {
               <div className="flex items-center space-x-2">
                 <img
                   src={appLogo}
-                  alt="LawSetu Logo"
+                  alt="LegalSetu Logo"
                   className="h-6 w-auto object-contain"
                 />
                 <span
@@ -266,7 +266,7 @@ const AdminLayout = () => {
             <div className="flex items-center justify-between w-full">
               <img
                 src={appLogo}
-                alt="LawSetu Logo"
+                alt="LegalSetu Logo"
                 className="h-6 w-auto object-contain mx-auto"
               />
               <button
@@ -514,7 +514,7 @@ const AdminLayout = () => {
         >
           <div className="flex flex-col md:flex-row items-center justify-between text-xs space-y-2 md:space-y-0">
             <p style={{ color: colors.onSurfaceVariant }}>
-              © {new Date().getFullYear()} LawSetu. All rights reserved.
+              © {new Date().getFullYear()} LegalSetu. All rights reserved.
             </p>
             <div className="flex items-center space-x-6">
               <button

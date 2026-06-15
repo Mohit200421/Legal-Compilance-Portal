@@ -14,8 +14,8 @@ import {
   Mail,
   Shield,
 } from "lucide-react";
-import CallButton from "./CallButton";
 import API from "../api/axios";
+
 import { useNavigate } from "react-router-dom";
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -26,10 +26,14 @@ const Avatar = ({ name }) => {
   return (
     <div className="relative flex-shrink-0">
       <div
-        style={{ background: "linear-gradient(135deg, #1d4ed8 0%, #4f46e5 100%)" }}
+        style={{
+          background: "linear-gradient(135deg, #1d4ed8 0%, #4f46e5 100%)",
+        }}
         className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
       >
-        <span className="text-xl font-bold text-white tracking-tight">{initials}</span>
+        <span className="text-xl font-bold text-white tracking-tight">
+          {initials}
+        </span>
       </div>
     </div>
   );
@@ -42,7 +46,9 @@ const StarRow = ({ rating = 4.5, reviews = 0 }) => (
         <Star
           key={s}
           className={`w-3 h-3 ${
-            s <= Math.round(rating) ? "text-amber-400 fill-amber-400" : "text-gray-200"
+            s <= Math.round(rating)
+              ? "text-amber-400 fill-amber-400"
+              : "text-gray-200"
           }`}
         />
       ))}
@@ -88,10 +94,14 @@ const STATUS = {
 ───────────────────────────────────────────────────────────────────────────── */
 const Chip = ({ icon: Icon, label, value, accent }) => (
   <div className="flex flex-col gap-1 bg-gray-50 rounded-xl px-3.5 py-3 border border-gray-100">
-    <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">{label}</span>
+    <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+      {label}
+    </span>
     <div className="flex items-center gap-1.5">
       <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${accent}`} />
-      <span className="text-sm font-semibold text-gray-800 truncate">{value}</span>
+      <span className="text-sm font-semibold text-gray-800 truncate">
+        {value}
+      </span>
     </div>
   </div>
 );
@@ -123,7 +133,7 @@ export default function LawyerCard({
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
 
-  const isPending  = requestStatus === "Pending";
+  const isPending = requestStatus === "Pending";
   const isAccepted = requestStatus === "Accepted";
   const isVerified = requestStatus === "PAYMENT_VERIFIED";
   const isRejected = requestStatus === "Rejected";
@@ -131,16 +141,17 @@ export default function LawyerCard({
   const statusKey = isVerified
     ? "PAYMENT_VERIFIED"
     : isAccepted
-    ? "Accepted"
-    : isPending
-    ? "Pending"
-    : isRejected
-    ? "Rejected"
-    : null;
+      ? "Accepted"
+      : isPending
+        ? "Pending"
+        : isRejected
+          ? "Rejected"
+          : null;
   const badge = statusKey ? STATUS[statusKey] : null;
 
   const handleSendRequest = async () => {
-    if (!subject.trim() || !message.trim()) return alert("Subject and message are required!");
+    if (!subject.trim() || !message.trim())
+      return alert("Subject and message are required!");
     try {
       setSending(true);
       const res = await API.post("/user/contact-lawyer", {
@@ -217,17 +228,18 @@ export default function LawyerCard({
     <>
       {/* ═══════════════════ CARD ═══════════════════ */}
       <div className="group relative bg-white rounded-2xl border border-gray-200/80 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-50 transition-all duration-300 flex flex-col h-full overflow-hidden">
-
         {/* Top accent line */}
         <div
           className="absolute top-0 left-0 right-0 h-0.5"
-          style={{ background: "linear-gradient(90deg, #1d4ed8, #6366f1, #8b5cf6)" }}
+          style={{
+            background: "linear-gradient(90deg, #1d4ed8, #6366f1, #8b5cf6)",
+          }}
         />
 
         {/* ── Header ── */}
         <div className="px-5 pt-6 pb-5">
           <div className="flex items-start gap-4">
-            <Avatar name={lawyer?.name} />
+            <Avatar name={lawyer?.name} image={lawyer?.profileImage} />
 
             <div className="flex-1 min-w-0">
               {/* Name row */}
@@ -270,20 +282,42 @@ export default function LawyerCard({
 
         {/* ── Info chips ── */}
         <div className="p-5 grid grid-cols-2 gap-2.5 flex-1">
-          <Chip icon={Briefcase} label="Experience" value={`${lawyer?.experience || 0} yrs`} accent="text-blue-500" />
-          <Chip icon={IndianRupee} label="Fee" value={`₹${lawyer?.price || 500}`} accent="text-emerald-500" />
+          <Chip
+            icon={Briefcase}
+            label="Experience"
+            value={`${lawyer?.experience || 0} yrs`}
+            accent="text-blue-500"
+          />
+          <Chip
+            icon={IndianRupee}
+            label="Fee"
+            value={`₹${lawyer?.price || 500}`}
+            accent="text-emerald-500"
+          />
           <div className="col-span-2">
-            <Chip icon={Gavel} label="Specialization" value={lawyer?.specialization || "General Practice"} accent="text-violet-500" />
+            <Chip
+              icon={Gavel}
+              label="Specialization"
+              value={lawyer?.specialization || "General Practice"}
+              accent="text-violet-500"
+            />
           </div>
           <div className="col-span-2">
-            <Chip icon={Mail} label="Email" value={lawyer?.email || "Not available"} accent="text-gray-400" />
+            <Chip
+              icon={Mail}
+              label="Email"
+              value={lawyer?.email || "Not available"}
+              accent="text-gray-400"
+            />
           </div>
 
           {/* Verified badge */}
           {lawyer?.verified && (
             <div className="col-span-2 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-100">
               <Shield className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-xs font-semibold text-emerald-700">Bar Council Verified</span>
+              <span className="text-xs font-semibold text-emerald-700">
+                Bar Council Verified
+              </span>
             </div>
           )}
         </div>
@@ -291,16 +325,15 @@ export default function LawyerCard({
         {/* ── Footer actions ── */}
         <div className="px-5 pb-5 pt-3 border-t border-gray-100 space-y-3">
           <div className="flex gap-2.5">
-            <div className="flex-shrink-0">
-              <CallButton lawyer={lawyer} />
-            </div>
             <ActionButton />
           </div>
 
           {/* Pay-once note */}
           {(isVerified || (isAccepted && !isVerified)) && (
             <p className="text-center text-[10px] font-medium text-gray-400">
-              {isVerified ? "✓ Pay once · chat forever" : "One-time payment · unlimited chat"}
+              {isVerified
+                ? "✓ Pay once · chat forever"
+                : "One-time payment · unlimited chat"}
             </p>
           )}
         </div>
@@ -322,10 +355,14 @@ export default function LawyerCard({
               <div className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 bg-gray-200 rounded-full" />
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-base font-bold text-gray-900">Send a Request</h2>
+                  <h2 className="text-base font-bold text-gray-900">
+                    Send a Request
+                  </h2>
                   <p className="text-sm text-gray-400 mt-0.5">
                     To{" "}
-                    <span className="font-semibold text-gray-700">{lawyer?.name || "Lawyer"}</span>
+                    <span className="font-semibold text-gray-700">
+                      {lawyer?.name || "Lawyer"}
+                    </span>
                   </p>
                 </div>
                 <button
@@ -363,7 +400,8 @@ export default function LawyerCard({
               <div className="flex gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
                 <AlertCircle className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-blue-700 leading-relaxed">
-                  The lawyer will respond within 24–48 hours. After acceptance, make a one-time payment to unlock unlimited chat.
+                  The lawyer will respond within 24–48 hours. After acceptance,
+                  make a one-time payment to unlock unlimited chat.
                 </p>
               </div>
             </div>
@@ -380,7 +418,9 @@ export default function LawyerCard({
                 onClick={handleSendRequest}
                 disabled={sending}
                 className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
-                style={{ background: "linear-gradient(135deg, #1d4ed8, #4338ca)" }}
+                style={{
+                  background: "linear-gradient(135deg, #1d4ed8, #4338ca)",
+                }}
               >
                 {sending ? (
                   <>

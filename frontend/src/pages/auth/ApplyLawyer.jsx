@@ -128,9 +128,11 @@ export default function ApplyLawyer() {
   };
 
   // Glassmorphism card style
-  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+  const glassCardClass =
+    "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
 
-  const inputClass = "w-full pl-9 pr-4 py-2.5 rounded-xl text-base transition-all duration-200 focus:outline-none";
+  const inputClass =
+    "w-full pl-9 pr-4 py-2.5 rounded-xl text-base transition-all duration-200 focus:outline-none";
 
   const handleInputFocus = (e) => {
     e.currentTarget.style.borderColor = colors.secondary;
@@ -139,7 +141,9 @@ export default function ApplyLawyer() {
 
   const handleInputBlur = (e, fieldName) => {
     const hasError = errors[fieldName];
-    e.currentTarget.style.borderColor = hasError ? colors.error : colors.outlineVariant;
+    e.currentTarget.style.borderColor = hasError
+      ? colors.error
+      : colors.outlineVariant;
     e.currentTarget.style.boxShadow = "none";
     handleBlur(fieldName);
   };
@@ -212,16 +216,19 @@ export default function ApplyLawyer() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: colors.surface }}>
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor: colors.surface }}
+    >
       {/* Background decorative elements */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `radial-gradient(circle at 10% 20%, ${colors.secondary}05, transparent 60%),
-                      radial-gradient(circle at 90% 80%, ${colors.secondary}03, transparent 50%)`
+                      radial-gradient(circle at 90% 80%, ${colors.secondary}03, transparent 50%)`,
         }}
       />
-      
+
       {/* Back Button - Glassmorphism */}
       <div className="hidden md:block fixed top-6 left-6 md:top-8 md:left-8 z-10">
         <button
@@ -229,7 +236,8 @@ export default function ApplyLawyer() {
           className="flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300 group"
           style={{ color: colors.onSurfaceVariant }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+            e.currentTarget.style.backgroundColor =
+              colors.surfaceContainerHighest;
             e.currentTarget.style.color = colors.onSurface;
           }}
           onMouseLeave={(e) => {
@@ -248,27 +256,36 @@ export default function ApplyLawyer() {
         <div className="text-center mb-6">
           <div className="flex flex-col items-center justify-center space-y-3 mb-4">
             <div className={`p-3 rounded-2xl ${glassCardClass}`}>
-              <img 
-                src={appLogo} 
-                alt="LawSetu Logo" 
+              <img
+                src={appLogo}
+                alt="LegalSetu Logo"
                 className="h-6 w-auto object-contain"
               />
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold" style={{ color: colors.onSurface }}>
-                Law<span style={{ color: colors.secondary }}>Setu</span>
+              <span
+                className="text-xl font-bold"
+                style={{ color: colors.onSurface }}
+              >
+                Legal<span style={{ color: colors.secondary }}>Setu</span>
               </span>
-              <Sparkles className="h-4 w-4" style={{ color: colors.secondary }} />
+              <Sparkles
+                className="h-4 w-4"
+                style={{ color: colors.secondary }}
+              />
             </div>
           </div>
 
-          <h2 
+          <h2
             className="text-2xl font-bold mb-2 leading-[1.3] tracking-[-0.01em]"
             style={{ color: colors.onSurface }}
           >
             Join Our Network of Legal Experts
           </h2>
-          <p className="text-sm max-w-lg mx-auto" style={{ color: colors.onSurfaceVariant }}>
+          <p
+            className="text-sm max-w-lg mx-auto"
+            style={{ color: colors.onSurfaceVariant }}
+          >
             Fill in your details below. Admin will verify and approve your
             access within 24-48 hours.
           </p>
@@ -276,15 +293,18 @@ export default function ApplyLawyer() {
 
         {/* Error Summary */}
         {Object.keys(errors).length > 0 && (
-          <div 
+          <div
             className="rounded-xl p-4 mb-6"
-            style={{ 
+            style={{
               backgroundColor: colors.errorContainer,
-              border: `1px solid ${colors.error}20`
+              border: `1px solid ${colors.error}20`,
             }}
           >
             <div className="flex items-start">
-              <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" style={{ color: colors.onErrorContainer }} />
+              <AlertCircle
+                className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
+                style={{ color: colors.onErrorContainer }}
+              />
               <p className="text-sm" style={{ color: colors.onErrorContainer }}>
                 Please fill in all required fields correctly.
               </p>
@@ -300,10 +320,10 @@ export default function ApplyLawyer() {
               const Icon = field.icon;
               const hasError = errors[field.name];
               const isTouched = touched[field.name];
-              
+
               return (
                 <div key={field.name} className={field.colSpan}>
-                  <label 
+                  <label
                     className="block text-xs font-semibold uppercase tracking-wider mb-2"
                     style={{ color: colors.onSurfaceVariant }}
                   >
@@ -314,7 +334,9 @@ export default function ApplyLawyer() {
                       className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${
                         hasError ? "text-error" : "text-outline"
                       }`}
-                      style={{ color: hasError ? colors.error : colors.outline }}
+                      style={{
+                        color: hasError ? colors.error : colors.outline,
+                      }}
                     />
                     <input
                       type={field.type}
@@ -344,16 +366,16 @@ export default function ApplyLawyer() {
 
           {/* Message Textarea */}
           <div>
-            <label 
+            <label
               className="block text-xs font-semibold uppercase tracking-wider mb-2"
               style={{ color: colors.onSurfaceVariant }}
             >
               Additional Message (Optional)
             </label>
             <div className="relative">
-              <MessageSquare 
-                className="absolute left-3 top-3 h-4 w-4" 
-                style={{ color: colors.outline }} 
+              <MessageSquare
+                className="absolute left-3 top-3 h-4 w-4"
+                style={{ color: colors.outline }}
               />
               <textarea
                 name="message"
@@ -379,25 +401,40 @@ export default function ApplyLawyer() {
           {/* Document Upload Section - Glass Card */}
           <div className={`${glassCardClass} p-4`}>
             <div className="flex items-center mb-3">
-              <Upload className="h-4 w-4 mr-2" style={{ color: colors.secondary }} />
-              <h3 className="text-sm font-medium" style={{ color: colors.onSurface }}>
+              <Upload
+                className="h-4 w-4 mr-2"
+                style={{ color: colors.secondary }}
+              />
+              <h3
+                className="text-sm font-medium"
+                style={{ color: colors.onSurface }}
+              >
                 Supporting Documents
               </h3>
-              <span className="ml-2 text-xs" style={{ color: colors.onSurfaceVariant }}>(Optional)</span>
+              <span
+                className="ml-2 text-xs"
+                style={{ color: colors.onSurfaceVariant }}
+              >
+                (Optional)
+              </span>
             </div>
-            <p className="text-xs mb-3" style={{ color: colors.onSurfaceVariant }}>
+            <p
+              className="text-xs mb-3"
+              style={{ color: colors.onSurfaceVariant }}
+            >
               You can upload your Bar Council certificate, resume, or other
               relevant documents after registration.
             </p>
             <button
               type="button"
               className="px-3 py-1.5 text-xs rounded-lg transition-all duration-200"
-              style={{ 
+              style={{
                 border: `1px solid ${colors.outlineVariant}`,
-                color: colors.onSurfaceVariant
+                color: colors.onSurfaceVariant,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+                e.currentTarget.style.backgroundColor =
+                  colors.surfaceContainerHighest;
                 e.currentTarget.style.color = colors.onSurface;
               }}
               onMouseLeave={(e) => {
@@ -419,9 +456,9 @@ export default function ApplyLawyer() {
               id="terms"
               required
               className="h-4 w-4 mt-0.5 rounded transition-all duration-200 focus:ring-2"
-              style={{ 
+              style={{
                 borderColor: colors.outlineVariant,
-                accentColor: colors.secondary
+                accentColor: colors.secondary,
               }}
             />
             <label
@@ -435,8 +472,12 @@ export default function ApplyLawyer() {
                 to="/terms-and-conditions"
                 className="font-medium transition-colors"
                 style={{ color: colors.secondary }}
-                onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-                onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = colors.secondaryContainer)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = colors.secondary)
+                }
               >
                 Terms of Service
               </Link>{" "}
@@ -445,8 +486,12 @@ export default function ApplyLawyer() {
                 to="/privacy-policy"
                 className="font-medium transition-colors"
                 style={{ color: colors.secondary }}
-                onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-                onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = colors.secondaryContainer)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = colors.secondary)
+                }
               >
                 Privacy Policy
               </Link>
@@ -454,19 +499,22 @@ export default function ApplyLawyer() {
           </div>
 
           {/* Info Note - Glass Card */}
-          <div 
+          <div
             className="rounded-xl p-4"
-            style={{ 
+            style={{
               backgroundColor: `${colors.secondary}08`,
-              border: `1px solid ${colors.secondary}20`
+              border: `1px solid ${colors.secondary}20`,
             }}
           >
             <div className="flex items-start">
-              <Info className="h-4 w-4 flex-shrink-0 mt-0.5 mr-2" style={{ color: colors.secondary }} />
+              <Info
+                className="h-4 w-4 flex-shrink-0 mt-0.5 mr-2"
+                style={{ color: colors.secondary }}
+              />
               <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>
                 Your application will be reviewed by our admin team. You'll
-                receive an email confirmation once your account is verified
-                and activated.
+                receive an email confirmation once your account is verified and
+                activated.
               </p>
             </div>
           </div>
@@ -476,14 +524,15 @@ export default function ApplyLawyer() {
             type="submit"
             disabled={loading}
             className="w-full py-3 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 group"
-            style={{ 
+            style={{
               backgroundColor: colors.secondary,
               color: "white",
-              boxShadow: `0 4px 12px ${colors.secondary}40`
+              boxShadow: `0 4px 12px ${colors.secondary}40`,
             }}
             onMouseEnter={(e) => {
               if (!loading) {
-                e.currentTarget.style.backgroundColor = colors.secondaryContainer;
+                e.currentTarget.style.backgroundColor =
+                  colors.secondaryContainer;
                 e.currentTarget.style.transform = "translateY(-1px)";
                 e.currentTarget.style.boxShadow = `0 6px 16px ${colors.secondary}50`;
               }
@@ -518,8 +567,12 @@ export default function ApplyLawyer() {
               to="/login"
               className="font-medium transition-colors"
               style={{ color: colors.secondary }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = colors.secondaryContainer)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = colors.secondary)
+              }
             >
               Sign in
             </Link>
@@ -527,14 +580,21 @@ export default function ApplyLawyer() {
         </div>
 
         {/* Support Info */}
-        <div className="mt-6 pt-4 text-center" style={{ borderTop: `1px solid ${colors.outlineVariant}` }}>
+        <div
+          className="mt-6 pt-4 text-center"
+          style={{ borderTop: `1px solid ${colors.outlineVariant}` }}
+        >
           <p className="text-xs" style={{ color: colors.onSurfaceVariant }}>
             Need help with your application?{" "}
-            <button 
+            <button
               className="font-medium transition-colors"
               style={{ color: colors.secondary }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = colors.secondaryContainer)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = colors.secondary)
+              }
             >
               Contact support
             </button>

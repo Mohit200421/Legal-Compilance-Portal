@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
-import { 
-  Scale, 
-  ArrowLeft, 
+import {
+  Scale,
+  ArrowLeft,
   KeyRound,
   Mail,
   Lock,
@@ -14,7 +14,7 @@ import {
   Sparkles,
   ArrowRight,
   Eye,
-  EyeOff
+  EyeOff,
 } from "lucide-react";
 
 // Import the app logo
@@ -58,7 +58,7 @@ export default function ForgotPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: "", text: "" });
   const [timer, setTimer] = useState(60);
@@ -79,7 +79,7 @@ export default function ForgotPassword() {
 
   const handleOtpChange = (index, value) => {
     if (value.length > 1) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -113,14 +113,17 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
       const res = await API.post("/auth/forgot-password", { email });
-      setMsg({ type: "success", text: res.data?.msg || "Reset OTP sent to email" });
+      setMsg({
+        type: "success",
+        text: res.data?.msg || "Reset OTP sent to email",
+      });
       setStep(2);
       setTimer(60);
       setCanResend(false);
     } catch (err) {
-      setMsg({ 
-        type: "error", 
-        text: err.response?.data?.msg || "Failed to send OTP" 
+      setMsg({
+        type: "error",
+        text: err.response?.data?.msg || "Failed to send OTP",
       });
     } finally {
       setLoading(false);
@@ -133,14 +136,17 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
       const res = await API.post("/auth/forgot-password", { email });
-      setMsg({ type: "success", text: res.data?.msg || "New OTP sent to email" });
+      setMsg({
+        type: "success",
+        text: res.data?.msg || "New OTP sent to email",
+      });
       setTimer(60);
       setCanResend(false);
       setOtp(["", "", "", "", "", ""]);
     } catch (err) {
-      setMsg({ 
-        type: "error", 
-        text: err.response?.data?.msg || "Failed to resend OTP" 
+      setMsg({
+        type: "error",
+        text: err.response?.data?.msg || "Failed to resend OTP",
       });
     } finally {
       setLoading(false);
@@ -152,9 +158,12 @@ export default function ForgotPassword() {
     setMsg({ type: "", text: "" });
 
     const otpString = otp.join("");
-    
+
     if (!email || otpString.length !== 6) {
-      setMsg({ type: "error", text: "Email and valid 6-digit OTP are required" });
+      setMsg({
+        type: "error",
+        text: "Email and valid 6-digit OTP are required",
+      });
       return;
     }
 
@@ -181,15 +190,18 @@ export default function ForgotPassword() {
         newPassword,
       });
 
-      setMsg({ type: "success", text: res.data?.msg || "Password reset successfully" });
+      setMsg({
+        type: "success",
+        text: res.data?.msg || "Password reset successfully",
+      });
 
       setTimeout(() => {
         navigate("/login");
       }, 1500);
     } catch (err) {
-      setMsg({ 
-        type: "error", 
-        text: err.response?.data?.msg || "Failed to reset password" 
+      setMsg({
+        type: "error",
+        text: err.response?.data?.msg || "Failed to reset password",
       });
     } finally {
       setLoading(false);
@@ -197,9 +209,11 @@ export default function ForgotPassword() {
   };
 
   // Glassmorphism card style
-  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
-  
-  const inputClass = "w-full pl-10 pr-4 py-3 rounded-xl text-base transition-all duration-200 focus:outline-none";
+  const glassCardClass =
+    "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+
+  const inputClass =
+    "w-full pl-10 pr-4 py-3 rounded-xl text-base transition-all duration-200 focus:outline-none";
 
   const handleInputFocus = (e) => {
     e.currentTarget.style.borderColor = colors.secondary;
@@ -208,35 +222,48 @@ export default function ForgotPassword() {
 
   const handleInputBlur = (e, fieldName, hasErrorCondition) => {
     const hasError = hasErrorCondition;
-    e.currentTarget.style.borderColor = hasError ? colors.error : colors.outlineVariant;
+    e.currentTarget.style.borderColor = hasError
+      ? colors.error
+      : colors.outlineVariant;
     e.currentTarget.style.boxShadow = "none";
   };
 
   const handleEmailBlur = (e) => {
     const hasError = touched.email && !email;
-    e.currentTarget.style.borderColor = hasError ? colors.error : colors.outlineVariant;
+    e.currentTarget.style.borderColor = hasError
+      ? colors.error
+      : colors.outlineVariant;
     e.currentTarget.style.boxShadow = "none";
     handleBlur("email");
   };
 
   const handlePasswordBlur = (e, fieldName) => {
-    const hasError = fieldName === "newPassword" && touched.newPassword && newPassword && newPassword.length < 8;
-    e.currentTarget.style.borderColor = hasError ? colors.error : colors.outlineVariant;
+    const hasError =
+      fieldName === "newPassword" &&
+      touched.newPassword &&
+      newPassword &&
+      newPassword.length < 8;
+    e.currentTarget.style.borderColor = hasError
+      ? colors.error
+      : colors.outlineVariant;
     e.currentTarget.style.boxShadow = "none";
     handleBlur(fieldName);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: colors.surface }}>
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor: colors.surface }}
+    >
       {/* Background decorative elements */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `radial-gradient(circle at 20% 30%, ${colors.secondary}05, transparent 60%),
-                      radial-gradient(circle at 80% 70%, ${colors.secondary}03, transparent 50%)`
+                      radial-gradient(circle at 80% 70%, ${colors.secondary}03, transparent 50%)`,
         }}
       />
-      
+
       {/* Back Button - Glassmorphism */}
       <div className="hidden md:block fixed top-6 left-6 md:top-8 md:left-8 z-10">
         <button
@@ -244,7 +271,8 @@ export default function ForgotPassword() {
           className="flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300 group"
           style={{ color: colors.onSurfaceVariant }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+            e.currentTarget.style.backgroundColor =
+              colors.surfaceContainerHighest;
             e.currentTarget.style.color = colors.onSurface;
           }}
           onMouseLeave={(e) => {
@@ -263,21 +291,27 @@ export default function ForgotPassword() {
         <div className="text-center mb-8">
           <div className="flex flex-col items-center justify-center space-y-3 mb-4">
             <div className={`p-3 rounded-2xl ${glassCardClass}`}>
-              <img 
-                src={appLogo} 
-                alt="LawSetu Logo" 
+              <img
+                src={appLogo}
+                alt="LegalSetu Logo"
                 className="h-6 w-auto object-contain"
               />
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-bold" style={{ color: colors.onSurface }}>
-                Law<span style={{ color: colors.secondary }}>Setu</span>
+              <span
+                className="text-xl font-bold"
+                style={{ color: colors.onSurface }}
+              >
+                Legal<span style={{ color: colors.secondary }}>Setu</span>
               </span>
-              <Sparkles className="h-4 w-4" style={{ color: colors.secondary }} />
+              <Sparkles
+                className="h-4 w-4"
+                style={{ color: colors.secondary }}
+              />
             </div>
           </div>
-          
-          <h2 
+
+          <h2
             className="text-2xl font-bold mb-2 leading-[1.3] tracking-[-0.01em]"
             style={{ color: colors.onSurface }}
           >
@@ -292,22 +326,34 @@ export default function ForgotPassword() {
 
         {/* Message Alert */}
         {msg.text && (
-          <div 
+          <div
             className="rounded-xl p-4 mb-6"
-            style={{ 
-              backgroundColor: msg.type === "success" ? "#e8f5e9" : colors.errorContainer,
-              border: `1px solid ${msg.type === "success" ? "#4caf50" : colors.error}20`
+            style={{
+              backgroundColor:
+                msg.type === "success" ? "#e8f5e9" : colors.errorContainer,
+              border: `1px solid ${msg.type === "success" ? "#4caf50" : colors.error}20`,
             }}
           >
             <div className="flex items-center">
               {msg.type === "success" ? (
-                <CheckCircle className="h-5 w-5 mr-2 flex-shrink-0" style={{ color: "#4caf50" }} />
+                <CheckCircle
+                  className="h-5 w-5 mr-2 flex-shrink-0"
+                  style={{ color: "#4caf50" }}
+                />
               ) : (
-                <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" style={{ color: colors.onErrorContainer }} />
+                <AlertCircle
+                  className="h-5 w-5 mr-2 flex-shrink-0"
+                  style={{ color: colors.onErrorContainer }}
+                />
               )}
-              <p 
+              <p
                 className="text-sm"
-                style={{ color: msg.type === "success" ? "#2e7d32" : colors.onErrorContainer }}
+                style={{
+                  color:
+                    msg.type === "success"
+                      ? "#2e7d32"
+                      : colors.onErrorContainer,
+                }}
               >
                 {msg.text}
               </p>
@@ -319,16 +365,16 @@ export default function ForgotPassword() {
         {step === 1 && (
           <form onSubmit={handleSendOtp} className="space-y-6">
             <div>
-              <label 
+              <label
                 className="block text-xs font-semibold uppercase tracking-wider mb-2"
                 style={{ color: colors.onSurfaceVariant }}
               >
                 Email Address
               </label>
               <div className="relative">
-                <Mail 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" 
-                  style={{ color: colors.outline }} 
+                <Mail
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5"
+                  style={{ color: colors.outline }}
                 />
                 <input
                   type="email"
@@ -352,14 +398,15 @@ export default function ForgotPassword() {
               type="submit"
               disabled={loading}
               className="w-full py-3 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 group"
-              style={{ 
+              style={{
                 backgroundColor: colors.secondary,
                 color: "white",
-                boxShadow: `0 4px 12px ${colors.secondary}40`
+                boxShadow: `0 4px 12px ${colors.secondary}40`,
               }}
               onMouseEnter={(e) => {
                 if (!loading) {
-                  e.currentTarget.style.backgroundColor = colors.secondaryContainer;
+                  e.currentTarget.style.backgroundColor =
+                    colors.secondaryContainer;
                   e.currentTarget.style.transform = "translateY(-1px)";
                   e.currentTarget.style.boxShadow = `0 6px 16px ${colors.secondary}50`;
                 }
@@ -393,20 +440,29 @@ export default function ForgotPassword() {
             {/* OTP Input */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label 
+                <label
                   className="block text-xs font-semibold uppercase tracking-wider"
                   style={{ color: colors.onSurfaceVariant }}
                 >
                   Verification Code
                 </label>
                 {!canResend && timer > 0 && (
-                  <div className="flex items-center text-xs" style={{ color: colors.onSurfaceVariant }}>
+                  <div
+                    className="flex items-center text-xs"
+                    style={{ color: colors.onSurfaceVariant }}
+                  >
                     <Clock className="h-3 w-3 mr-1" />
-                    <span>{String(Math.floor(timer / 60)).padStart(2, '0')}:{String(timer % 60).padStart(2, '0')}</span>
+                    <span>
+                      {String(Math.floor(timer / 60)).padStart(2, "0")}:
+                      {String(timer % 60).padStart(2, "0")}
+                    </span>
                   </div>
                 )}
               </div>
-              <p className="text-xs mb-3" style={{ color: colors.onSurfaceVariant }}>
+              <p
+                className="text-xs mb-3"
+                style={{ color: colors.onSurfaceVariant }}
+              >
                 Enter the 6-digit code sent to {email}
               </p>
               <div className="flex gap-3 justify-center">
@@ -441,16 +497,16 @@ export default function ForgotPassword() {
 
             {/* New Password */}
             <div>
-              <label 
+              <label
                 className="block text-xs font-semibold uppercase tracking-wider mb-2"
                 style={{ color: colors.onSurfaceVariant }}
               >
                 New Password
               </label>
               <div className="relative">
-                <Lock 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" 
-                  style={{ color: colors.outline }} 
+                <Lock
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5"
+                  style={{ color: colors.outline }}
                 />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -464,7 +520,7 @@ export default function ForgotPassword() {
                     backgroundColor: colors.surfaceContainerLowest,
                     border: `1px solid ${touched.newPassword && newPassword && newPassword.length < 8 ? colors.error : colors.outlineVariant}`,
                     color: colors.onSurface,
-                    paddingRight: "44px"
+                    paddingRight: "44px",
                   }}
                   onFocus={handleInputFocus}
                 />
@@ -473,29 +529,40 @@ export default function ForgotPassword() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                   style={{ color: colors.outline }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = colors.onSurfaceVariant}
-                  onMouseLeave={(e) => e.currentTarget.style.color = colors.outline}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = colors.onSurfaceVariant)
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = colors.outline)
+                  }
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
                 </button>
               </div>
-              <p className="text-xs mt-1" style={{ color: colors.onSurfaceVariant }}>
+              <p
+                className="text-xs mt-1"
+                style={{ color: colors.onSurfaceVariant }}
+              >
                 Minimum 8 characters with at least one number
               </p>
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label 
+              <label
                 className="block text-xs font-semibold uppercase tracking-wider mb-2"
                 style={{ color: colors.onSurfaceVariant }}
               >
                 Confirm Password
               </label>
               <div className="relative">
-                <Lock 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" 
-                  style={{ color: colors.outline }} 
+                <Lock
+                  className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5"
+                  style={{ color: colors.outline }}
                 />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -520,14 +587,15 @@ export default function ForgotPassword() {
                 type="submit"
                 disabled={loading}
                 className="flex-1 py-3 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ 
+                style={{
                   backgroundColor: colors.secondary,
                   color: "white",
-                  boxShadow: `0 4px 12px ${colors.secondary}40`
+                  boxShadow: `0 4px 12px ${colors.secondary}40`,
                 }}
                 onMouseEnter={(e) => {
                   if (!loading) {
-                    e.currentTarget.style.backgroundColor = colors.secondaryContainer;
+                    e.currentTarget.style.backgroundColor =
+                      colors.secondaryContainer;
                     e.currentTarget.style.transform = "translateY(-1px)";
                   }
                 }}
@@ -540,19 +608,20 @@ export default function ForgotPassword() {
               >
                 {loading ? "Resetting..." : "Reset Password"}
               </button>
-              
+
               <button
                 type="button"
                 onClick={handleResendOtp}
                 disabled={loading || !canResend}
                 className="px-4 rounded-xl transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ 
+                style={{
                   border: `1px solid ${colors.outlineVariant}`,
-                  color: colors.onSurfaceVariant
+                  color: colors.onSurfaceVariant,
                 }}
                 onMouseEnter={(e) => {
                   if (!loading && canResend) {
-                    e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+                    e.currentTarget.style.backgroundColor =
+                      colors.surfaceContainerHighest;
                     e.currentTarget.style.color = colors.onSurface;
                   }
                 }}
@@ -573,8 +642,12 @@ export default function ForgotPassword() {
               onClick={() => setStep(1)}
               className="w-full text-sm transition-colors"
               style={{ color: colors.onSurfaceVariant }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.onSurface}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.onSurfaceVariant}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = colors.onSurface)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = colors.onSurfaceVariant)
+              }
             >
               ← Back to email entry
             </button>
@@ -589,8 +662,12 @@ export default function ForgotPassword() {
               to="/login"
               className="font-medium transition-colors"
               style={{ color: colors.secondary }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = colors.secondaryContainer)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = colors.secondary)
+              }
             >
               Sign in
             </Link>
@@ -598,13 +675,20 @@ export default function ForgotPassword() {
         </div>
 
         {/* Support Link */}
-        <p className="text-center text-xs mt-6" style={{ color: colors.onSurfaceVariant }}>
+        <p
+          className="text-center text-xs mt-6"
+          style={{ color: colors.onSurfaceVariant }}
+        >
           Having trouble?{" "}
-          <button 
+          <button
             className="font-medium transition-colors"
             style={{ color: colors.secondary }}
-            onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-            onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = colors.secondaryContainer)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = colors.secondary)
+            }
           >
             Contact support
           </button>

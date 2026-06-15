@@ -90,19 +90,23 @@ export default function Login() {
   };
 
   // Glassmorphism card style
-  const glassCardClass = "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
+  const glassCardClass =
+    "bg-white/80 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(30,41,59,0.05)] border border-white/50";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: colors.surface }}>
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor: colors.surface }}
+    >
       {/* Background decorative elements */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `radial-gradient(circle at 10% 20%, ${colors.secondary}08, transparent 50%),
-                      radial-gradient(circle at 90% 80%, ${colors.secondary}05, transparent 50%)`
+                      radial-gradient(circle at 90% 80%, ${colors.secondary}05, transparent 50%)`,
         }}
       />
-      
+
       {/* Back Button - Glassmorphism */}
       <div className="hidden md:block fixed top-6 left-6 md:top-8 md:left-8 z-10">
         <button
@@ -110,7 +114,8 @@ export default function Login() {
           className="flex items-center space-x-2 px-3 py-2 rounded-xl transition-all duration-300 group"
           style={{ color: colors.onSurfaceVariant }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
+            e.currentTarget.style.backgroundColor =
+              colors.surfaceContainerHighest;
             e.currentTarget.style.color = colors.onSurface;
           }}
           onMouseLeave={(e) => {
@@ -129,20 +134,26 @@ export default function Login() {
         <div className="text-center mb-8">
           <div className="flex flex-col items-center justify-center space-y-3 mb-4">
             <div className={`p-3 rounded-2xl ${glassCardClass}`}>
-              <img 
-                src={appLogo} 
-                alt="LawSetu Logo" 
+              <img
+                src={appLogo}
+                alt="LegalSetu Logo"
                 className="h-6 w-auto object-contain"
               />
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold" style={{ color: colors.onSurface }}>
-                Law<span style={{ color: colors.secondary }}>Setu</span>
+              <span
+                className="text-2xl font-bold"
+                style={{ color: colors.onSurface }}
+              >
+                Legal<span style={{ color: colors.secondary }}>Setu</span>
               </span>
-              <Sparkles className="h-4 w-4" style={{ color: colors.secondary }} />
+              <Sparkles
+                className="h-4 w-4"
+                style={{ color: colors.secondary }}
+              />
             </div>
           </div>
-          <h2 
+          <h2
             className="text-2xl font-bold mb-2 leading-[1.3] tracking-[-0.01em]"
             style={{ color: colors.onSurface }}
           >
@@ -155,24 +166,30 @@ export default function Login() {
 
         {/* Error Alert - Glassmorphism */}
         {err && (
-          <div 
+          <div
             className="rounded-xl p-4 mb-6"
-            style={{ 
+            style={{
               backgroundColor: colors.errorContainer,
-              border: `1px solid ${colors.error}20`
+              border: `1px solid ${colors.error}20`,
             }}
           >
             <div className="flex items-start">
-              <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" style={{ color: colors.onErrorContainer }} />
-              <p className="text-sm flex-1" style={{ color: colors.onErrorContainer }}>
+              <AlertCircle
+                className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
+                style={{ color: colors.onErrorContainer }}
+              />
+              <p
+                className="text-sm flex-1"
+                style={{ color: colors.onErrorContainer }}
+              >
                 {err}
               </p>
               <button
                 onClick={() => setErr("")}
                 className="transition-colors"
                 style={{ color: colors.onErrorContainer }}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = "0.7"}
-                onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -184,14 +201,17 @@ export default function Login() {
         <form onSubmit={handleLogin} className="space-y-6">
           {/* Email Field */}
           <div>
-            <label 
+            <label
               className="block text-xs font-semibold uppercase tracking-wider mb-2"
               style={{ color: colors.onSurfaceVariant }}
             >
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" style={{ color: colors.outline }} />
+              <Mail
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5"
+                style={{ color: colors.outline }}
+              />
               <input
                 type="email"
                 placeholder="name@company.com"
@@ -219,7 +239,7 @@ export default function Login() {
           {/* Password Field */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label 
+              <label
                 className="block text-xs font-semibold uppercase tracking-wider"
                 style={{ color: colors.onSurfaceVariant }}
               >
@@ -229,14 +249,21 @@ export default function Login() {
                 to="/forgot-password"
                 className="text-xs font-medium transition-colors"
                 style={{ color: colors.secondary }}
-                onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-                onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = colors.secondaryContainer)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = colors.secondary)
+                }
               >
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5" style={{ color: colors.outline }} />
+              <Lock
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5"
+                style={{ color: colors.outline }}
+              />
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
@@ -263,10 +290,18 @@ export default function Login() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                 style={{ color: colors.outline }}
-                onMouseEnter={(e) => e.currentTarget.style.color = colors.onSurfaceVariant}
-                onMouseLeave={(e) => e.currentTarget.style.color = colors.outline}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = colors.onSurfaceVariant)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = colors.outline)
+                }
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
@@ -276,14 +311,15 @@ export default function Login() {
             type="submit"
             disabled={loading}
             className="w-full py-3 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 group mt-8"
-            style={{ 
+            style={{
               backgroundColor: colors.secondary,
               color: "white",
-              boxShadow: `0 4px 12px ${colors.secondary}40`
+              boxShadow: `0 4px 12px ${colors.secondary}40`,
             }}
             onMouseEnter={(e) => {
               if (!loading) {
-                e.currentTarget.style.backgroundColor = colors.secondaryContainer;
+                e.currentTarget.style.backgroundColor =
+                  colors.secondaryContainer;
                 e.currentTarget.style.transform = "translateY(-1px)";
                 e.currentTarget.style.boxShadow = `0 6px 16px ${colors.secondary}50`;
               }
@@ -298,9 +334,7 @@ export default function Login() {
           >
             {loading ? (
               <div className="flex items-center space-x-2">
-                <div 
-                  className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full"
-                />
+                <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
                 <span>Signing in...</span>
               </div>
             ) : (
@@ -319,8 +353,12 @@ export default function Login() {
                 to="/register"
                 className="font-medium transition-colors"
                 style={{ color: colors.secondary }}
-                onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-                onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = colors.secondaryContainer)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = colors.secondary)
+                }
               >
                 Create account
               </Link>
@@ -334,7 +372,9 @@ export default function Login() {
             to="/apply-lawyer"
             className="inline-flex items-center justify-center space-x-2 text-sm transition-colors"
             style={{ color: colors.onSurfaceVariant }}
-            onMouseEnter={(e) => e.currentTarget.style.color = colors.onSurface}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = colors.onSurface)
+            }
           >
             <Briefcase className="h-4 w-4" />
             <span>Are you a lawyer? Apply for lawyer portal</span>
@@ -342,13 +382,20 @@ export default function Login() {
         </div>
 
         {/* Support Link */}
-        <p className="text-center text-xs mt-6" style={{ color: colors.onSurfaceVariant }}>
+        <p
+          className="text-center text-xs mt-6"
+          style={{ color: colors.onSurfaceVariant }}
+        >
           Having trouble?{" "}
-          <button 
+          <button
             className="font-medium transition-colors"
             style={{ color: colors.secondary }}
-            onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-            onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = colors.secondaryContainer)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = colors.secondary)
+            }
           >
             Contact support
           </button>
@@ -362,8 +409,12 @@ export default function Login() {
               to="/terms-and-conditions"
               className="transition-colors"
               style={{ color: colors.secondary }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = colors.secondaryContainer)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = colors.secondary)
+              }
             >
               Terms of Service
             </Link>{" "}
@@ -372,8 +423,12 @@ export default function Login() {
               to="/terms-and-conditions"
               className="transition-colors"
               style={{ color: colors.secondary }}
-              onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-              onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.color = colors.secondaryContainer)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = colors.secondary)
+              }
             >
               Privacy Policy
             </Link>

@@ -1,13 +1,13 @@
-# ⚖️ LawSetu – Legal Compliance & Lawyer Consultation Portal
+# LegalSetu – Legal Compliance & Lawyer Consultation Portal
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Backend](https://img.shields.io/badge/Backend-Node_Express-MongoDB-brightgreen)](https://nodejs.org/)
 [![Frontend](https://img.shields.io/badge/Frontend-React_Vite-Tailwind-blue)](https://reactjs.org/)
 [![Real-time](https://img.shields.io/badge/Real--time-Socket.io-orange)](https://socket.io/)
 
-**LawSetu** is a production-ready **full-stack MERN platform** for legal compliance, lawyer discovery, consultations, and case management. Users connect with verified lawyers via chat/video calls, upload documents for OCR analysis, manage payments/subscriptions, and track cases – all in a secure, role-based system.
+**LegalSetu** is a production-ready **full-stack MERN platform** for legal compliance, lawyer discovery, consultations, and case management. Users connect with verified lawyers via chat/video calls, upload documents for OCR analysis, manage payments/subscriptions, and track cases – all in a secure, role-based system.
 
-## ✨ Key Features
+## Key Features
 
 | Module               | Features                                                                                                                |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -21,7 +21,7 @@
 | **Automation**       | Cron jobs (event reminders, subscription expiry), Winston logging                                                       |
 | **AI/Extras**        | AI Chat routes, Job board, News/Events/Feedback                                                                         |
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Backend
 
@@ -40,7 +40,7 @@
 - **Real-time**: Socket.io-client, SimplePeer (video)
 - **Other**: Axios, QRCode.react, jwt-decode
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Legal-Compilance-Portal-main/
@@ -70,7 +70,7 @@ Legal-Compilance-Portal-main/
 └── TODO.md              # Active tasks
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -103,7 +103,7 @@ npm run dev   # or npm start
 
 ```
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/lawsetu
+MONGO_URI=mongodb://localhost:27017/LegalSetu
 JWT_SECRET=your-super-secret-jwt-key
 RAZORPAY_KEY_ID=rzp_test_...
 RAZORPAY_KEY_SECRET=...
@@ -124,7 +124,7 @@ npm run dev
 
 **Frontend**: `http://localhost:5173`
 
-## 📋 API Examples (Postman/Swagger ready)
+## API Examples (Postman/Swagger ready)
 
 - `POST /api/auth/register` – User signup
 - `GET /api/lawyers?city=Delhi&category=Divorce` – Filtered lawyers
@@ -132,7 +132,7 @@ npm run dev
 - `GET /api/chat/messages/:userId` – Chat history
 - `POST /api/ocr/extract` – Document text extraction
 
-## 📱 Key Pages/Screens
+## Key Pages/Screens
 
 - **Public**: Home, Lawyer Listing, About, Privacy
 - **User**: Dashboard, MyRequests, TalkToLawyer, Documents, Discussion
@@ -140,7 +140,7 @@ npm run dev
 - **Admin**: Dashboard, ManageUsers, PendingLawyers, AddLawyer
 - **Shared**: ChatModal, VideoCall, ApplyLawyer, VerifyOtp
 
-## 🔍 Testing & Deployment
+## Testing & Deployment
 
 - **Local**: Backend dev server with nodemon, Frontend hot reload
 - **Deploy**:
@@ -148,7 +148,7 @@ npm run dev
   - Backend: Render/Heroku (with MongoDB Atlas)
 - **Seed Data**: `backend/scripts/seed*` for states/cities/plans
 
-## 🚧 TODO & Future Plans
+## TODO & Future Plans
 
 See [TODO.md](./TODO.md)
 
@@ -158,14 +158,12 @@ See [TODO.md](./TODO.md)
 - Analytics dashboard
 - Mobile app (React Native?)
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork & PR
 2. Follow ESLint/Tailwind conventions
 3. Update tests (add Jest?)
 
-## 📄 License & Author
+## License & Author
 
 MIT License – **Mohit Badgujar** (MERN Developer)
-
-**Built with ❤️ for accessible legal services.**

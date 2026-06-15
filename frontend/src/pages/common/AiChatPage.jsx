@@ -11,7 +11,7 @@ const AiChatPage = () => {
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-xl border">
             <Shield className="w-6 h-6 text-blue-600" />
             <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-              LawSetu AI Legal Assistant
+              LegalSetu AI Legal Assistant
             </h1>
             <Scale className="w-6 h-6 text-green-600" />
           </div>

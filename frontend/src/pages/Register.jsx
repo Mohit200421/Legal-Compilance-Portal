@@ -85,52 +85,46 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (passwordStrength < 3) {
-    toast.error("Please create a stronger password");
-    return;
-  }
+    if (passwordStrength < 3) {
+      toast.error("Please create a stronger password");
+      return;
+    }
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const res = await API.post(
-      "/auth/register",
-      form,
-      {
+      const res = await API.post("/auth/register", form, {
         withCredentials: true,
-      }
-    );
+      });
 
-    console.log("REGISTER RESPONSE:", res.data);
+      console.log("REGISTER RESPONSE:", res.data);
 
-    // SUCCESS TOAST
-    toast.success(
-      res.data?.msg ||
-      "Registration successful! Verify your OTP."
-    );
+      // SUCCESS TOAST
+      toast.success(
+        res.data?.msg || "Registration successful! Verify your OTP.",
+      );
 
-    // REDIRECT TO OTP PAGE
-    navigate("/verify-otp", {
-      replace: true,
-      state: {
-        email: form.email,
-      },
-    });
+      // REDIRECT TO OTP PAGE
+      navigate("/verify-otp", {
+        replace: true,
+        state: {
+          email: form.email,
+        },
+      });
+    } catch (err) {
+      console.error("REGISTER ERROR:", err);
 
-  } catch (err) {
-    console.error("REGISTER ERROR:", err);
-
-    toast.error(
-      err.response?.data?.msg ||
-      err.response?.data?.error ||
-      "Registration failed"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+      toast.error(
+        err.response?.data?.msg ||
+          err.response?.data?.error ||
+          "Registration failed",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Password strength config
   const strengthConfig = {
@@ -208,7 +202,7 @@ export default function Register() {
             <div className={`p-3 rounded-2xl ${glassCardClass}`}>
               <img
                 src={appLogo}
-                alt="LawSetu Logo"
+                alt="LegalSetu Logo"
                 className="h-6 w-auto object-contain"
               />
             </div>
@@ -217,7 +211,7 @@ export default function Register() {
                 className="text-2xl font-bold"
                 style={{ color: colors.onSurface }}
               >
-                Law<span style={{ color: colors.secondary }}>Setu</span>
+                Legal<span style={{ color: colors.secondary }}>Setu</span>
               </span>
               <Sparkles
                 className="h-4 w-4"

@@ -24,7 +24,7 @@ const subscriptionRoutes = require("./routes/subscription.routes");
 const userArticleRoutes = require("./routes/userArticleRoutes");
 const masterRoutes = require("./routes/masterRoutes");
 const adminLawyerRoutes = require("./routes/adminLawyerRoutes");
-const callRoutes = require("./routes/callRoutes");
+
 const aiChatRoutes = require("./routes/aiChatRoutes");
 const supportRoutes = require("./routes/support");
 const emailRoutes = require("./routes/emailRoutes");
@@ -67,7 +67,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
-  })
+  }),
 );
 
 // Handle preflight OPTIONS requests
@@ -88,7 +88,7 @@ app.options(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
-  })
+  }),
 );
 
 // ================= SOCKET.IO =================
@@ -131,7 +131,7 @@ app.use("/api/public", publicRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/user-article", userArticleRoutes);
 app.use("/api/master", masterRoutes);
-app.use("/api/call", callRoutes);
+
 app.use("/api/ai-chat", aiChatRoutes);
 app.use("/api/support", supportRoutes);
 app.use("/api", emailRoutes);
@@ -161,7 +161,7 @@ app.get("/test-mail", async (req, res) => {
     const result = await sendEmail(
       recipient,
       "Test Email",
-      "<h2>Email working ✅</h2>"
+      "<h2>Email working ✅</h2>",
     );
 
     if (result.success) {

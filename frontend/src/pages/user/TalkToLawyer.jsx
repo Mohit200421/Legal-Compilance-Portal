@@ -56,6 +56,7 @@ export default function TalkToLawyer() {
 
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [specializationFilter, setSpecializationFilter] = useState("");
 
   const [requestMap, setRequestMap] = useState({});
 
@@ -114,6 +115,17 @@ export default function TalkToLawyer() {
     };
   }, []);
 
+  // Get unique specializations from lawyers
+  const uniqueSpecializations = useMemo(() => {
+    const specializations = new Set();
+    lawyers.forEach(lawyer => {
+      if (lawyer.specialization) {
+        specializations.add(lawyer.specialization);
+      }
+    });
+    return Array.from(specializations).sort();
+  }, [lawyers]);
+
   // ================= FILTER & SORT =================
 
   const filteredLawyers = useMemo(() => {
@@ -127,6 +139,10 @@ export default function TalkToLawyer() {
       );
     }
 
+    if (specializationFilter && specializationFilter !== "All Specializations") {
+      data = data.filter((l) => l.specialization === specializationFilter);
+    }
+
     if (sortBy === "Rating") {
       data.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (sortBy === "Experience") {
@@ -136,7 +152,7 @@ export default function TalkToLawyer() {
     }
 
     return data;
-  }, [lawyers, search, sortBy]);
+  }, [lawyers, search, sortBy, specializationFilter]);
 
   const sortOptions = [
     { value: "", label: "Sort by", icon: ArrowUpDown },
@@ -148,45 +164,116 @@ export default function TalkToLawyer() {
   const clearAllFilters = () => {
     setSearch("");
     setSortBy("");
+    setSpecializationFilter("");
   };
 
   // ================= UI =================
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.surface }}>
-      {/* HEADER - Glass Sticky */}
-      <div className="sticky top-0 z-30" >
-        <div className="px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md"
-                style={{ background: `linear-gradient(135deg, ${colors.secondary}, ${colors.secondaryContainer})` }}
-              >
-                <MessageSquare className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold leading-[1.2] tracking-[-0.02em]" style={{ color: colors.onSurface }}>
-                  Talk to Lawyer
-                </h1>
-                <p className="text-xs hidden sm:block" style={{ color: colors.onSurfaceVariant }}>
-                  Connect with experienced legal professionals
-                </p>
-              </div>
+      {/* HEADER - Glass Sticky - Exactly as per design */}
+      <div className="sticky top-0 z-30 bg-white border-b border-gray-200">
+        <div className="px-4 sm:px-6 lg:px-8 py-5">
+          {/* Main Header Row */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Left Section: Title and Stats */}
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+                Find the Right Lawyer for Your Case
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Search lawyers by name, specialization, experience, ratings or fees.
+              </p>
             </div>
 
-            {/* Stats Bar - Desktop */}
-            <div className="hidden sm:flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1" style={{ color: colors.onSurfaceVariant }}>
-                <Users className="h-4 w-4" />
-                <span>{lawyers.length} Lawyers</span>
+            {/* Right Section: Stats Badges */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
+                  <Users className="h-4 w-4 text-gray-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Verified Lawyers</p>
+                  <p className="text-lg font-semibold text-gray-900">{lawyers.length}+</p>
+                </div>
               </div>
-              <div className="w-px h-4" style={{ backgroundColor: colors.outlineVariant }}></div>
-              <div className="flex items-center gap-1" style={{ color: colors.onSurfaceVariant }}>
-                <Sparkles className="h-4 w-4" style={{ color: colors.tertiary }} />
-                <span>Verified Experts</span>
+              <div className="w-px h-8 bg-gray-200"></div>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-50">
+                  <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Average Rating</p>
+                  <p className="text-lg font-semibold text-gray-900">4.6/5</p>
+                </div>
+              </div>
+              <div className="w-px h-8 bg-gray-200"></div>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-50">
+                  <Sparkles className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Secure & Confidential</p>
+                  <p className="text-sm font-medium text-gray-700">100% Guaranteed</p>
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Search and Filter Bar - Below Header */}
+          <div className="mt-6 flex flex-col md:flex-row gap-3">
+            {/* Search Input */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, keyword or specialization..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+
+            {/* Specialization Filter Dropdown */}
+            <div className="relative md:w-64">
+              <select
+                value={specializationFilter || "All Specializations"}
+                onChange={(e) => setSpecializationFilter(e.target.value)}
+                className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 cursor-pointer"
+              >
+                <option value="All Specializations">All Specializations</option>
+                {uniqueSpecializations.map((spec) => (
+                  <option key={spec} value={spec}>{spec}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative md:w-56">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 cursor-pointer"
+              >
+                {sortOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Clear Filters Button */}
+            {(search || sortBy || specializationFilter) && (
+              <button
+                onClick={clearAllFilters}
+                className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors whitespace-nowrap"
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -194,157 +281,37 @@ export default function TalkToLawyer() {
       <div className="flex relative">
         {/* MAIN CONTENT */}
         <div className="flex-1 min-w-0">
-          {/* Search & Sort Bar - Glass */}
-          <div className="sticky top-[73px] z-20 px-4 sm:px-6 lg:px-8 py-4" style={{ 
-            backgroundColor: "rgba(251, 248, 250, 0.95)",
-            backdropFilter: "blur(8px)",
-            borderBottom: `1px solid ${colors.outlineVariant}`
-          }}>
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Search Input */}
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: colors.outline }} />
-                <input
-                  type="text"
-                  placeholder="Search by name, specialization, or keyword..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl transition-all duration-200 focus:outline-none"
-                  style={{
-                    backgroundColor: colors.surfaceContainerLowest,
-                    border: `1px solid ${colors.outlineVariant}`,
-                    color: colors.onSurface,
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = colors.secondary;
-                    e.currentTarget.style.boxShadow = `0 0 0 3px ${colors.secondary}20`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = colors.outlineVariant;
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                />
-                {search && (
-                  <button
-                    onClick={() => setSearch("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                  >
-                    <X className="h-4 w-4" style={{ color: colors.outline }} />
-                  </button>
-                )}
-              </div>
-
-              {/* Sort Dropdown */}
-              <div className="relative sm:w-64">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full appearance-none px-4 py-2.5 pr-10 rounded-xl transition-all duration-200 focus:outline-none text-sm cursor-pointer"
-                  style={{
-                    backgroundColor: colors.surfaceContainerLowest,
-                    border: `1px solid ${colors.outlineVariant}`,
-                    color: colors.onSurface,
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = colors.secondary;
-                    e.currentTarget.style.boxShadow = `0 0 0 3px ${colors.secondary}20`;
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = colors.outlineVariant;
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                >
-                  {sortOptions.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" style={{ color: colors.outline }} />
-              </div>
-            </div>
-
-            {/* Active Filters Chips */}
-            {(search || sortBy) && (
-              <div className="flex flex-wrap items-center gap-2 mt-3">
-                <span className="text-xs" style={{ color: colors.onSurfaceVariant }}>Active filters:</span>
-                {search && (
-                  <span 
-                    className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full"
-                    style={{ backgroundColor: `${colors.secondary}15`, color: colors.secondary }}
-                  >
-                    <Search className="h-3 w-3" />
-                    {search.length > 20 ? `${search.substring(0, 20)}...` : search}
-                    <button onClick={() => setSearch("")} className="ml-1">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                )}
-                {sortBy && (
-                  <span 
-                    className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full"
-                    style={{ backgroundColor: colors.surfaceContainerHighest, color: colors.onSurfaceVariant }}
-                  >
-                    Sort: {sortBy}
-                    <button onClick={() => setSortBy("")} className="ml-1">
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                )}
-                {(search || sortBy) && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="text-xs font-medium transition-colors"
-                    style={{ color: colors.error }}
-                    onMouseEnter={(e) => e.currentTarget.style.opacity = "0.7"}
-                    onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
-                  >
-                    Clear all
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
           {/* Results Area */}
           <div className="px-4 sm:px-6 lg:px-8 py-6">
             {/* Results Header */}
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm" style={{ color: colors.onSurfaceVariant }}>
-                Showing <span className="font-semibold" style={{ color: colors.onSurface }}>{filteredLawyers.length}</span>{" "}
+              <p className="text-sm text-gray-500">
+                Showing <span className="font-semibold text-gray-900">{filteredLawyers.length}</span>{" "}
                 {filteredLawyers.length === 1 ? "lawyer" : "lawyers"}
               </p>
-              {filteredLawyers.length > 0 && (
-                <p className="text-xs hidden sm:block" style={{ color: colors.onSurfaceVariant }}>
-                  Pay once • Chat forever
-                </p>
-              )}
             </div>
 
             {/* Loading State */}
             {loading && (
               <div className="flex flex-col items-center justify-center py-20">
-                <div className="w-12 h-12 border-4 rounded-full animate-spin" style={{ borderColor: `${colors.secondary}30`, borderTopColor: colors.secondary }} />
-                <p className="mt-4" style={{ color: colors.onSurfaceVariant }}>Loading lawyers...</p>
+                <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
+                <p className="mt-4 text-gray-500">Loading lawyers...</p>
               </div>
             )}
 
             {/* Empty State */}
             {!loading && filteredLawyers.length === 0 && (
-              <div className={`${glassCardClass} flex flex-col items-center justify-center py-20 text-center`}>
-                <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: colors.surfaceContainerHighest }}>
-                  <Search className="h-10 w-10" style={{ color: colors.onSurfaceVariant }} />
+              <div className="bg-gray-50 rounded-xl flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
+                  <Search className="h-10 w-10 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold mb-1" style={{ color: colors.onSurface }}>No lawyers found</h3>
-                <p className="text-sm max-w-sm" style={{ color: colors.onSurfaceVariant }}>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">No lawyers found</h3>
+                <p className="text-sm text-gray-500 max-w-sm">
                   Try adjusting your search criteria to find the right legal expert.
                 </p>
                 <button
                   onClick={clearAllFilters}
-                  className="mt-4 px-4 py-2 font-medium transition-colors"
-                  style={{ color: colors.secondary }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = colors.secondaryContainer}
-                  onMouseLeave={(e) => e.currentTarget.style.color = colors.secondary}
+                  className="mt-4 px-4 py-2 text-blue-600 font-medium hover:text-blue-700"
                 >
                   Clear all filters
                 </button>
@@ -353,7 +320,7 @@ export default function TalkToLawyer() {
 
             {/* Lawyer Cards Grid */}
             {!loading && filteredLawyers.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 auto-rows-fr">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
                 {filteredLawyers.map((lawyer) => (
                   <LawyerCard
                     key={lawyer._id}

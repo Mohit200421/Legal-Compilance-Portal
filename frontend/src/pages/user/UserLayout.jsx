@@ -152,7 +152,7 @@ const UserLayout = () => {
             className="font-semibold text-base"
             style={{ color: colors.onSurface }}
           >
-            Law<span style={{ color: colors.secondary }}>Setu</span>
+            Legal<span style={{ color: colors.secondary }}>Setu</span>
           </span>
         </div>
 

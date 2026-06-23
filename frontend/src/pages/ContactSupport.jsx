@@ -560,22 +560,7 @@ const ContactSupport = () => {
                     <Plus className="w-4 h-4" />
                     Create New Ticket
                   </button>
-                  <button
-                    onClick={handleAIHelp}
-                    className="px-6 py-2.5 rounded-lg font-medium transition-all duration-200 inline-flex items-center gap-2"
-                    style={{ border: `1px solid ${colors.outlineVariant}`, color: colors.onSurfaceVariant }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = colors.surfaceContainerHighest;
-                      e.currentTarget.style.color = colors.onSurface;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = colors.onSurfaceVariant;
-                    }}
-                  >
-                    <Zap className="w-4 h-4" />
-                    Try AI Help
-                  </button>
+                  
                 </div>
               </div>
             )}

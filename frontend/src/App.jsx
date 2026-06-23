@@ -52,10 +52,8 @@ import UserDiscussion from "./pages/user/Discussion";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import ChatPage from "./pages/common/ChatPage";
-import AiChatPage from "./pages/common/AiChatPage";
 import ContactSupport from "./pages/ContactSupport";
 import AdminSupport from "./components/AdminSupportPanel";
-import AiFab from "./components/AiFab";
 import { AuthContext } from "./context/AuthContext";
 
 function App() {
@@ -149,7 +147,7 @@ function App() {
               },
             }}
           />
-          {!loading && user ? <AiFab /> : null}
+          {null}
 
           <Routes>
             {/* Home page with Navbar */}
@@ -292,14 +290,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/ai-assistant"
-              element={
-                <ProtectedRoute>
-                  <AiChatPage />
-                </ProtectedRoute>
-              }
-            />
+
             <Route
               path="/contact-support"
               element={

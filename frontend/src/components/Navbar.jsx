@@ -87,8 +87,9 @@ function Navbar() {
 
   const navLinks = [
     { to: "/", label: "Home", icon: Home },
-    { to: "/ai-assistant", label: "AI Assistant", icon: Bot },
+
     { to: "/about", label: "About", icon: Info },
+
     { to: "/services", label: "Services", icon: Briefcase },
     { to: "/contact", label: "Contact", icon: HelpCircle },
   ];

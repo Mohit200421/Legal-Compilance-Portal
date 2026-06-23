@@ -25,8 +25,8 @@ const userArticleRoutes = require("./routes/userArticleRoutes");
 const masterRoutes = require("./routes/masterRoutes");
 const adminLawyerRoutes = require("./routes/adminLawyerRoutes");
 
-const aiChatRoutes = require("./routes/aiChatRoutes");
 const supportRoutes = require("./routes/support");
+
 const emailRoutes = require("./routes/emailRoutes");
 
 const errorHandler = require("./middleware/errorHandler");
@@ -132,8 +132,8 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/user-article", userArticleRoutes);
 app.use("/api/master", masterRoutes);
 
-app.use("/api/ai-chat", aiChatRoutes);
 app.use("/api/support", supportRoutes);
+
 app.use("/api", emailRoutes);
 
 // ================= HEALTH CHECK

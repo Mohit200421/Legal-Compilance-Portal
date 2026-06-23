@@ -260,21 +260,7 @@ const ContactSupport = () => {
                 </div>
               </div>
               <div className="flex gap-3">
-                <button
-                  onClick={handleAIHelp}
-                  className="px-4 py-2 rounded-lg font-medium transition-all duration-200"
-                  style={{ backgroundColor: "white", color: colors.secondary }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = colors.surfaceBright;
-                    e.currentTarget.style.transform = "translateY(-1px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "white";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
-                >
-                  Try AI Help
-                </button>
+                
                 <button
                   onClick={handleContactSupport}
                   className="px-4 py-2 rounded-lg font-medium transition-all duration-200"

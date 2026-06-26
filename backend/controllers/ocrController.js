@@ -7,7 +7,7 @@ exports.extractText = async (req, res) => {
     const doc = await Document.findById(req.params.id);
     if (!doc) return res.status(404).json({ msg: "Document not found" });
 
-    // ✅ If OCR already done, return old OCR
+    //  If OCR already done, return old OCR
     if (doc.ocrTextId) {
       const oldOCR = await OCRExtract.findById(doc.ocrTextId);
       return res.json({ msg: "OCR already completed", ocr: oldOCR });
@@ -29,7 +29,7 @@ exports.extractText = async (req, res) => {
   }
 };
 
-// ✅ GET OCR TEXT
+//  GET OCR TEXT
 exports.getOCRText = async (req, res) => {
   try {
     const doc = await Document.findById(req.params.id);

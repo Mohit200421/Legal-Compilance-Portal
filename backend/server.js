@@ -65,7 +65,14 @@ app.use(
       return callback(new Error("CORS blocked"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: [
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "OPTIONS",
+],
     allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
   }),
 );
@@ -86,7 +93,14 @@ app.options(
       return callback(new Error("CORS blocked"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: [
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "OPTIONS",
+],
     allowedHeaders: ["Content-Type", "Authorization", "cache-control"],
   }),
 );
@@ -161,7 +175,7 @@ app.get("/test-mail", async (req, res) => {
     const result = await sendEmail(
       recipient,
       "Test Email",
-      "<h2>Email working ✅</h2>",
+      "<h2>Email working </h2>",
     );
 
     if (result.success) {

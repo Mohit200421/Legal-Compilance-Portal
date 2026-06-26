@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Article = require("../models/Article");
 
-// ✅ User can view all published articles
+//  User can view all published articles
 router.get("/articles", async (req, res) => {
   try {
     const articles = await Article.find()

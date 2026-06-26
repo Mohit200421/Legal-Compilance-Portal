@@ -5,7 +5,7 @@ const adminController = require("../controllers/adminController");
 const auth = require("../middleware/authMiddleware");
 const role = require("../middleware/roleMiddleware");
 
-// 🔐 Only ADMIN can access all routes
+//  Only ADMIN can access all routes
 router.use(auth, role(["admin"]));
 
 /* ================= DASHBOARD ================= */
@@ -19,7 +19,7 @@ router.put("/users/:id/deactivate", adminController.deactivateUser);
 router.delete("/users/:id", adminController.deleteUser);
 
 /* ================= PAYMENT ================= */
-// ✅ FIXED: use controller properly
+//  FIXED: use controller properly
 router.put("/payment/:paymentId/approve", adminController.approvePayment);
 
 /* ================= LAWYERS ================= */

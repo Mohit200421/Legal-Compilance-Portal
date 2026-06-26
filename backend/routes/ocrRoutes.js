@@ -4,10 +4,10 @@ const auth = require("../middleware/authMiddleware");
 
 const { extractText, getOCRText } = require("../controllers/ocrController");
 
-// ✅ Run OCR
+//  Run OCR
 router.get("/:id", auth, extractText);
 
-// ✅ Get OCR text
+//  Get OCR text
 router.get("/text/:id", auth, getOCRText);
 
 module.exports = router;

@@ -135,7 +135,7 @@ exports.getDashboardCounts = async (req, res) => {
 
 /* ================= LAWYER APPROVAL (USERS TABLE) =================== */
 
-// ✅ Get all pending lawyer users
+//  Get all pending lawyer users
 exports.getPendingLawyerUsers = async (req, res) => {
   try {
     const pendingLawyers = await User.find({
@@ -197,12 +197,12 @@ exports.approveLawyerUser = async (req, res) => {
       );
 
       if (!emailResult.success) {
-        console.error("❌ Failed to send approval email:", emailResult.error);
+        console.error(" Failed to send approval email:", emailResult.error);
       } else {
-        console.log("✅ Approval email sent to:", user.email);
+        console.log(" Approval email sent to:", user.email);
       }
     } catch (emailErr) {
-      console.error("❌ Email error:", emailErr.message);
+      console.error(" Email error:", emailErr.message);
     }
 
     res.json({ msg: "Lawyer approved & credentials sent ✅", user });
@@ -226,14 +226,14 @@ exports.rejectLawyerUser = async (req, res) => {
     user.lawyerApprovalStatus = "rejected";
     await user.save();
 
-    res.json({ msg: "Lawyer rejected ❌", user });
+    res.json({ msg: "Lawyer rejected ", user });
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Server error" });
   }
 };
 
-// ✅ Admin approves payment (optional override)
+//  Admin approves payment (optional override)
 exports.approvePayment = async (req, res) => {
   try {
     const { paymentId } = req.params;
@@ -244,13 +244,13 @@ exports.approvePayment = async (req, res) => {
       return res.status(404).json({ msg: "Payment not found" });
     }
 
-    // ✅ Update payment
+    //  Update payment
     payment.status = "VERIFIED";
     payment.verifiedBy = req.user._id;
     payment.verifiedAt = new Date();
     await payment.save();
 
-    // ✅ Update request
+    //  Update request
     const request = await ContactRequest.findById(payment.requestId);
 
     if (request) {

@@ -2,68 +2,68 @@ const mongoose = require("mongoose");
 
 const PaymentSchema = new mongoose.Schema(
   {
-    // 👤 User who made payment
+    //  User who made payment
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    // ⚖️ Lawyer (important for your flow)
+    //  Lawyer (important for your flow)
     lawyerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
 
-    // 🧾 Consultation request
+    //  Consultation request
     requestId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ContactRequest",
     },
 
-    // 📦 Subscription (existing)
+    //  Subscription (existing)
     planId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubscriptionPlan",
     },
 
-    // 💰 Amount
+    //  Amount
     amount: {
       type: Number,
       default: 500,
     },
 
-    // 🧾 UTR (IMPORTANT)
+    //  UTR (IMPORTANT)
     utr: {
       type: String,
-      unique: true, // 🚨 prevent duplicate fraud
+      unique: true, //  prevent duplicate fraud
       sparse: true,
     },
 
-    // 📸 Screenshot (NEW)
+    //  Screenshot (NEW)
     screenshot: {
       type: String, // store URL (Cloudinary / local)
     },
 
-    // 💳 Razorpay (existing - untouched)
+    //  Razorpay (existing - untouched)
     razorpayOrderId: String,
     razorpayPaymentId: String,
 
-    // 🎯 Purpose
+    //  Purpose
     purpose: {
       type: String,
       enum: ["SUBSCRIPTION", "CONSULTATION", "OTHER"],
       required: true,
     },
 
-    // 💸 Payment method
+    //  Payment method
     gateway: {
       type: String,
       enum: ["RAZORPAY", "UPI"],
       default: "UPI",
     },
 
-    // 📊 STATUS (UPDATED 🔥)
+    //  STATUS (UPDATED )
     status: {
       type: String,
       enum: [
@@ -77,7 +77,7 @@ const PaymentSchema = new mongoose.Schema(
       default: "PENDING",
     },
 
-    // 👨‍⚖️ Who verified
+    //  Who verified
     verifiedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

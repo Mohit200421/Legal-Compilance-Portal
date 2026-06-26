@@ -6,7 +6,7 @@ const User = require("../models/User");
  * Runs every day at midnight to check and deactivate expired subscriptions
  */
 cron.schedule("0 0 * * *", async () => {
-  console.log("⏰ Checking for expired subscriptions...");
+  console.log(" Checking for expired subscriptions...");
 
   try {
     // Find all users with active subscriptions
@@ -22,12 +22,12 @@ cron.schedule("0 0 * * *", async () => {
       user.subscription.isActive = false;
       await user.save();
 
-      console.log(`✅ Deactivated subscription for user: ${user.email}`);
+      console.log(` Deactivated subscription for user: ${user.email}`);
     }
 
-    console.log("✅ Subscription expiry check completed");
+    console.log(" Subscription expiry check completed");
   } catch (err) {
-    console.error("❌ Subscription expiry check failed:", err);
+    console.error(" Subscription expiry check failed:", err);
   }
 });
 

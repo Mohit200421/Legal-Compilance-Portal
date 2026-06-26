@@ -9,10 +9,10 @@ const {
   updateLawyerApprovalStatus,
 } = require("../controllers/adminLawyerController");
 
-// ✅ Pending lawyers list
+//  Pending lawyers list
 router.get("/pending", auth, role("admin"), getPendingLawyers);
 
-// ✅ Approve / Reject
+//  Approve / Reject
 router.put("/:id/approval", auth, role("admin"), updateLawyerApprovalStatus);
 
 module.exports = router;

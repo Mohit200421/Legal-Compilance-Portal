@@ -5,12 +5,12 @@ const ContactRequest = require("../models/ContactRequest");
 const crypto = require("crypto");
 const razorpay = require("../config/razorpay");
 
-// 🚨 PRODUCTION READY RAZORPAY CONTROLLER
+//  PRODUCTION READY RAZORPAY CONTROLLER
 // Fixed env validation, logging, Render deployment
 
 /**
  * =========================================
- * 🔍 DEBUG - Check Razorpay config (GET /api/payment/debug)
+ *  DEBUG - Check Razorpay config (GET /api/payment/debug)
  * =========================================
  */
 exports.debugRazorpay = (req, res) => {
@@ -30,7 +30,7 @@ exports.debugRazorpay = (req, res) => {
 
 /**
  * =========================================
- * 1️⃣ MOCK PAYMENT (unchanged)
+ *  MOCK PAYMENT (unchanged)
  * =========================================
  */
 exports.mockPayment = async (req, res) => {
@@ -85,7 +85,7 @@ exports.mockPayment = async (req, res) => {
 
 /**
  * =========================================
- * 2️⃣ CREATE RAZORPAY ORDER - PRODUCTION READY
+ * CREATE RAZORPAY ORDER - PRODUCTION READY
  * =========================================
  */
 exports.createOrder = async (req, res) => {
@@ -105,13 +105,13 @@ exports.createOrder = async (req, res) => {
 
     const request = await ContactRequest.findById(requestId);
     if (!request) {
-      console.log("❌ Request not found:", requestId);
+      console.log(" Request not found:", requestId);
       return res.status(404).json({ msg: "Request not found" });
     }
 
     const amount = Math.round((request.amount || 500) * 100); // paise
 
-    console.log(`💰 Creating order: amount=${amount} for request=${requestId}`);
+    console.log(` Creating order: amount=${amount} for request=${requestId}`);
 
     // 🚨 RAZORPAY ORDER CREATION - Fixed receipt length
     const receiptId = `req_${requestId.slice(-10)}`;
@@ -125,16 +125,16 @@ exports.createOrder = async (req, res) => {
       },
     });
 
-    console.log(`📄 Receipt ID: ${receiptId}`);
+    console.log(` Receipt ID: ${receiptId}`);
 
-    console.log("✅ RAZORPAY ORDER CREATED:", order.id);
+    console.log(" RAZORPAY ORDER CREATED:", order.id);
 
     res.json({
       order,
       key: process.env.RAZORPAY_KEY_ID, // Publishable key
     });
   } catch (err) {
-    console.error("🔥 RAZORPAY CREATE ORDER ERROR:", {
+    console.error(" RAZORPAY CREATE ORDER ERROR:", {
       message: err.message,
       statusCode: err.statusCode,
       errorCode: err.error?.code,
@@ -142,7 +142,7 @@ exports.createOrder = async (req, res) => {
       source: err.source,
     });
 
-    // 🚨 SPECIFIC RAZORPAY ERROR HANDLING - NULL SAFE
+    //  SPECIFIC RAZORPAY ERROR HANDLING - NULL SAFE
     if (err.statusCode === 401 || (err?.message || "").includes("api key")) {
       return res.status(500).json({
         msg: "Razorpay authentication failed - check RENDER env vars",
@@ -161,7 +161,7 @@ exports.createOrder = async (req, res) => {
 
 /**
  * =========================================
- * 3️⃣ VERIFY RAZORPAY PAYMENT - FIXED
+ *  VERIFY RAZORPAY PAYMENT - FIXED
  * =========================================
  */
 exports.verifyRazorpayPayment = async (req, res) => {
@@ -174,7 +174,7 @@ exports.verifyRazorpayPayment = async (req, res) => {
     } = req.body;
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
-    const secret = process.env.RAZORPAY_KEY_SECRET; // ✅ Consistent with config
+    const secret = process.env.RAZORPAY_KEY_SECRET; //  Consistent with config
 
     const expectedSignature = crypto
       .createHmac("sha256", secret)
@@ -182,7 +182,7 @@ exports.verifyRazorpayPayment = async (req, res) => {
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-      console.log("❌ Signature mismatch");
+      console.log(" Signature mismatch");
       return res.status(400).json({ msg: "Invalid signature" });
     }
 
@@ -211,7 +211,7 @@ exports.verifyRazorpayPayment = async (req, res) => {
     request.status = "PAYMENT_VERIFIED";
     await request.save();
 
-    // 🔥 Real-time: Notify lawyer CHAT UNLOCKED 💬
+    //  Real-time: Notify lawyer CHAT UNLOCKED 
     const io = req.app.get("io");
     if (io && request.lawyerId) {
       io.to(request.lawyerId.toString()).emit("paymentVerified", {
@@ -222,13 +222,13 @@ exports.verifyRazorpayPayment = async (req, res) => {
         amount: request.amount,
       });
       console.log(
-        `💰📡 Emitted paymentVerified to lawyer ${request.lawyerId}: Chat unlocked!`
+        ` Emitted paymentVerified to lawyer ${request.lawyerId}: Chat unlocked!`
       );
     }
 
-    console.log("✅ Payment verified:", razorpay_payment_id);
+    console.log(" Payment verified:", razorpay_payment_id);
 
-    res.json({ msg: "Payment successful ✅" });
+    res.json({ msg: "Payment successful " });
   } catch (err) {
     console.error("Verify payment error:", err);
     res.status(500).json({
@@ -239,7 +239,7 @@ exports.verifyRazorpayPayment = async (req, res) => {
 };
 
 /**
- * 4️⃣ GET USER PAYMENTS (unchanged)
+ *  GET USER PAYMENTS (unchanged)
  */
 exports.getUserPayments = async (req, res) => {
   try {

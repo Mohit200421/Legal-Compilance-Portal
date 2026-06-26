@@ -7,7 +7,7 @@ const Category = require("../models/Category");
 
 /* ================= PUBLIC MASTER DATA ================= */
 
-// ✅ Cities
+//  Cities
 router.get("/cities", async (req, res) => {
   try {
     const cities = await City.find().sort({ name: 1 });
@@ -17,7 +17,7 @@ router.get("/cities", async (req, res) => {
   }
 });
 
-// ✅ States
+//  States
 router.get("/states", async (req, res) => {
   try {
     const states = await State.find().sort({ name: 1 });
@@ -27,7 +27,7 @@ router.get("/states", async (req, res) => {
   }
 });
 
-// ✅ Categories (Practice Areas)
+//  Categories (Practice Areas)
 router.get("/categories", async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 });

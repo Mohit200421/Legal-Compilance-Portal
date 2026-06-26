@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { getLawyerProfile } = require("../controllers/lawyerController");
 
-// 🌐 Public lawyer profile
+//  Public lawyer profile
 router.get("/lawyers/:id", getLawyerProfile);
 
 module.exports = router;

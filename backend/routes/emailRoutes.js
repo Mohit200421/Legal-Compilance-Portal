@@ -61,7 +61,7 @@ router.post("/test-email", async (req, res) => {
       });
     }
   } catch (err) {
-    console.error("❌ Test email error:", err);
+    console.error(" Test email error:", err);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -86,7 +86,7 @@ router.get("/test-email/config", async (req, res) => {
         : "Email provider is not fully configured",
     });
   } catch (err) {
-    console.error("❌ Config verification error:", err);
+    console.error(" Config verification error:", err);
     return res.status(500).json({
       success: false,
       message: "Server error",

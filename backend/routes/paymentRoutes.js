@@ -12,26 +12,26 @@ const {
 
 /**
  * =========================================
- * 💳 SUBSCRIPTION (MOCK)
+ *  SUBSCRIPTION (MOCK)
  * =========================================
  */
 router.post("/mock", auth, mockPayment);
 
 /**
  * =========================================
- * 💰 RAZORPAY PAYMENT FLOW
+ *  RAZORPAY PAYMENT FLOW
  * =========================================
  */
 
-// 🧾 Create Razorpay Order
+//  Create Razorpay Order
 router.post("/create-order", auth, createOrder);
 
-// ✅ Verify Razorpay Payment
+//  Verify Razorpay Payment
 router.post("/verify-razorpay", auth, verifyRazorpayPayment);
 
 /**
  * =========================================
- * 📊 USER PAYMENTS
+ *  USER PAYMENTS
  * =========================================
  */
 

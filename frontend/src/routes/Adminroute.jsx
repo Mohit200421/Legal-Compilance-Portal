@@ -7,12 +7,12 @@ export default function AdminRoute({ children }) {
 
   if (loading) return null;
 
-  // ❌ Not logged in
+  //  Not logged in
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // ❌ Logged in but not admin → send to their dashboard
+  //  Logged in but not admin → send to their dashboard
   if (user.role !== "admin") {
     if (user.role === "lawyer") return <Navigate to="/lawyer" replace />;
     return <Navigate to="/user" replace />;

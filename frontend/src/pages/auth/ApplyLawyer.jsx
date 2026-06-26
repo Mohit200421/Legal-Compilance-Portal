@@ -398,7 +398,7 @@ export default function ApplyLawyer() {
             </div>
           </div>
 
-          {/* Document Upload Section - Glass Card */}
+          {/* Document Upload Section - Glass Card 
           <div className={`${glassCardClass} p-4`}>
             <div className="flex items-center mb-3">
               <Upload
@@ -447,7 +447,7 @@ export default function ApplyLawyer() {
             >
               Upload Documents
             </button>
-          </div>
+          </div> */}
 
           {/* Terms Checkbox */}
           <div className="flex items-start">

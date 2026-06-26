@@ -79,7 +79,7 @@ exports.deleteArticle = async (req, res) => {
 
 exports.uploadDocument = async (req, res) => {
   try {
-    const { assignedUserId } = req.body; // ✅ user selected by lawyer
+    const { assignedUserId } = req.body; //  user selected by lawyer
 
     if (!req.file) {
       return res.status(400).json({ msg: "File is required" });
@@ -87,7 +87,7 @@ exports.uploadDocument = async (req, res) => {
 
     const doc = await Document.create({
       uploaderId: req.user.id,
-      assignedUserId: assignedUserId || null, // ✅ save userId if provided
+      assignedUserId: assignedUserId || null, //  save userId if provided
       filename: req.file.originalname,
       path: req.file.path,
       mimetype: req.file.mimetype,
@@ -274,7 +274,7 @@ exports.addCaseEvent = async (req, res) => {
       eventDate: new Date(eventDate),
     });
 
-    // ✅ Email won't crash now
+    //  Email won't crash now
     await sendEmail(
       caseData.lawyerId.email,
       "New Case Event Added",
@@ -367,7 +367,7 @@ exports.updateCaseEvent = async (req, res) => {
     const event = await CaseEvent.findById(eventId);
     if (!event) return res.status(404).json({ msg: "Event not found" });
 
-    // ✅ ensure lawyer owns this case
+    //  ensure lawyer owns this case
     const caseData = await Case.findOne({
       _id: event.caseId,
       lawyerId: req.user.id,
@@ -391,7 +391,7 @@ exports.updateCaseEvent = async (req, res) => {
   }
 };
 
-// ✅ GET ALL REQUESTS FOR LOGGED-IN LAWYER
+//  GET ALL REQUESTS FOR LOGGED-IN LAWYER
 exports.getLawyerRequests = async (req, res) => {
   try {
     const requests = await ContactRequest.find({ lawyerId: req.user.id })
@@ -404,7 +404,7 @@ exports.getLawyerRequests = async (req, res) => {
   }
 };
 
-// ✅ UPDATE REQUEST STATUS (Accepted / Rejected)
+//  UPDATE REQUEST STATUS (Accepted / Rejected)
 exports.updateRequestStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -423,7 +423,7 @@ exports.updateRequestStatus = async (req, res) => {
 
     if (!request) return res.status(404).json({ msg: "Request not found" });
 
-    // 🔥 Real-time: Notify user instantly
+    //  Real-time: Notify user instantly
     const io = req.app.get("io");
     if (io && request.userId) {
       io.to(request.userId._id.toString()).emit("requestStatusUpdated", {
@@ -544,7 +544,7 @@ exports.createDiscussion = async (req, res) => {
   }
 };
 
-// ✅ MARK DISCUSSION AS READ (LAWYER)
+//  MARK DISCUSSION AS READ (LAWYER)
 exports.markLawyerDiscussionRead = async (req, res) => {
   try {
     const discussion = await Discussion.findOne({

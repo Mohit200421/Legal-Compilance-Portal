@@ -20,7 +20,7 @@ exports.debugRazorpay = (req, res) => {
 
 exports.createOrder = async (req, res) => {
   try {
-    // 🛡️ ENV VALIDATION
+    //  ENV VALIDATION
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       console.error("🚨 RAZORPAY ENV MISSING");
       return res.status(500).json({
@@ -101,7 +101,7 @@ exports.verifyRazorpayPayment = async (req, res) => {
     request.status = "PAYMENT_VERIFIED";
     await request.save();
 
-    res.json({ msg: "Payment verified ✅" });
+    res.json({ msg: "Payment verified " });
   } catch (err) {
     console.error("Verify error:", err);
     res.status(500).json({ msg: "Verification failed", error: err.message });

@@ -5,7 +5,7 @@ const { sendEmail } = require("../utils/emailService");
 
 // Runs every day at 9 AM
 cron.schedule("0 9 * * *", async () => {
-  console.log("⏰ Running daily reminders...");
+  console.log(" Running daily reminders...");
 
   const today = new Date().toISOString().split("T")[0];
 

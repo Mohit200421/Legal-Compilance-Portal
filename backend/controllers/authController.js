@@ -77,7 +77,7 @@ exports.register = async (req, res) => {
     // Send OTP email with HTML template
     const otpHtml = getOTPEmailTemplate(otp, "verification");
 
-    console.log("📧 Sending OTP to:", email);
+    console.log(" Sending OTP to:", email);
 
     const emailResult = await sendEmail(
       email,
@@ -85,7 +85,7 @@ exports.register = async (req, res) => {
       otpHtml,
     );
 
-    console.log("📧 Email result:", emailResult);
+    console.log(" Email result:", emailResult);
 
     // Safe email check
     if (!emailResult || !emailResult.success) {
@@ -94,7 +94,7 @@ exports.register = async (req, res) => {
       // Don't fail registration if email sending is misconfigured.
       // User is created with OTP hash; they can retry OTP via /resend-otp.
       return res.status(200).json({
-        msg: "Registered successfully ✅",
+        msg: "Registered successfully ",
         debug: emailResult?.error || "Unknown error",
       });
     }
@@ -151,7 +151,7 @@ exports.verifyOtp = async (req, res) => {
     user.otpExpiresAt = null;
     await user.save();
 
-    res.json({ msg: "Email verified successfully ✅" });
+    res.json({ msg: "Email verified successfully " });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -181,7 +181,7 @@ exports.login = async (req, res) => {
 
     const token = generateToken(user);
 
-    // ✅ Set cookie
+    //  Set cookie
     setTokenCookie(res, token);
 
     res.json({
@@ -351,7 +351,7 @@ exports.resetPassword = async (req, res) => {
 
     await user.save();
 
-    res.json({ msg: "Password reset successfully ✅" });
+    res.json({ msg: "Password reset successfully " });
   } catch (err) {
     res.status(500).json({ msg: err.message });
   }
@@ -410,7 +410,7 @@ exports.applyLawyer = async (req, res) => {
       });
 
       return res.json({
-        msg: "Request submitted successfully ✅ Admin will approve soon.",
+        msg: "Request submitted successfully  Admin will approve soon.",
       });
     }
 
@@ -425,7 +425,7 @@ exports.applyLawyer = async (req, res) => {
     await user.save();
 
     res.json({
-      msg: "Request submitted successfully ✅ Admin will approve soon.",
+      msg: "Request submitted successfully  Admin will approve soon.",
     });
   } catch (err) {
     console.log(err);

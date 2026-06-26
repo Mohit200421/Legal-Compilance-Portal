@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const { sendEmail } = require("../utils/emailService");
 
-// ✅ Get all lawyer requests (pending)
+//  Get all lawyer requests (pending)
 exports.getPendingLawyers = async (req, res) => {
   try {
     const lawyers = await User.find({
@@ -15,7 +15,7 @@ exports.getPendingLawyers = async (req, res) => {
   }
 };
 
-// ✅ Approve / Reject lawyer
+//  Approve / Reject lawyer
 exports.updateLawyerApprovalStatus = async (req, res) => {
   try {
     const { status } = req.body; // approved / rejected
@@ -33,7 +33,7 @@ exports.updateLawyerApprovalStatus = async (req, res) => {
     lawyer.lawyerApprovalStatus = status;
     await lawyer.save();
 
-    // ✅ Lawyer approval email - Fixed HTML & Logging
+    //  Lawyer approval email - Fixed HTML & Logging
     try {
       console.log(`📧 Sending approval email to ${lawyer.email} (${status})`);
 
@@ -67,9 +67,9 @@ exports.updateLawyerApprovalStatus = async (req, res) => {
         `,
       );
 
-      console.log("✅ Lawyer approval email sent successfully");
+      console.log(" Lawyer approval email sent successfully");
     } catch (e) {
-      console.error("❌ Lawyer approval email failed:", e.message);
+      console.error(" Lawyer approval email failed:", e.message);
     }
 
     res.json({ msg: `Lawyer ${status} successfully`, lawyer });

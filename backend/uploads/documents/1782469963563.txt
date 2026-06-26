@@ -1,0 +1,192 @@
+[
+  {
+    "role": "user",
+    "message": "I am unable to book a consultation with a lawyer. The payment succeeds but the appointment is not confirmed.",
+    "messages": [
+      {
+        "sender": "user",
+        "message": "The payment was successful but no appointment was created.",
+        "timestamp": "2026-06-20T09:15:00.000Z"
+      },
+      {
+        "sender": "support",
+        "message": "Could you please share the payment ID?",
+        "timestamp": "2026-06-20T09:30:00.000Z"
+      },
+      {
+        "sender": "user",
+        "message": "Here is the payment ID: pay_ABC123XYZ.",
+        "timestamp": "2026-06-20T09:35:00.000Z"
+      }
+    ],
+    "status": "open",
+    "priority": "high",
+    "category": "payment",
+    "assignedTo": null
+  },
+  {
+    "role": "user",
+    "message": "My uploaded legal document is not opening after upload.",
+    "messages": [
+      {
+        "sender": "user",
+        "message": "Every time I click the document it shows an error.",
+        "timestamp": "2026-06-18T14:20:00.000Z"
+      },
+      {
+        "sender": "support",
+        "message": "We are checking the uploaded file.",
+        "timestamp": "2026-06-18T14:40:00.000Z"
+      }
+    ],
+    "status": "in-progress",
+    "priority": "medium",
+    "category": "documents",
+    "assignedTo": null
+  },
+  {
+    "role": "lawyer",
+    "message": "My lawyer profile is still pending approval.",
+    "messages": [
+      {
+        "sender": "lawyer",
+        "message": "I submitted all documents three days ago.",
+        "timestamp": "2026-06-17T10:10:00.000Z"
+      },
+      {
+        "sender": "admin",
+        "message": "Your verification is under review.",
+        "timestamp": "2026-06-17T11:00:00.000Z"
+      }
+    ],
+    "status": "pending",
+    "priority": "medium",
+    "category": "verification",
+    "assignedTo": null
+  },
+  {
+    "role": "user",
+    "message": "The video consultation disconnects automatically after a few minutes.",
+    "messages": [
+      {
+        "sender": "user",
+        "message": "The call keeps disconnecting.",
+        "timestamp": "2026-06-15T16:00:00.000Z"
+      },
+      {
+        "sender": "support",
+        "message": "Please try using Chrome or Edge browser.",
+        "timestamp": "2026-06-15T16:10:00.000Z"
+      }
+    ],
+    "status": "resolved",
+    "priority": "high",
+    "category": "video-call",
+    "assignedTo": null
+  },
+  {
+    "role": "user",
+    "message": "I forgot my password and OTP is not arriving.",
+    "messages": [
+      {
+        "sender": "user",
+        "message": "I requested OTP multiple times.",
+        "timestamp": "2026-06-14T08:00:00.000Z"
+      },
+      {
+        "sender": "support",
+        "message": "Please check your spam folder.",
+        "timestamp": "2026-06-14T08:05:00.000Z"
+      }
+    ],
+    "status": "resolved",
+    "priority": "low",
+    "category": "authentication",
+    "assignedTo": null
+  },
+  {
+    "role": "lawyer",
+    "message": "Unable to update my specialization details.",
+    "messages": [
+      {
+        "sender": "lawyer",
+        "message": "The Save button does not respond.",
+        "timestamp": "2026-06-13T12:30:00.000Z"
+      }
+    ],
+    "status": "open",
+    "priority": "medium",
+    "category": "profile",
+    "assignedTo": null
+  },
+  {
+    "role": "user",
+    "message": "OCR could not extract text from my PDF document.",
+    "messages": [
+      {
+        "sender": "user",
+        "message": "The extracted text is blank.",
+        "timestamp": "2026-06-12T13:45:00.000Z"
+      }
+    ],
+    "status": "in-progress",
+    "priority": "medium",
+    "category": "ocr",
+    "assignedTo": null
+  },
+  {
+    "role": "user",
+    "message": "I was charged twice for the same consultation.",
+    "messages": [
+      {
+        "sender": "user",
+        "message": "Two payments were deducted.",
+        "timestamp": "2026-06-11T17:00:00.000Z"
+      },
+      {
+        "sender": "support",
+        "message": "We have escalated the issue to the payment team.",
+        "timestamp": "2026-06-11T17:20:00.000Z"
+      }
+    ],
+    "status": "open",
+    "priority": "high",
+    "category": "payment",
+    "assignedTo": null
+  },
+  {
+    "role": "lawyer",
+    "message": "Client documents are not visible in the dashboard.",
+    "messages": [
+      {
+        "sender": "lawyer",
+        "message": "The document list appears empty.",
+        "timestamp": "2026-06-10T15:40:00.000Z"
+      }
+    ],
+    "status": "pending",
+    "priority": "medium",
+    "category": "documents",
+    "assignedTo": null
+  },
+  {
+    "role": "user",
+    "message": "I accidentally submitted the wrong legal document. Can I replace it?",
+    "messages": [
+      {
+        "sender": "user",
+        "message": "Please allow me to upload a new file.",
+        "timestamp": "2026-06-09T11:30:00.000Z"
+      },
+      {
+        "sender": "support",
+        "message": "Yes, the previous file has been removed. You can upload the correct document.",
+        "timestamp": "2026-06-09T12:00:00.000Z"
+      }
+    ],
+    "status": "resolved",
+    "priority": "low",
+    "category": "documents",
+    "assignedTo": null
+  }
+]

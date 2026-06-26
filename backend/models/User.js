@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
 
   specialization: { type: String, default: "" },
 
-  // ✅ Lawyer Profile Fields (Editable later in Lawyer Panel)
+  //  Lawyer Profile Fields (Editable later in Lawyer Panel)
   phone: { type: String, default: "" },
   barId: { type: String, default: "" },
   experience: { type: Number, default: 0 },
@@ -26,11 +26,11 @@ const UserSchema = new mongoose.Schema({
   address: { type: String, default: "" },
   profileImage: { type: String, default: "" },
 
-  // ✅ Practice Areas and Services
+  //  Practice Areas and Services
   practiceAreas: [{ type: String }],
   services: [{ type: String }],
 
-  // ✅ Lawyer Approval System
+  //  Lawyer Approval System
   // user = none, lawyer = pending/approved/rejected
   lawyerApprovalStatus: {
     type: String,
@@ -38,14 +38,14 @@ const UserSchema = new mongoose.Schema({
     default: "none",
   },
 
-  // ✅ EMAIL VERIFICATION
+  //  EMAIL VERIFICATION
   isEmailVerified: { type: Boolean, default: false },
 
-  // ✅ PASSWORD RESET
+  //  PASSWORD RESET
   resetOtpHash: { type: String, default: null },
   resetOtpExpiresAt: { type: Date, default: null },
 
-  // ✅ OTP SYSTEM
+  //  OTP SYSTEM
   otpCodeHash: { type: String, default: null },
   otpExpiresAt: { type: Date, default: null },
 

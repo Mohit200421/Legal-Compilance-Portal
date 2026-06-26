@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const Article = require("../models/Article");
 const News = require("../models/News");
-const Job = require("../models/Job"); // ✅ Missing Job import added
+const Job = require("../models/Job"); //  Missing Job import added
 const JobApplication = require("../models/JobApplication");
 const Document = require("../models/Document");
 const Feedback = require("../models/Feedback");

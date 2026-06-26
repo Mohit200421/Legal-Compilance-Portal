@@ -23,10 +23,10 @@ const {
   getUserDashboardStats,
 } = require("../controllers/userController");
 
-// ✅ USER DASHBOARD STATS
+//  USER DASHBOARD STATS
 router.get("/dashboard-stats", auth, role("user"), getUserDashboardStats);
 
-// ✅ USER DISCUSSION
+//  USER DISCUSSION
 router.get("/discussion", auth, role("user"), getUserDiscussions);
 router.get("/discussion/:id", auth, role("user"), getSingleUserDiscussion);
 router.post("/discussion/:id/reply", auth, role("user"), userReplyDiscussion);
@@ -39,10 +39,10 @@ router.patch(
 
 router.get("/my-requests-map", auth, role("user"), getMyRequestsMap);
 
-// ✅ MY REQUESTS
+//  MY REQUESTS
 router.get("/my-requests", auth, role("user"), getMyRequests);
 
-// ✅ USER DOCUMENTS (list)
+//  USER DOCUMENTS (list)
 router.get("/documents", auth, role("user"), getUserDocuments);
 
 // SEARCH LAWYER

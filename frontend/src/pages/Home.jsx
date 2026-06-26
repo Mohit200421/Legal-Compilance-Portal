@@ -527,18 +527,18 @@ const Home = () => {
         <div className="max-w-[1280px] mx-auto px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div
+               {/*<div
                 className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm mb-6"
                 style={{
                   backgroundColor: colors.surfaceContainerHighest,
                   color: colors.secondary,
                 }}
               >
-                <Sparkles size={14} />
-                <span className="font-medium tracking-wide">
+               <Sparkles size={14} />
+               <span className="font-medium tracking-wide">
                   TRUSTED BY 10,000+ CLIENTS
-                </span>
-              </div>
+                </span> 
+              </div>*/}
 
               <h1
                 className="text-5xl lg:text-6xl font-bold mb-6 leading-[1.2] tracking-[-0.02em]"
@@ -600,7 +600,7 @@ const Home = () => {
                 </button>
               </div>
 
-              {/* Stats */}
+              {/* Stats 
               <div className="grid grid-cols-3 gap-8">
                 <div>
                   <div
@@ -648,7 +648,7 @@ const Home = () => {
                     Client Ratings
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="relative">
@@ -856,7 +856,7 @@ const Home = () => {
               className="text-3xl md:text-4xl font-bold mb-4 leading-[1.3] tracking-[-0.01em]"
               style={{ color: colors.onSurface }}
             >
-              Trusted by Thousands
+              Testimonials
             </h2>
             <p
               className="text-lg"
@@ -1152,7 +1152,7 @@ const Home = () => {
               >
                 Stay updated with the latest legal news and platform updates.
               </p>
-              <form onSubmit={handleSubscribe} className="flex">
+              {/* <form onSubmit={handleSubscribe} className="flex">
                 <input
                   type="email"
                   value={email}
@@ -1172,7 +1172,7 @@ const Home = () => {
                 >
                   <Send size={16} />
                 </button>
-              </form>
+              </form> */}
             </div>
           </div>
 
@@ -1183,7 +1183,7 @@ const Home = () => {
               color: colors.onSurfaceVariant,
             }}
           >
-            <p>&copy; 2024 LegalSetu Legal Tech. All rights reserved.</p>
+            <p>&copy; 2026 LegalSetu Legal Tech. All rights reserved.</p>
           </div>
         </div>
       </footer>

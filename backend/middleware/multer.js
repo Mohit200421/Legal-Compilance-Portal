@@ -1,9 +1,9 @@
 const multer = require("multer");
 
-// ✅ Use memory storage (best for Cloudinary)
+//  Use memory storage (best for Cloudinary)
 const storage = multer.memoryStorage();
 
-// ✅ File filter (only images allowed)
+//  File filter (only images allowed)
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);

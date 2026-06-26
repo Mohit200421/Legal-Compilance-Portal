@@ -35,15 +35,15 @@ const socketHandler = (io) => {
       io.to(to).emit("ice-candidate", { candidate });
     });
 
-    // 🔥 REQUEST STATUS UPDATES - Lawyer Accept → User Notification
+    //  REQUEST STATUS UPDATES - Lawyer Accept → User Notification
     socket.on("requestStatusUpdated", (data) => {
-      console.log("🔄 Relaying requestStatusUpdated:", data);
+      console.log(" Relaying requestStatusUpdated:", data);
       io.to(data.userId.toString()).emit("requestStatusUpdated", data);
     });
 
-    // 🔥 PAYMENT VERIFIED - User Pay → Lawyer Chat Unlock
+    //  PAYMENT VERIFIED - User Pay → Lawyer Chat Unlock
     socket.on("paymentVerified", (data) => {
-      console.log("💰 Relaying paymentVerified:", data);
+      console.log(" Relaying paymentVerified:", data);
       io.to(data.lawyerId.toString()).emit("paymentVerified", data);
     });
 

@@ -98,7 +98,7 @@ export default function TalkToLawyer() {
     if (!socket) return;
 
     const handleStatusUpdate = (data) => {
-      console.log("📡 requestStatusUpdated:", data);
+      console.log(" requestStatusUpdated:", data);
 
       setRequestMap((prev) => ({
         ...prev,

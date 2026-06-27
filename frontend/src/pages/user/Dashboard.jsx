@@ -563,7 +563,7 @@ export default function UserDashboard() {
                     className="text-xs mt-0.5"
                     style={{ color: colors.onSurfaceVariant }}
                   >
-                    Member since 2024
+                    Member since 2026
                   </p>
                   <div className="flex items-center mt-1.5">
                     <span

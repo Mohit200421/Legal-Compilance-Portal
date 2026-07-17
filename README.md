@@ -4,6 +4,7 @@ LegalSetu is a full-stack MERN web application developed as my final year engine
 
 The application also provides separate dashboards for Users, Lawyers, and Admins with role-based access and real-time communication features.
 
+Live :- https://legal-compilance-portal.vercel.app
 ---
 
 ## Project Overview
